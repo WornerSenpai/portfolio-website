@@ -149,7 +149,8 @@ def get_portfolio():
             "coverAssetUrl": p_dict["cover_asset_url"] or (asset_list[0]["card"] if asset_list else "assets/hero.png"),
             "tags": tags,
             "featured": bool(p_dict["featured"]),
-            "driveUrl": p_dict["drive_url"] or "#",
+            "showcase3D": bool(p_dict.get("showcase_3d", 1) if "showcase_3d" in p_dict else 1),
+            "showInAll": bool(p_dict.get("show_in_all", 1) if "show_in_all" in p_dict else 1),
             "assets": asset_list
         })
 

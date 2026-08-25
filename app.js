@@ -200,16 +200,17 @@ function init3DWheel() {
   if (!container || typeof ThreeImageWheel === 'undefined') return;
 
   const wheelItems = (CMS_DATA.projects && CMS_DATA.projects.length > 0)
-    ? CMS_DATA.projects.map(p => ({
-        id: p.id,
-        title: p.title,
-        category: p.category,
-        year: p.year || "2026",
-        image: p.coverAsset ? (p.coverAsset.localPath || p.coverAsset.sourceUrl) : "assets/hero.png",
-        description: p.description,
-        driveUrl: p.driveUrl,
-        tags: p.tags || []
-      }))
+    ? CMS_DATA.projects
+        .filter(p => p.showcase3D !== false)
+        .map(p => ({
+          id: p.id,
+          title: p.title,
+          category: p.category,
+          year: p.year || "2026",
+          image: p.coverAssetUrl || (p.coverAsset ? (p.coverAsset.localPath || p.coverAsset.sourceUrl) : "assets/hero.png"),
+          description: p.description,
+          tags: p.tags || []
+        }))
     : [];
 
   if (wheelItems.length === 0) return;

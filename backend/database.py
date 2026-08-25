@@ -76,6 +76,8 @@ def init_db():
         cover_asset_url TEXT,
         status TEXT DEFAULT 'published' CHECK(status IN ('draft', 'published', 'unpublished')),
         featured INTEGER DEFAULT 0,
+        showcase_3d INTEGER DEFAULT 1,
+        show_in_all INTEGER DEFAULT 1,
         sort_order INTEGER DEFAULT 0,
         drive_folder_id TEXT,
         drive_url TEXT,

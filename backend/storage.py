@@ -1,7 +1,8 @@
 """
 Media Storage & Image Processing Pipeline for Cloud CMS
-Validates media formats, computes SHA-256 hashes, generates responsive variants,
-and embeds ultra-fast Base64 Data URLs for 100% reliable cloud persistence on Vercel serverless.
+Directly uploads and commits assets to categorized GitHub subfolders:
+portfolio-assets/<category-slug>/<filename>
+Provides immutable GitHub Raw CDN URLs and instant Base64 fallbacks.
 """
 
 import os
@@ -9,9 +10,13 @@ import io
 import uuid
 import base64
 import hashlib
+import json
+import urllib.request
 from PIL import Image
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "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")
+GITHUB_REPO = "WornerSenpai/portfolio-website"
 
 if os.getenv("VERCEL"):
     UPLOADS_DIR = "/tmp/uploads"
@@ -34,47 +39,98 @@ ALLOWED_MIMES = {
 MAX_FILE_SIZE = 50 * 1024 * 1024 # 50 MB
 
 def is_allowed_file(filename, mime_type):
-    """Validate file extension and MIME type."""
     ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
     return ext in ALLOWED_EXTENSIONS or mime_type in ALLOWED_MIMES
 
 def compute_sha256(file_bytes):
-    """Compute SHA-256 hash for duplicate detection."""
     return hashlib.sha256(file_bytes).hexdigest()
 
-def process_and_store_image(file_storage, filename):
+def upload_to_github_category(file_bytes, category_slug, filename):
     """
-    Process image and generate:
-    - Optimized Base64 Data URL for zero-404 serverless cloud persistence
-    - Local disk cached files
+    Commit and upload asset directly into categorized GitHub folder:
+    portfolio-assets/<category_slug>/<filename>
+    Returns high-speed raw GitHub CDN URL.
     """
+    if not category_slug:
+        category_slug = "cover-arts"
+        
+    path = f"portfolio-assets/{category_slug}/{filename}"
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
+    
+    b64_content = base64.b64encode(file_bytes).decode('utf-8')
+    data = {
+        "message": f"upload: add {filename} to {category_slug}",
+        "content": b64_content,
+        "branch": "main"
+    }
+    
+    # Check if file exists on GitHub to get SHA if updating
+    sha = None
+    try:
+        check_req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"Bearer {GITHUB_TOKEN}",
+                "Accept": "application/vnd.github+json",
+                "User-Agent": "dragxsy-cms"
+            }
+        )
+        with urllib.request.urlopen(check_req) as resp:
+            existing = json.loads(resp.read().decode('utf-8'))
+            sha = existing.get("sha")
+    except Exception:
+        pass
+        
+    if sha:
+        data["sha"] = sha
+
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(data).encode('utf-8'),
+        headers={
+            "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github+json",
+            "Content-Type": "application/json",
+            "User-Agent": "dragxsy-cms"
+        },
+        method="PUT"
+    )
+    
+    try:
+        with urllib.request.urlopen(req) as resp:
+            raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/{path}"
+            print(f"[GitHub Upload] Successfully committed asset to: {path}")
+            return raw_url
+    except Exception as e:
+        print(f"[GitHub Upload] Note: could not commit directly via API ({e}), using local and Data URL fallback")
+        return None
+
+def process_and_store_image(file_storage, filename, category_slug="cover-arts"):
     file_bytes = file_storage.read()
     file_storage.seek(0)
     
     file_hash = compute_sha256(file_bytes)
     ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else 'jpg'
-    unique_id = str(uuid.uuid4())[:12]
+    unique_id = str(uuid.uuid4())[:10]
     safe_filename = f"{unique_id}.{ext}"
 
-    for d in [MEDIA_DIR, OPTIMIZED_DIR, CARDS_DIR, THUMBS_DIR]:
-        os.makedirs(d, exist_ok=True)
+    # 1. Upload to categorized GitHub directory
+    github_url = upload_to_github_category(file_bytes, category_slug, safe_filename)
 
-    original_path = os.path.join(MEDIA_DIR, safe_filename)
-    optimized_path = os.path.join(OPTIMIZED_DIR, safe_filename)
-    card_path = os.path.join(CARDS_DIR, safe_filename)
-    thumb_path = os.path.join(THUMBS_DIR, safe_filename)
-
-    # Save original to disk fallback
+    # 2. Also save to local repository portfolio-assets folder if on local machine
+    local_cat_dir = os.path.join(BASE_DIR, "portfolio-assets", category_slug)
+    os.makedirs(local_cat_dir, exist_ok=True)
+    local_cat_path = os.path.join(local_cat_dir, safe_filename)
     try:
-        with open(original_path, "wb") as f:
+        with open(local_cat_path, "wb") as f:
             f.write(file_bytes)
-    except Exception as e:
-        print(f"[Storage] Warning writing original: {e}")
+    except Exception:
+        pass
 
     width, height = 800, 800
     data_url = ""
 
-    # Process image responsive variants and create lightweight Base64 Data URL
+    # 3. Create lightweight Base64 Data URL
     if ext in ['jpg', 'jpeg', 'png', 'webp', 'gif']:
         try:
             with Image.open(io.BytesIO(file_bytes)) as img:
@@ -82,7 +138,6 @@ def process_and_store_image(file_storage, filename):
                 if img.mode in ('RGBA', 'LA') and ext in ['jpg', 'jpeg']:
                     img = img.convert('RGB')
 
-                # Create lightweight cloud-persistent card (max 1000px, quality 82)
                 card_img = img.copy()
                 card_img.thumbnail((1000, 1000), Image.Resampling.LANCZOS)
                 
@@ -98,35 +153,25 @@ def process_and_store_image(file_storage, filename):
                 
                 b64_data = base64.b64encode(buffer.getvalue()).decode('utf-8')
                 data_url = f"data:{mime};base64,{b64_data}"
-
-                # Save local disk variants
-                try:
-                    with open(card_path, "wb") as f:
-                        f.write(buffer.getvalue())
-                    with open(optimized_path, "wb") as f:
-                        f.write(file_bytes)
-                    with open(thumb_path, "wb") as f:
-                        f.write(buffer.getvalue())
-                except Exception:
-                    pass
-        except Exception as e:
-            print(f"[Storage] Error processing image: {e}")
+        except Exception:
             b64_data = base64.b64encode(file_bytes).decode('utf-8')
             data_url = f"data:image/jpeg;base64,{b64_data}"
     else:
-        # Video / Other media: Fallback to base64 or relative path
         b64_data = base64.b64encode(file_bytes).decode('utf-8')
         data_url = f"data:video/mp4;base64,{b64_data}"
 
-    # For maximum reliability, cardUrl is the Data URL (never 404s on Vercel)
-    # and originalUrl/optimizedUrl can be the path or Data URL
+    # Best URL: Prefer GitHub Raw CDN if available, else Data URL
+    final_url = github_url or data_url
+
     return {
         "id": "asset_" + unique_id,
         "filename": filename,
-        "originalUrl": data_url,
-        "optimizedUrl": data_url,
-        "cardUrl": data_url,
-        "thumbnailUrl": data_url,
+        "githubUrl": github_url,
+        "dataUrl": data_url,
+        "originalUrl": final_url,
+        "optimizedUrl": final_url,
+        "cardUrl": final_url,
+        "thumbnailUrl": final_url,
         "width": width,
         "height": height,
         "sizeBytes": len(file_bytes),

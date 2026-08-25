@@ -499,6 +499,23 @@
           </div>
         </div>
 
+        <!-- Showcase placement preferences -->
+        <div class="p-3 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] space-y-2 text-xs font-mono">
+          <span class="text-[10px] uppercase text-[var(--text-muted)] font-bold">Showcase Settings</span>
+          <div class="flex items-center justify-between">
+            <label class="flex items-center gap-2 cursor-pointer text-white">
+              <input type="checkbox" id="proj-show-3d" checked class="w-4 h-4 rounded accent-[var(--accent)]" />
+              <span>🎡 Feature in 3D Wheel Hero</span>
+            </label>
+          </div>
+          <div class="flex items-center justify-between">
+            <label class="flex items-center gap-2 cursor-pointer text-white">
+              <input type="checkbox" id="proj-show-all" checked class="w-4 h-4 rounded accent-[var(--accent)]" />
+              <span>🗂️ Display in 'All' Feed</span>
+            </label>
+          </div>
+        </div>
+
         <div class="flex items-center gap-3 pt-2">
           <button type="button" onclick="saveProject('draft')" class="flex-1 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-white text-xs font-mono font-bold hover:border-[var(--warning)] transition-all">
             Save as Draft
@@ -942,6 +959,17 @@
               <p class="text-xs text-[var(--text-muted)] line-clamp-1 font-light mt-0.5">${p.description || 'Curated portfolio piece'}</p>
             </div>
           </div>
+          <!-- Showcase Placement Toggles -->
+          <div class="flex items-center gap-2 pt-1">
+            <button onclick="toggleProject3D('${p.id}')" class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold flex items-center gap-1 transition-all ${p.showcase_3d !== 0 ? 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30' : 'bg-[var(--card-inner)] text-[var(--text-muted)] border border-[var(--border)]'}">
+              <span>🎡 3D Wheel:</span> <span>${p.showcase_3d !== 0 ? 'ON' : 'OFF'}</span>
+            </button>
+
+            <button onclick="toggleProjectAll('${p.id}')" class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold flex items-center gap-1 transition-all ${p.show_in_all !== 0 ? 'bg-purple-500/15 text-purple-400 border border-purple-500/30' : 'bg-[var(--card-inner)] text-[var(--text-muted)] border border-[var(--border)]'}">
+              <span>🗂️ 'All' Feed:</span> <span>${p.show_in_all !== 0 ? 'ON' : 'OFF'}</span>
+            </button>
+          </div>
+
           <div class="flex items-center justify-between pt-2.5 border-t border-[var(--border)] text-xs font-mono">
             <span class="text-[11px] text-[var(--text-muted)]">${p.year || '2026'}</span>
             <div class="flex items-center gap-2">
@@ -1230,13 +1258,36 @@
       }
 
       try {
-        await apiRequest('/projects', 'POST', { title, categoryId, year, description, coverAssetUrl, status });
+        const showcase3d = document.getElementById('proj-show-3d')?.checked ?? true;
+      const showInAll = document.getElementById('proj-show-all')?.checked ?? true;
+      await apiRequest('/projects', 'POST', { title, categoryId, year, description, coverAssetUrl, status, showcase3d, showInAll });
         showToast('✓ Artwork published to website!');
         closeModal('modal-project');
         await loadProjects();
         await loadOverview();
       } catch (err) {
         showToast(err.message, false);
+      }
+    }
+
+    
+    async function toggleProject3D(id) {
+      try {
+        const res = await apiRequest(`/projects/${id}/toggle-3d`, 'PUT');
+        showToast(`3D Wheel Showcase: ${res.showcase_3d ? 'Enabled' : 'Disabled'}`);
+        await loadProjects();
+      } catch (e) {
+        showToast(e.message, false);
+      }
+    }
+
+    async function toggleProjectAll(id) {
+      try {
+        const res = await apiRequest(`/projects/${id}/toggle-all`, 'PUT');
+        showToast(`'All' Feed Display: ${res.show_in_all ? 'Visible' : 'Hidden'}`);
+        await loadProjects();
+      } catch (e) {
+        showToast(e.message, false);
       }
     }
 

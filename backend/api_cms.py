@@ -273,6 +273,51 @@ def create_project():
     log_activity("CREATE_PROJECT", title, f"Status: {status}, Category: {cat['name']}")
     return jsonify({"success": True, "id": proj_id, "slug": slug, "status": status}), 201
 
+
+@cms_bp.route("/projects/<project_id>/toggle-3d", methods=["PUT"])
+@require_auth
+def toggle_project_3d(project_id):
+    """Toggle whether a project is showcased on the 3D wheel hero."""
+    conn = get_db_connection()
+    proj = conn.execute("SELECT id, title, showcase_3d FROM projects WHERE id = ?", (project_id,)).fetchone()
+    if not proj:
+        conn.close()
+        return jsonify({"error": "Project not found"}), 404
+
+    current_val = proj["showcase_3d"] if "showcase_3d" in proj.keys() else 1
+    new_val = 0 if current_val == 1 else 1
+    now = datetime.now().isoformat()
+
+    conn.execute("UPDATE projects SET showcase_3d = ?, updated_at = ? WHERE id = ?", (new_val, now, project_id))
+    conn.commit()
+    conn.close()
+
+    status_str = "Enabled on 3D Wheel" if new_val == 1 else "Hidden from 3D Wheel"
+    log_activity("TOGGLE_3D", proj["title"], status_str)
+    return jsonify({"success": True, "showcase_3d": bool(new_val), "message": status_str})
+
+@cms_bp.route("/projects/<project_id>/toggle-all", methods=["PUT"])
+@require_auth
+def toggle_project_all(project_id):
+    """Toggle whether a project is displayed in the 'All' category feed."""
+    conn = get_db_connection()
+    proj = conn.execute("SELECT id, title, show_in_all FROM projects WHERE id = ?", (project_id,)).fetchone()
+    if not proj:
+        conn.close()
+        return jsonify({"error": "Project not found"}), 404
+
+    current_val = proj["show_in_all"] if "show_in_all" in proj.keys() else 1
+    new_val = 0 if current_val == 1 else 1
+    now = datetime.now().isoformat()
+
+    conn.execute("UPDATE projects SET show_in_all = ?, updated_at = ? WHERE id = ?", (new_val, now, project_id))
+    conn.commit()
+    conn.close()
+
+    status_str = "Visible in 'All' Feed" if new_val == 1 else "Hidden from 'All' Feed"
+    log_activity("TOGGLE_ALL", proj["title"], status_str)
+    return jsonify({"success": True, "show_in_all": bool(new_val), "message": status_str})
+
 @cms_bp.route("/projects/<project_id>/publish", methods=["PUT"])
 @require_auth
 def publish_project(project_id):
@@ -347,6 +392,8 @@ def create_post():
     read_time = data.get("readTime", "4 min read").strip()
     date_str = data.get("date", datetime.now().strftime("%b %Y"))
     status = data.get("status", "published")
+    showcase_3d = 1 if data.get("showcase3d", True) else 0
+    show_in_all = 1 if data.get("showInAll", True) else 0
 
     if not title or not content:
         return jsonify({"error": "Title and content are required"}), 400
