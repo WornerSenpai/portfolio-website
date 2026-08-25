@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>dragxsy — Mobile CMS & Cloud Publisher</title>
+  <title>dragxsy — Mobile CMS</title>
   <meta name="theme-color" content="#090b0e" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -33,8 +33,7 @@
     }
 
     .font-mono { font-family: 'JetBrains Mono', monospace; }
-    .neon-border { box-shadow: 0 0 15px var(--accent-glow); }
-    .glass { background: rgba(17, 20, 26, 0.85); backdrop-filter: blur(16px); }
+    .glass { background: rgba(17, 20, 26, 0.9); backdrop-filter: blur(16px); }
     .active-tab { color: var(--accent); }
     .active-tab::after {
       content: '';
@@ -47,7 +46,6 @@
       box-shadow: 0 0 6px var(--accent);
     }
 
-    /* Custom smooth scrollbar */
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-thumb { background: #212631; border-radius: 4px; }
   </style>
@@ -65,16 +63,17 @@
       <div>
         <h1 class="text-sm font-bold tracking-tight lowercase font-mono leading-none">dragxsy cms</h1>
         <div class="flex items-center gap-1.5 mt-0.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse"></span>
+          <span id="conn-indicator" class="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse"></span>
           <span id="header-status" class="text-[10px] font-mono text-[var(--text-muted)]">cloud sync ready</span>
         </div>
       </div>
     </div>
 
     <div class="flex items-center gap-2">
-      <a href="/" target="_blank" class="px-2.5 py-1 rounded-full bg-[var(--card-inner)] border border-[var(--border)] text-[11px] font-mono text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black transition-all flex items-center gap-1">
-        <span>Site ↗</span>
-      </a>
+      <button onclick="openServerConfigModal()" class="px-2.5 py-1 rounded-full bg-[var(--card-inner)] border border-[var(--border)] text-[10px] font-mono text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black transition-all flex items-center gap-1">
+        <i data-lucide="globe" class="w-3 h-3"></i>
+        <span id="server-badge-label">Server</span>
+      </button>
       <button onclick="switchTab('settings')" class="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-white hover:bg-[var(--card-inner)]">
         <i data-lucide="settings" class="w-4 h-4"></i>
       </button>
@@ -82,43 +81,53 @@
   </header>
 
   <!-- ========================================================================= -->
-  <!-- 2. AUTH SCREEN (SHOWN IF NOT LOGGED IN) -->
+  <!-- 2. AUTH SCREEN (EMPTY INPUTS, SERVER SWITCHER) -->
   <!-- ========================================================================= -->
-  <section id="screen-auth" class="hidden flex-1 flex flex-col justify-center px-6 py-12 max-w-md mx-auto w-full">
-    <div class="p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] shadow-xl">
-      <div class="w-12 h-12 rounded-xl bg-[var(--accent)] text-black flex items-center justify-center font-mono font-extrabold text-xl mb-4 mx-auto shadow-lg">
+  <section id="screen-auth" class="flex-1 flex flex-col justify-center px-6 py-8 max-w-md mx-auto w-full">
+    <div class="p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] shadow-xl relative">
+      <div class="w-12 h-12 rounded-xl bg-[var(--accent)] text-black flex items-center justify-center font-mono font-extrabold text-xl mb-3 mx-auto shadow-lg">
         d
       </div>
-      <h2 class="text-xl font-bold text-center mb-1">Private CMS Access</h2>
-      <p class="text-xs text-[var(--text-muted)] text-center mb-6 font-mono">dragxsy creative portfolio</p>
+      <h2 class="text-xl font-bold text-center mb-0.5">Private CMS Login</h2>
+      <p class="text-xs text-[var(--text-muted)] text-center mb-5 font-mono">dragxsy creative portfolio</p>
 
       <form id="login-form" class="space-y-4">
         <div>
           <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Admin Email</label>
-          <input type="email" id="login-email" value="admin@dragxsy.com" required class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+          <input type="email" id="login-email" placeholder="admin@dragxsy.com" autocomplete="email" required class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono placeholder:text-neutral-600" />
         </div>
         <div>
           <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Password</label>
-          <input type="password" id="login-password" value="dragxsy2026" required class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+          <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password" required class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono placeholder:text-neutral-600" />
         </div>
-        <div id="login-error" class="hidden p-3 rounded-lg bg-[var(--danger)]/10 border border-[var(--danger)]/30 text-xs text-[var(--danger)] font-mono"></div>
-        <button type="submit" id="login-btn" class="w-full py-3 rounded-xl bg-[var(--accent)] text-black font-bold text-sm tracking-wide hover:opacity-90 transition-all cursor-pointer font-mono shadow-md">
-          UNLOCK CMS
+
+        <div id="login-error" class="hidden p-3 rounded-lg bg-[var(--danger)]/10 border border-[var(--danger)]/30 text-xs text-[var(--danger)] font-mono leading-relaxed"></div>
+
+        <button type="submit" id="login-btn" class="w-full py-3 rounded-xl bg-[var(--accent)] text-black font-bold text-sm tracking-wide hover:opacity-90 transition-all cursor-pointer font-mono shadow-md flex items-center justify-center gap-2">
+          <span>UNLOCK CMS</span>
         </button>
       </form>
+
+      <!-- Server Connection Switcher Trigger -->
+      <div class="mt-5 pt-4 border-t border-[var(--border)] flex items-center justify-between text-[11px] font-mono">
+        <span class="text-[var(--text-muted)]">Target Server:</span>
+        <button onclick="openServerConfigModal()" class="text-[var(--accent)] hover:underline flex items-center gap-1 font-bold">
+          <span id="current-server-display">Localhost / Cloud</span>
+          <i data-lucide="chevron-right" class="w-3 h-3"></i>
+        </button>
+      </div>
     </div>
   </section>
 
   <!-- ========================================================================= -->
-  <!-- 3. MAIN APP SCREENS -->
+  <!-- 3. MAIN APP SCREENS (SHOWN AFTER AUTH) -->
   <!-- ========================================================================= -->
-  <main id="screen-main" class="flex-1 px-4 py-4 max-w-lg mx-auto w-full">
+  <main id="screen-main" class="hidden flex-1 px-4 py-4 max-w-lg mx-auto w-full">
 
     <!-- --------------------------------------------------------------------- -->
     <!-- TAB 1: HOME OVERVIEW -->
     <!-- --------------------------------------------------------------------- -->
     <section id="tab-home" class="space-y-4">
-      <!-- Greeting Banner -->
       <div class="p-5 rounded-2xl bg-gradient-to-br from-[#11141a] to-[#171b23] border border-[var(--border)] relative overflow-hidden">
         <div class="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-[var(--accent)]/10 blur-2xl pointer-events-none"></div>
         <span class="text-[11px] font-mono text-[var(--accent)] uppercase tracking-wider font-bold">Authenticated Admin</span>
@@ -126,7 +135,6 @@
         <p class="text-xs text-[var(--text-muted)] mt-1">Manage artwork, write dispatches, and publish live to your site.</p>
       </div>
 
-      <!-- Quick Metrics Grid -->
       <div class="grid grid-cols-2 gap-3">
         <div class="p-3.5 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-between">
           <div>
@@ -169,7 +177,6 @@
         </div>
       </div>
 
-      <!-- Quick Action Shortcuts -->
       <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] space-y-2.5">
         <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider">Quick Actions</h3>
         <div class="grid grid-cols-2 gap-2">
@@ -184,7 +191,6 @@
         </div>
       </div>
 
-      <!-- Recent Activity Stream -->
       <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider">Audit Stream</h3>
@@ -208,19 +214,17 @@
         </button>
       </div>
 
-      <!-- Category Filter Pills -->
       <div id="work-category-pills" class="flex gap-2 overflow-x-auto pb-1 text-xs font-mono">
         <!-- Populated by JS -->
       </div>
 
-      <!-- Projects List -->
       <div id="work-projects-list" class="space-y-3">
         <!-- Populated by JS -->
       </div>
     </section>
 
     <!-- --------------------------------------------------------------------- -->
-    <!-- TAB 3: NOTES / BLOG DISPATCHES (NEW) -->
+    <!-- TAB 3: NOTES / BLOG DISPATCHES -->
     <!-- --------------------------------------------------------------------- -->
     <section id="tab-notes" class="hidden space-y-4">
       <div class="flex items-center justify-between">
@@ -234,7 +238,6 @@
         </button>
       </div>
 
-      <!-- Posts List -->
       <div id="notes-posts-list" class="space-y-3">
         <!-- Populated by JS -->
       </div>
@@ -279,16 +282,12 @@
       </div>
 
       <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] space-y-3">
-        <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider">Cloud Deployment</h3>
-        <div class="space-y-2 text-xs font-mono text-[var(--text-secondary)]">
-          <div class="flex items-center justify-between p-2 rounded-lg bg-[var(--card-inner)]">
-            <span>GitHub Repository:</span>
-            <a href="https://github.com/WornerSenpai/portfolio-website" target="_blank" class="text-[var(--accent)]">WornerSenpai/portfolio-website ↗</a>
-          </div>
-          <div class="flex items-center justify-between p-2 rounded-lg bg-[var(--card-inner)]">
-            <span>Live Vercel Site:</span>
-            <span class="text-[var(--success)]">Connected</span>
-          </div>
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider">Server Connection</h3>
+          <button onclick="openServerConfigModal()" class="text-xs font-mono text-[var(--accent)] hover:underline">Change</button>
+        </div>
+        <div class="p-2.5 rounded-lg bg-[var(--card-inner)] border border-[var(--border)] text-xs font-mono text-white truncate">
+          <span class="text-[var(--text-muted)]">Active URL:</span> <span id="settings-server-url">Auto-detect</span>
         </div>
       </div>
 
@@ -302,7 +301,7 @@
   <!-- ========================================================================= -->
   <!-- 4. BOTTOM MOBILE NAVIGATION BAR -->
   <!-- ========================================================================= -->
-  <nav id="bottom-nav" class="glass fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--border)] flex items-center justify-around py-2 px-1">
+  <nav id="bottom-nav" class="hidden glass fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--border)] flex items-center justify-around py-2 px-1">
     <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-[var(--text-muted)] hover:text-white relative py-1 px-3 active-tab">
       <i data-lucide="home" class="w-5 h-5"></i>
       <span class="text-[10px] font-mono font-medium">Home</span>
@@ -326,12 +325,63 @@
   </nav>
 
   <!-- ========================================================================= -->
-  <!-- 5. MODAL: CREATE / EDIT PROJECT -->
+  <!-- 5. SERVER CONFIGURATION MODAL (FOR ANDROID / VERCEL CONNECTION) -->
+  <!-- ========================================================================= -->
+  <div id="modal-server-config" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="w-full max-w-sm bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+        <h3 class="text-sm font-bold font-mono">Backend Server Connection</h3>
+        <button onclick="closeModal('modal-server-config')" class="text-[var(--text-muted)] hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-[var(--text-muted)] leading-relaxed">
+        Select where your CMS backend is running. For phone use, connect to your live Vercel domain or local PC Wi-Fi IP.
+      </p>
+
+      <div class="space-y-2">
+        <button type="button" onclick="setPresetServer('https://portfolio-website-wornersenpai.vercel.app')" class="w-full p-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] hover:border-[var(--accent)] text-left flex items-center justify-between text-xs font-mono">
+          <div>
+            <div class="text-white font-bold">☁️ Vercel Cloud Domain</div>
+            <div class="text-[10px] text-[var(--text-muted)]">portfolio-website.vercel.app</div>
+          </div>
+          <span class="text-[10px] text-[var(--accent)]">Recommended</span>
+        </button>
+
+        <button type="button" onclick="setPresetServer('http://10.60.231.5:5000')" class="w-full p-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] hover:border-[var(--accent)] text-left flex items-center justify-between text-xs font-mono">
+          <div>
+            <div class="text-white font-bold">💻 Local Wi-Fi (PC IP)</div>
+            <div class="text-[10px] text-[var(--text-muted)]">http://10.60.231.5:5000</div>
+          </div>
+          <span class="text-[10px] text-neutral-400">Same Wi-Fi</span>
+        </button>
+      </div>
+
+      <div>
+        <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Custom Server URL</label>
+        <input type="text" id="custom-server-input" placeholder="http://192.168.1.5:5000 or https://..." class="w-full px-3 py-2 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-xs text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+      </div>
+
+      <div class="flex items-center gap-2 pt-2">
+        <button type="button" onclick="testServerConnection()" class="flex-1 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-xs font-mono text-white hover:border-[var(--accent)]">
+          Test Ping
+        </button>
+        <button type="button" onclick="saveServerConfig()" class="flex-1 py-2.5 rounded-xl bg-[var(--accent)] text-black text-xs font-mono font-bold hover:opacity-90">
+          Save & Apply
+        </button>
+      </div>
+      <div id="server-test-result" class="hidden text-center text-xs font-mono pt-1"></div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 6. MODAL: CREATE / EDIT PROJECT -->
   <!-- ========================================================================= -->
   <div id="modal-project" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="w-full max-w-lg bg-[var(--card)] border border-[var(--border)] rounded-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
       <div class="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between">
-        <h3 class="text-sm font-bold font-mono">Create / Edit Project</h3>
+        <h3 class="text-sm font-bold font-mono">Create / Edit Artwork Project</h3>
         <button onclick="closeModal('modal-project')" class="text-[var(--text-muted)] hover:text-white">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
@@ -340,7 +390,7 @@
       <form id="project-form" class="p-5 space-y-4 overflow-y-auto flex-1">
         <div>
           <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Artwork Title *</label>
-          <input type="text" id="proj-title" required placeholder="e.g. Neon Cyberpunk Concept" class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+          <input type="text" id="proj-title" required placeholder="e.g. Cyberpunk Cover Art" class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -357,8 +407,8 @@
         </div>
 
         <div>
-          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Description / Creative Concept</label>
-          <textarea id="proj-desc" rows="3" placeholder="Context, tools used, sonic background..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono"></textarea>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Description / Concept</label>
+          <textarea id="proj-desc" rows="3" placeholder="Artwork concept, tools, frequency..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono"></textarea>
         </div>
 
         <div>
@@ -379,12 +429,12 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 6. MODAL: CREATE / EDIT BLOG POST / DISPATCH (NEW) -->
+  <!-- 7. MODAL: CREATE / EDIT BLOG POST -->
   <!-- ========================================================================= -->
   <div id="modal-post" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="w-full max-w-lg bg-[var(--card)] border border-[var(--border)] rounded-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
       <div class="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between">
-        <h3 class="text-sm font-bold font-mono">Write Dispatch / Editorial Note</h3>
+        <h3 class="text-sm font-bold font-mono">Write Editorial Dispatch</h3>
         <button onclick="closeModal('modal-post')" class="text-[var(--text-muted)] hover:text-white">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
@@ -410,12 +460,12 @@
 
         <div>
           <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Summary Excerpt</label>
-          <textarea id="post-summary" rows="2" placeholder="Brief 1-2 sentence hook shown in the card..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono"></textarea>
+          <textarea id="post-summary" rows="2" placeholder="Brief 1-2 sentence hook..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono"></textarea>
         </div>
 
         <div>
-          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Full Content / Story *</label>
-          <textarea id="post-content" rows="6" required placeholder="Write your full thoughts, creative philosophy, or case study notes (separate paragraphs with blank lines)..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono"></textarea>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Full Content *</label>
+          <textarea id="post-content" rows="6" required placeholder="Write your full thoughts and case study reflections..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono"></textarea>
         </div>
 
         <div class="flex items-center gap-3 pt-2">
@@ -431,30 +481,59 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 7. APPLICATION LOGIC & API INTERFACE -->
+  <!-- 8. APPLICATION JAVASCRIPT LOGIC -->
   <!-- ========================================================================= -->
   <script>
     let TOKEN = localStorage.getItem('dragxsy_cms_token') || '';
+    let SERVER_BASE = localStorage.getItem('dragxsy_server_url') || '';
+
+    // If running in browser / live site, default to current origin; if in APK file:// default to empty or saved server
+    function getApiBase() {
+      if (SERVER_BASE) return SERVER_BASE.replace(/\/$/, '');
+      if (window.location.protocol.startsWith('http')) return window.location.origin;
+      return 'http://10.60.231.5:5000'; // Default local IP for APK
+    }
+
     let CACHE_CATEGORIES = [];
     let CACHE_PROJECTS = [];
     let CACHE_POSTS = [];
     let SELECTED_CATEGORY = 'all';
 
+    function updateServerDisplays() {
+      const base = getApiBase();
+      const disp = document.getElementById('current-server-display');
+      const badge = document.getElementById('server-badge-label');
+      const setEl = document.getElementById('settings-server-url');
+      const input = document.getElementById('custom-server-input');
+
+      if (disp) disp.textContent = base.replace('http://', '').replace('https://', '');
+      if (badge) badge.textContent = base.includes('vercel') ? 'Cloud' : (base.includes('10.') || base.includes('192.') ? 'Wi-Fi' : 'Server');
+      if (setEl) setEl.textContent = base;
+      if (input) input.value = SERVER_BASE;
+    }
+
     async function apiRequest(endpoint, method = 'GET', data = null) {
+      const base = getApiBase();
+      const url = `${base}/api/cms${endpoint}`;
       const headers = { 'Content-Type': 'application/json' };
       if (TOKEN) headers['Authorization'] = `Bearer ${TOKEN}`;
       
       const options = { method, headers };
       if (data) options.body = JSON.stringify(data);
 
-      const resp = await fetch(`/api/cms${endpoint}`, options);
-      if (resp.status === 401) {
-        TOKEN = '';
-        localStorage.removeItem('dragxsy_cms_token');
-        showAuthScreen();
-        throw new Error('Unauthorized');
+      try {
+        const resp = await fetch(url, options);
+        if (resp.status === 401) {
+          TOKEN = '';
+          localStorage.removeItem('dragxsy_cms_token');
+          showAuthScreen();
+          throw new Error('Unauthorized');
+        }
+        return await resp.json();
+      } catch (err) {
+        if (err.message === 'Unauthorized') throw err;
+        throw new Error(`Cannot connect to server at ${base}. Please check your server URL or ensure your computer server is running.`);
       }
-      return await resp.json();
     }
 
     // Tab Switching
@@ -475,28 +554,35 @@
       document.getElementById('screen-auth').classList.remove('hidden');
       document.getElementById('screen-main').classList.add('hidden');
       document.getElementById('bottom-nav').classList.add('hidden');
+      updateServerDisplays();
     }
 
     function showMainApp() {
       document.getElementById('screen-auth').classList.add('hidden');
       document.getElementById('screen-main').classList.remove('hidden');
       document.getElementById('bottom-nav').classList.remove('hidden');
+      updateServerDisplays();
       loadOverview();
       loadCategories();
       loadProjects();
       loadPosts();
     }
 
-    // Login
+    // Login Form Handler (Clean empty inputs)
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('login-email').value;
+      const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
       const errEl = document.getElementById('login-error');
+      const btn = document.getElementById('login-btn');
+      
       errEl.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = `<span>CONNECTING...</span>`;
 
+      const base = getApiBase();
       try {
-        const res = await fetch('/api/cms/auth/login', {
+        const res = await fetch(`${base}/api/cms/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -507,12 +593,19 @@
           localStorage.setItem('dragxsy_cms_token', TOKEN);
           showMainApp();
         } else {
-          errEl.textContent = data.error || 'Login failed';
+          errEl.innerHTML = `<span class="font-bold">Login Failed:</span> ${data.error || 'Invalid credentials'}`;
           errEl.classList.remove('hidden');
         }
       } catch (err) {
-        errEl.textContent = 'Server connection error';
+        errEl.innerHTML = `
+          <div class="font-bold">⚠️ Connection Error</div>
+          <div class="mt-1 text-[11px]">Could not reach backend at: <code class="text-white">${base}</code></div>
+          <div class="mt-1.5"><button type="button" onclick="openServerConfigModal()" class="underline text-[var(--accent)] font-bold">Tap here to configure server URL</button></div>
+        `;
         errEl.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>UNLOCK CMS</span>`;
       }
     });
 
@@ -520,6 +613,54 @@
       TOKEN = '';
       localStorage.removeItem('dragxsy_cms_token');
       showAuthScreen();
+    }
+
+    // Server Config
+    function openServerConfigModal() {
+      updateServerDisplays();
+      document.getElementById('server-test-result').classList.add('hidden');
+      openModal('modal-server-config');
+    }
+
+    function setPresetServer(url) {
+      document.getElementById('custom-server-input').value = url;
+      testServerConnection();
+    }
+
+    async function testServerConnection() {
+      const input = document.getElementById('custom-server-input').value.trim();
+      const testUrl = input || getApiBase();
+      const resEl = document.getElementById('server-test-result');
+      resEl.className = 'text-center text-xs font-mono pt-1 text-[var(--accent)]';
+      resEl.textContent = 'Pinging server...';
+      resEl.classList.remove('hidden');
+
+      try {
+        const resp = await fetch(`${testUrl.replace(/\/$/, '')}/api/portfolio`);
+        if (resp.ok) {
+          resEl.className = 'text-center text-xs font-mono pt-1 text-[var(--success)] font-bold';
+          resEl.textContent = '✓ Server reachable & connected!';
+        } else {
+          resEl.className = 'text-center text-xs font-mono pt-1 text-[var(--warning)]';
+          resEl.textContent = `Server responded with HTTP ${resp.status}`;
+        }
+      } catch (err) {
+        resEl.className = 'text-center text-xs font-mono pt-1 text-[var(--danger)]';
+        resEl.textContent = '✗ Connection failed. Check Wi-Fi / URL.';
+      }
+    }
+
+    function saveServerConfig() {
+      const input = document.getElementById('custom-server-input').value.trim();
+      SERVER_BASE = input;
+      if (input) {
+        localStorage.setItem('dragxsy_server_url', input);
+      } else {
+        localStorage.removeItem('dragxsy_server_url');
+      }
+      updateServerDisplays();
+      closeModal('modal-server-config');
+      alert(`Server set to: ${getApiBase()}`);
     }
 
     // Load Overview Metrics
@@ -588,7 +729,7 @@
         : CACHE_PROJECTS.filter(p => p.category_id === SELECTED_CATEGORY);
 
       if (filtered.length === 0) {
-        list.innerHTML = `<div class="p-8 text-center text-xs font-mono text-[var(--text-muted)]">No projects found. Tap "New Project" to add artwork.</div>`;
+        list.innerHTML = `<div class="p-8 text-center text-xs font-mono text-[var(--text-muted)]">No projects found. Tap "New Artwork" to create one.</div>`;
         return;
       }
 
@@ -615,7 +756,7 @@
       lucide.createIcons();
     }
 
-    // Load Blog Posts / Dispatches
+    // Load Blog Posts
     async function loadPosts() {
       try {
         CACHE_POSTS = await apiRequest('/posts');
@@ -630,7 +771,7 @@
       if (!list) return;
 
       if (CACHE_POSTS.length === 0) {
-        list.innerHTML = `<div class="p-8 text-center text-xs font-mono text-[var(--text-muted)]">No blog dispatches yet. Tap "Write Dispatch" to publish your thoughts.</div>`;
+        list.innerHTML = `<div class="p-8 text-center text-xs font-mono text-[var(--text-muted)]">No dispatches yet. Tap "Write Dispatch" to publish your notes.</div>`;
         return;
       }
 
@@ -790,18 +931,19 @@
       }
     }
 
-    // File Upload Handler
+    // Media Upload Handler
     async function handleFileUpload(event) {
       const files = event.target.files;
       if (!files || files.length === 0) return;
 
+      const base = getApiBase();
       const grid = document.getElementById('uploaded-assets-grid');
       for (const file of files) {
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-          const resp = await fetch('/api/cms/upload', {
+          const resp = await fetch(`${base}/api/cms/upload`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${TOKEN}` },
             body: formData
@@ -812,7 +954,7 @@
             item.className = 'relative aspect-square rounded-lg overflow-hidden border border-[var(--border)] group';
             item.innerHTML = `
               <img src="${res.asset.thumbnailUrl || res.asset.cardUrl}" class="w-full h-full object-cover" />
-              <button onclick="navigator.clipboard.writeText('${res.asset.cardUrl}'); alert('Copied image URL to clipboard!');" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] font-mono text-[var(--accent)] font-bold">
+              <button onclick="navigator.clipboard.writeText('${res.asset.cardUrl}'); alert('Copied image URL!');" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] font-mono text-[var(--accent)] font-bold">
                 COPY URL
               </button>
             `;
@@ -826,7 +968,8 @@
       await loadOverview();
     }
 
-    // Init App
+    // App Initialization
+    updateServerDisplays();
     if (TOKEN) {
       showMainApp();
     } else {
