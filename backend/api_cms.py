@@ -460,6 +460,52 @@ def delete_post(post_id):
 # ----------------------------------------------------------------------
 # 6. Media Upload Endpoint
 # ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# 6. Media Upload & Asset Listing Endpoints
+# ----------------------------------------------------------------------
+@cms_bp.route("/assets", methods=["GET"])
+@require_auth
+def get_assets():
+    """List all uploaded assets for the mobile CMS gallery."""
+    conn = get_db_connection()
+    assets = conn.execute("SELECT * FROM assets ORDER BY created_at DESC").fetchall()
+    conn.close()
+    
+    asset_list = []
+    for a in assets:
+        asset_list.append({
+            "id": a["id"],
+            "filename": a["filename"],
+            "mimeType": a["mime_type"],
+            "originalUrl": a["original_url"],
+            "optimizedUrl": a["optimized_url"],
+            "cardUrl": a["card_url"],
+            "thumbnailUrl": a["thumbnail_url"],
+            "width": a["width"],
+            "height": a["height"],
+            "sizeBytes": a["size_bytes"],
+            "createdAt": a["created_at"]
+        })
+    return jsonify(asset_list)
+
+@cms_bp.route("/assets/<asset_id>", methods=["DELETE"])
+@require_auth
+def delete_asset(asset_id):
+    """Delete an uploaded asset from database."""
+    conn = get_db_connection()
+    asset = conn.execute("SELECT * FROM assets WHERE id = ?", (asset_id,)).fetchone()
+    if not asset:
+        conn.close()
+        return jsonify({"error": "Asset not found"}), 404
+        
+    conn.execute("DELETE FROM assets WHERE id = ?", (asset_id,))
+    conn.commit()
+    conn.close()
+    
+    log_activity("DELETE_ASSET", asset["filename"], f"ID: {asset_id}")
+    return jsonify({"success": True, "message": "Asset deleted"})
+
 @cms_bp.route("/upload", methods=["POST"])
 @require_auth
 def upload_file():

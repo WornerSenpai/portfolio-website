@@ -68,7 +68,11 @@ def download_apk():
 
 @app.route("/uploads/<path:filename>")
 def serve_upload(filename):
-    """Serve processed media files."""
+    """Serve processed media files from local or Vercel /tmp."""
+    if os.getenv("VERCEL"):
+        tmp_target = os.path.join("/tmp/uploads", filename)
+        if os.path.exists(tmp_target):
+            return send_from_directory("/tmp/uploads", filename)
     return send_from_directory(UPLOADS_DIR, filename)
 
 # ----------------------------------------------------------------------

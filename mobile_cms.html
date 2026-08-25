@@ -48,9 +48,20 @@
 
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-thumb { background: #212631; border-radius: 4px; }
+
+    /* Floating Toast */
+    #toast {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen pb-20 select-none">
+
+  <!-- Floating Toast Notification -->
+  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--border)] text-xs font-mono text-white shadow-2xl flex items-center gap-2 opacity-0 pointer-events-none -translate-y-4">
+    <i data-lucide="check-circle" class="w-4 h-4 text-[var(--success)]" id="toast-icon"></i>
+    <span id="toast-message">Copied to clipboard!</span>
+  </div>
 
   <!-- ========================================================================= -->
   <!-- 1. TOP MOBILE APP BAR WITH VIEW SITE BUTTON -->
@@ -83,7 +94,7 @@
   </header>
 
   <!-- ========================================================================= -->
-  <!-- 2. AUTH SCREEN (100% EMPTY INPUTS, NO PREFILLED TEXT, AUTO DETECTION) -->
+  <!-- 2. AUTH SCREEN (100% EMPTY INPUTS, AUTO-PING) -->
   <!-- ========================================================================= -->
   <section id="screen-auth" class="flex-1 flex flex-col justify-center px-6 py-6 max-w-md mx-auto w-full">
     <div class="p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] shadow-xl relative">
@@ -110,10 +121,9 @@
         </button>
       </form>
 
-      <!-- View Site directly from login screen -->
       <div class="mt-5 pt-4 border-t border-[var(--border)] flex items-center justify-between text-[11px] font-mono">
         <button onclick="openLiveSiteViewer()" class="text-[var(--text-secondary)] hover:text-white flex items-center gap-1">
-          <i data-lucide="eye" class="w-3.5 h-3.5 text-[var(--accent)]"></i>
+          <i data-lucide="eye" class="w-3.5 h-3.5 text-[var(--accent-blue)]"></i>
           <span>View Public Site</span>
         </button>
         <button onclick="openServerConfigModal()" class="text-[var(--accent)] hover:underline flex items-center gap-1 font-bold">
@@ -138,11 +148,11 @@
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-mono text-[var(--accent)] uppercase tracking-wider font-bold">Authenticated Admin</span>
           <button onclick="openLiveSiteViewer()" class="px-2 py-0.5 rounded-full bg-[var(--accent)]/20 text-[var(--accent)] text-[10px] font-mono font-bold hover:bg-[var(--accent)] hover:text-black transition-all">
-            Live Preview ↗
+            Live Site ↗
           </button>
         </div>
         <h2 id="home-greeting" class="text-xl font-bold mt-1 text-white">Good day, Sakshi</h2>
-        <p class="text-xs text-[var(--text-muted)] mt-1">Manage artwork, write dispatches, and publish live to your site.</p>
+        <p class="text-xs text-[var(--text-muted)] mt-1">Manage artwork, upload media, write dispatches, and publish live.</p>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
@@ -168,21 +178,21 @@
 
         <div class="p-3.5 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-between">
           <div>
-            <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase">Drafts</span>
-            <div id="stat-drafts" class="text-2xl font-bold font-mono text-[var(--warning)] mt-0.5">0</div>
+            <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase">Uploaded Media</span>
+            <div id="stat-assets" class="text-2xl font-bold font-mono text-emerald-400 mt-0.5">0</div>
           </div>
-          <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
-            <i data-lucide="file-edit" class="w-5 h-5"></i>
+          <div class="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+            <i data-lucide="image" class="w-5 h-5"></i>
           </div>
         </div>
 
         <div class="p-3.5 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-between">
           <div>
-            <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase">Categories</span>
-            <div id="stat-categories" class="text-2xl font-bold font-mono text-white mt-0.5">0</div>
+            <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase">Drafts</span>
+            <div id="stat-drafts" class="text-2xl font-bold font-mono text-[var(--warning)] mt-0.5">0</div>
           </div>
-          <div class="w-9 h-9 rounded-lg bg-white/5 text-white flex items-center justify-center">
-            <i data-lucide="folder" class="w-5 h-5"></i>
+          <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <i data-lucide="file-edit" class="w-5 h-5"></i>
           </div>
         </div>
       </div>
@@ -199,9 +209,9 @@
             <i data-lucide="feather" class="w-4 h-4 text-purple-400"></i>
             <span>Write Note</span>
           </button>
-          <button onclick="openLiveSiteViewer()" class="py-2.5 px-2 rounded-lg bg-[var(--card-inner)] border border-[var(--border)] text-xs font-mono text-white flex flex-col items-center gap-1 hover:border-[var(--accent)] transition-all">
-            <i data-lucide="globe" class="w-4 h-4 text-green-400"></i>
-            <span>View Site</span>
+          <button onclick="switchTab('upload')" class="py-2.5 px-2 rounded-lg bg-[var(--card-inner)] border border-[var(--border)] text-xs font-mono text-white flex flex-col items-center gap-1 hover:border-[var(--accent)] transition-all">
+            <i data-lucide="upload" class="w-4 h-4 text-emerald-400"></i>
+            <span>Upload</span>
           </button>
         </div>
       </div>
@@ -259,21 +269,54 @@
     </section>
 
     <!-- --------------------------------------------------------------------- -->
-    <!-- TAB 4: UPLOAD MEDIA -->
+    <!-- TAB 4: UPLOAD MEDIA & ASSET MANAGER -->
     <!-- --------------------------------------------------------------------- -->
     <section id="tab-upload" class="hidden space-y-4">
+      <!-- Upload Drop Area -->
       <div class="p-6 rounded-2xl bg-[var(--card)] border-2 border-dashed border-[var(--border)] text-center cursor-pointer hover:border-[var(--accent)] transition-all" onclick="document.getElementById('file-upload-input').click()">
         <input type="file" id="file-upload-input" multiple accept="image/*,video/*" class="hidden" onchange="handleFileUpload(event)" />
         <div class="w-12 h-12 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center mx-auto mb-3">
           <i data-lucide="upload-cloud" class="w-6 h-6"></i>
         </div>
-        <h3 class="text-sm font-bold mb-1">Select Media from Phone</h3>
-        <p class="text-xs text-[var(--text-muted)] font-mono">JPG, PNG, WEBP, GIF, MP4 (Auto-optimized by Pillow)</p>
+        <h3 class="text-sm font-bold mb-1">Upload Photo or Video</h3>
+        <p class="text-xs text-[var(--text-muted)] font-mono">Tap here to choose media from phone</p>
       </div>
 
-      <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)]">
-        <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider mb-3">Uploaded Assets</h3>
-        <div id="uploaded-assets-grid" class="grid grid-cols-3 gap-2">
+      <!-- Upload Progress / Success Card -->
+      <div id="upload-status-card" class="hidden p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-[var(--success)]"></i>
+            <span class="text-xs font-mono font-bold text-emerald-300">Upload Complete!</span>
+          </div>
+          <button onclick="document.getElementById('upload-status-card').classList.add('hidden')" class="text-[var(--text-muted)] hover:text-white">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="upload-recent-preview" class="flex items-center gap-3 bg-[var(--card)] p-3 rounded-lg border border-[var(--border)]">
+          <img id="recent-upload-img" src="" class="w-14 h-14 rounded-lg object-cover bg-neutral-900 border border-[var(--border)] flex-shrink-0" />
+          <div class="flex-1 min-w-0">
+            <h4 id="recent-upload-name" class="text-xs font-bold text-white truncate">filename.jpg</h4>
+            <p id="recent-upload-url" class="text-[10px] font-mono text-[var(--accent)] truncate mt-0.5">/uploads/cards/...</p>
+          </div>
+          <button id="recent-copy-btn" onclick="copyRecentUrl()" class="px-3 py-1.5 rounded-lg bg-[var(--accent)] text-black font-mono font-bold text-xs flex items-center gap-1 shadow-md hover:opacity-90">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>COPY URL</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Uploaded Assets Grid -->
+      <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider">Uploaded Assets</h3>
+          <button onclick="loadAssets()" class="text-xs font-mono text-[var(--accent)] hover:underline flex items-center gap-1">
+            <i data-lucide="rotate-cw" class="w-3 h-3"></i> Refresh
+          </button>
+        </div>
+        
+        <div id="uploaded-assets-grid" class="grid grid-cols-2 gap-3">
           <!-- Populated by JS -->
         </div>
       </div>
@@ -340,29 +383,7 @@
   </nav>
 
   <!-- ========================================================================= -->
-  <!-- 5. FULL-SCREEN IN-APP LIVE SITE VIEWER MODAL -->
-  <!-- ========================================================================= -->
-  <div id="modal-site-viewer" class="hidden fixed inset-0 z-50 flex flex-col bg-black">
-    <div class="glass px-4 py-2.5 flex items-center justify-between border-b border-[var(--border)]">
-      <div class="flex items-center gap-2">
-        <button onclick="closeModal('modal-site-viewer')" class="p-1.5 rounded-lg text-white hover:bg-[var(--card-inner)] flex items-center gap-1 text-xs font-mono font-bold">
-          <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to CMS
-        </button>
-      </div>
-      <div class="flex items-center gap-2">
-        <button onclick="reloadSiteIframe()" class="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-white" title="Refresh">
-          <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-        </button>
-        <button onclick="window.open(document.getElementById('site-iframe').src, '_blank')" class="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-white" title="Open in External Browser">
-          <i data-lucide="external-link" class="w-4 h-4"></i>
-        </button>
-      </div>
-    </div>
-    <iframe id="site-iframe" class="w-full flex-1 border-0 bg-black" src="about:blank"></iframe>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- 6. SERVER CONFIGURATION MODAL -->
+  <!-- 5. SERVER CONFIGURATION MODAL -->
   <!-- ========================================================================= -->
   <div id="modal-server-config" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="w-full max-w-sm bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 space-y-4 shadow-2xl">
@@ -421,7 +442,7 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 7. MODAL: CREATE / EDIT PROJECT -->
+  <!-- 6. MODAL: CREATE / EDIT PROJECT -->
   <!-- ========================================================================= -->
   <div id="modal-project" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="w-full max-w-lg bg-[var(--card)] border border-[var(--border)] rounded-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
@@ -458,7 +479,10 @@
 
         <div>
           <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Cover Image Asset URL</label>
-          <input type="text" id="proj-cover" placeholder="assets/hero.png or /uploads/..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+          <div class="flex gap-2">
+            <input type="text" id="proj-cover" placeholder="assets/hero.png or /uploads/..." class="flex-1 px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+            <button type="button" onclick="pasteClipboardToCover()" class="px-3 py-2 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-xs font-mono text-[var(--accent)] font-bold">Paste</button>
+          </div>
         </div>
 
         <div class="flex items-center gap-3 pt-2">
@@ -474,7 +498,7 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 8. MODAL: CREATE / EDIT BLOG POST -->
+  <!-- 7. MODAL: CREATE / EDIT BLOG POST -->
   <!-- ========================================================================= -->
   <div id="modal-post" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="w-full max-w-lg bg-[var(--card)] border border-[var(--border)] rounded-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
@@ -526,7 +550,7 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 9. SCRIPT -->
+  <!-- 8. APPLICATION JAVASCRIPT LOGIC -->
   <!-- ========================================================================= -->
   <script>
     let TOKEN = localStorage.getItem('dragxsy_cms_token') || '';
@@ -541,7 +565,63 @@
     let CACHE_CATEGORIES = [];
     let CACHE_PROJECTS = [];
     let CACHE_POSTS = [];
+    let CACHE_ASSETS = [];
+    let LAST_UPLOADED_URL = '';
     let SELECTED_CATEGORY = 'all';
+
+    function showToast(msg, isSuccess = true) {
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toast-message');
+      const icon = document.getElementById('toast-icon');
+      if (!toast || !msgEl) return;
+
+      msgEl.textContent = msg;
+      if (icon) {
+        icon.className = `w-4 h-4 ${isSuccess ? 'text-[var(--success)]' : 'text-[var(--danger)]'}`;
+      }
+      toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 3000);
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const temp = document.createElement('input');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      }
+      showToast('✓ Copied URL to clipboard!');
+    }
+
+    function copyRecentUrl() {
+      if (LAST_UPLOADED_URL) {
+        copyToClipboard(LAST_UPLOADED_URL);
+      }
+    }
+
+    async function pasteClipboardToCover() {
+      try {
+        if (LAST_UPLOADED_URL) {
+          document.getElementById('proj-cover').value = LAST_UPLOADED_URL;
+          showToast('Pasted asset URL');
+        } else if (navigator.clipboard && navigator.clipboard.readText) {
+          const text = await navigator.clipboard.readText();
+          document.getElementById('proj-cover').value = text;
+          showToast('Pasted from clipboard');
+        }
+      } catch (e) {
+        showToast('Clipboard access unavailable', false);
+      }
+    }
 
     function updateServerDisplays() {
       const base = getApiBase();
@@ -554,7 +634,6 @@
       if (input) input.value = SERVER_BASE;
     }
 
-    // Auto-detect server connectivity on app launch
     async function autoPingServer() {
       const base = getApiBase();
       const ind = document.getElementById('conn-indicator');
@@ -609,6 +688,7 @@
           btn.classList.toggle('text-white', t === tabId);
         }
       });
+      if (tabId === 'upload') loadAssets();
       lucide.createIcons();
     }
 
@@ -617,7 +697,6 @@
       document.getElementById('screen-main').classList.add('hidden');
       document.getElementById('bottom-nav').classList.add('hidden');
       
-      // CRITICAL: Explicitly clear inputs so nothing is prefilled
       const emailInput = document.getElementById('login-email');
       const passInput = document.getElementById('login-password');
       if (emailInput) emailInput.value = '';
@@ -637,24 +716,19 @@
       loadCategories();
       loadProjects();
       loadPosts();
+      loadAssets();
     }
 
-    // Direct Redirect to Portfolio Website
     function openLiveSiteViewer() {
       let targetUrl = getApiBase();
       if (!targetUrl || targetUrl.includes('10.') || targetUrl.includes('192.') || targetUrl.includes('localhost')) {
-        // If local, check if custom server is set, else use Vercel / server root
         targetUrl = SERVER_BASE || targetUrl || 'https://portfolio-website-wornersenpai.vercel.app';
       }
-      
-      // Ensure trailing slash or root
       if (!targetUrl.endsWith('/')) targetUrl += '/';
-
-      // Direct redirection
       window.location.href = targetUrl;
     }
 
-    // Login Form Handler (Clean empty inputs)
+    // Login Form Handler
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('login-email').value.trim();
@@ -677,6 +751,7 @@
         if (data.success && data.token) {
           TOKEN = data.token;
           localStorage.setItem('dragxsy_cms_token', TOKEN);
+          showToast('✓ Welcome back, Sakshi!');
           showMainApp();
         } else {
           errEl.innerHTML = `<span class="font-bold">Login Failed:</span> ${data.error || 'Invalid credentials'}`;
@@ -715,7 +790,6 @@
       
       if (url.includes('vercel')) {
         closeModal('modal-server-config');
-        // Redirect directly to Vercel Dashboard
         window.location.href = 'https://vercel.com/dashboard';
       } else {
         testServerConnection();
@@ -760,6 +834,7 @@
       updateServerDisplays();
       autoPingServer();
       closeModal('modal-server-config');
+      showToast('Server settings updated');
     }
 
     async function loadOverview() {
@@ -769,7 +844,7 @@
         document.getElementById('stat-published').textContent = data.stats?.published || 0;
         document.getElementById('stat-posts').textContent = data.stats?.posts || 0;
         document.getElementById('stat-drafts').textContent = data.stats?.drafts || 0;
-        document.getElementById('stat-categories').textContent = data.stats?.categories || 0;
+        document.getElementById('stat-assets').textContent = data.stats?.assets || CACHE_ASSETS.length || 0;
 
         const list = document.getElementById('home-activity-list');
         list.innerHTML = (data.recentActivity || []).map(act => `
@@ -825,7 +900,7 @@
         : CACHE_PROJECTS.filter(p => p.category_id === SELECTED_CATEGORY);
 
       if (filtered.length === 0) {
-        list.innerHTML = `<div class="p-8 text-center text-xs font-mono text-[var(--text-muted)]">No projects found. Tap "New Art" to create one.</div>`;
+        list.innerHTML = `<div class="p-8 text-center text-xs font-mono text-[var(--text-muted)]">No projects found. Tap "New Artwork" to create one.</div>`;
         return;
       }
 
@@ -899,13 +974,140 @@
       lucide.createIcons();
     }
 
+    // =========================================================================
+    // ASSET MANAGER & UPLOADS
+    // =========================================================================
+    async function loadAssets() {
+      try {
+        const assets = await apiRequest('/assets');
+        CACHE_ASSETS = assets || [];
+        renderAssetsGrid();
+      } catch (err) {
+        console.error('Failed to load assets:', err);
+      }
+    }
+
+    function renderAssetsGrid() {
+      const grid = document.getElementById('uploaded-assets-grid');
+      if (!grid) return;
+
+      if (CACHE_ASSETS.length === 0) {
+        grid.innerHTML = `<div class="col-span-2 p-6 text-center text-xs font-mono text-[var(--text-muted)]">No uploaded assets found. Tap the box above to upload images or videos.</div>`;
+        return;
+      }
+
+      const base = getApiBase();
+      grid.innerHTML = CACHE_ASSETS.map(a => {
+        const fullUrl = a.cardUrl?.startsWith('http') ? a.cardUrl : `${base}${a.cardUrl || a.thumbnailUrl}`;
+        const isVideo = a.mimeType?.includes('video') || a.filename?.endsWith('.mp4') || a.filename?.endsWith('.mov');
+        
+        return `
+          <div class="relative rounded-xl overflow-hidden bg-[var(--card-inner)] border border-[var(--border)] group flex flex-col">
+            <div class="relative aspect-square w-full bg-neutral-900 overflow-hidden">
+              ${isVideo 
+                ? `<div class="w-full h-full flex items-center justify-center text-[var(--accent)]"><i data-lucide="video" class="w-8 h-8"></i></div>`
+                : `<img src="${fullUrl}" class="w-full h-full object-cover" loading="lazy" />`
+              }
+              <button onclick="copyToClipboard('${fullUrl}')" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 text-[11px] font-mono text-[var(--accent)] font-bold">
+                <i data-lucide="copy" class="w-5 h-5"></i>
+                <span>COPY URL</span>
+              </button>
+            </div>
+            <div class="p-2.5 flex flex-col gap-1.5">
+              <span class="text-[11px] font-bold text-white truncate">${a.filename}</span>
+              <div class="flex items-center justify-between gap-1">
+                <button onclick="copyToClipboard('${fullUrl}')" class="flex-1 py-1 rounded bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black text-[10px] font-mono font-bold flex items-center justify-center gap-1 transition-all">
+                  <i data-lucide="copy" class="w-3 h-3"></i> Copy
+                </button>
+                <button onclick="useAssetAsCover('${fullUrl}')" class="p-1 rounded bg-[var(--card)] hover:text-[var(--accent)] text-[10px] font-mono text-[var(--text-muted)]" title="Use as Cover">
+                  <i data-lucide="image-plus" class="w-3.5 h-3.5"></i>
+                </button>
+                <button onclick="deleteAsset('${a.id}')" class="p-1 rounded text-red-400 hover:bg-red-500/10" title="Delete">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function useAssetAsCover(url) {
+      LAST_UPLOADED_URL = url;
+      openCreateProjectModal();
+      document.getElementById('proj-cover').value = url;
+      showToast('Set as project cover');
+    }
+
+    async function deleteAsset(id) {
+      if (!confirm('Delete this uploaded asset?')) return;
+      try {
+        await apiRequest(`/assets/${id}`, 'DELETE');
+        showToast('Asset deleted');
+        await loadAssets();
+      } catch (err) {
+        showToast(err.message, false);
+      }
+    }
+
+    async function handleFileUpload(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      const base = getApiBase();
+      const statusCard = document.getElementById('upload-status-card');
+      const recentImg = document.getElementById('recent-upload-img');
+      const recentName = document.getElementById('recent-upload-name');
+      const recentUrl = document.getElementById('recent-upload-url');
+
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+          showToast(`Uploading ${file.name}...`);
+          const resp = await fetch(`${base}/api/cms/upload`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${TOKEN}` },
+            body: formData
+          });
+          const res = await resp.json();
+          if (res.success && res.asset) {
+            const assetUrl = res.asset.cardUrl?.startsWith('http') ? res.asset.cardUrl : `${base}${res.asset.cardUrl}`;
+            LAST_UPLOADED_URL = assetUrl;
+
+            // Show upload status banner with 1-tap Copy URL
+            if (statusCard && recentImg && recentName && recentUrl) {
+              recentImg.src = assetUrl;
+              recentName.textContent = file.name;
+              recentUrl.textContent = assetUrl;
+              statusCard.classList.remove('hidden');
+            }
+
+            // Auto-copy URL to clipboard for instant convenience!
+            copyToClipboard(assetUrl);
+          } else {
+            showToast(res.error || 'Upload failed', false);
+          }
+        } catch (err) {
+          console.error('Upload failed', err);
+          showToast('Upload failed: ' + err.message, false);
+        }
+      }
+
+      await loadAssets();
+      await loadOverview();
+    }
+
+    // Modal Triggers
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); lucide.createIcons(); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
     function openCreateProjectModal() {
       document.getElementById('proj-title').value = '';
       document.getElementById('proj-desc').value = '';
-      document.getElementById('proj-cover').value = '';
+      document.getElementById('proj-cover').value = LAST_UPLOADED_URL || '';
       openModal('modal-project');
     }
 
@@ -939,7 +1141,7 @@
       const content = document.getElementById('post-content').value.trim();
 
       if (!title || !content) {
-        alert('Please provide title and content');
+        showToast('Please provide title and content', false);
         return;
       }
 
@@ -948,24 +1150,27 @@
       try {
         if (editId) {
           await apiRequest(`/posts/${editId}`, 'PUT', payload);
+          showToast('✓ Dispatch updated successfully');
         } else {
           await apiRequest('/posts', 'POST', payload);
+          showToast('✓ Dispatch published to website!');
         }
         closeModal('modal-post');
         await loadPosts();
         await loadOverview();
       } catch (err) {
-        alert('Failed to save post: ' + err.message);
+        showToast(err.message, false);
       }
     }
 
     async function togglePostPublish(id, publish) {
       try {
         await apiRequest(`/posts/${id}/${publish ? 'publish' : 'unpublish'}`, 'PUT');
+        showToast(`Dispatch ${publish ? 'published' : 'unpublished'}`);
         await loadPosts();
         await loadOverview();
       } catch (e) {
-        alert(e.message);
+        showToast(e.message, false);
       }
     }
 
@@ -973,10 +1178,11 @@
       if (!confirm('Are you sure you want to delete this dispatch?')) return;
       try {
         await apiRequest(`/posts/${id}`, 'DELETE');
+        showToast('Dispatch deleted');
         await loadPosts();
         await loadOverview();
       } catch (e) {
-        alert(e.message);
+        showToast(e.message, false);
       }
     }
 
@@ -988,27 +1194,29 @@
       const coverAssetUrl = document.getElementById('proj-cover').value.trim() || 'assets/hero.png';
 
       if (!title || !categoryId) {
-        alert('Please fill title and category');
+        showToast('Please fill title and category', false);
         return;
       }
 
       try {
         await apiRequest('/projects', 'POST', { title, categoryId, year, description, coverAssetUrl, status });
+        showToast('✓ Artwork published to website!');
         closeModal('modal-project');
         await loadProjects();
         await loadOverview();
       } catch (err) {
-        alert('Failed to save project: ' + err.message);
+        showToast(err.message, false);
       }
     }
 
     async function toggleProjectPublish(id, publish) {
       try {
         await apiRequest(`/projects/${id}/${publish ? 'publish' : 'unpublish'}`, 'PUT');
+        showToast(`Artwork ${publish ? 'published' : 'unpublished'}`);
         await loadProjects();
         await loadOverview();
       } catch (e) {
-        alert(e.message);
+        showToast(e.message, false);
       }
     }
 
@@ -1016,52 +1224,16 @@
       if (!confirm('Are you sure you want to delete this project?')) return;
       try {
         await apiRequest(`/projects/${id}`, 'DELETE');
+        showToast('Artwork deleted');
         await loadProjects();
         await loadOverview();
       } catch (e) {
-        alert(e.message);
+        showToast(e.message, false);
       }
-    }
-
-    async function handleFileUpload(event) {
-      const files = event.target.files;
-      if (!files || files.length === 0) return;
-
-      const base = getApiBase();
-      const grid = document.getElementById('uploaded-assets-grid');
-      for (const file of files) {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-          const resp = await fetch(`${base}/api/cms/upload`, {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${TOKEN}` },
-            body: formData
-          });
-          const res = await resp.json();
-          if (res.success && res.asset) {
-            const item = document.createElement('div');
-            item.className = 'relative aspect-square rounded-lg overflow-hidden border border-[var(--border)] group';
-            item.innerHTML = `
-              <img src="${res.asset.thumbnailUrl || res.asset.cardUrl}" class="w-full h-full object-cover" />
-              <button onclick="navigator.clipboard.writeText('${res.asset.cardUrl}'); alert('Copied image URL!');" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] font-mono text-[var(--accent)] font-bold">
-                COPY URL
-              </button>
-            `;
-            grid.prepend(item);
-          }
-        } catch (err) {
-          console.error('Upload failed', err);
-        }
-      }
-      alert('Upload complete!');
-      await loadOverview();
     }
 
     // App Initialization
     window.addEventListener('DOMContentLoaded', () => {
-      // Force clear inputs immediately on load
       const emailInput = document.getElementById('login-email');
       const passInput = document.getElementById('login-password');
       if (emailInput) emailInput.value = '';
