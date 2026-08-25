@@ -252,7 +252,7 @@ def create_project():
     featured = 1 if data.get("featured") else 0
     cover_url = data.get("coverAssetUrl") or "assets/hero.png"
     tags_json = json.dumps(data.get("tags", [cat["name"], "Artwork"]))
-    drive_url = data.get("driveUrl", "https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link")
+    drive_url = data.get("driveUrl", "#")
     
     now = datetime.now().isoformat()
     pub_at = now if status == 'published' else None

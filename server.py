@@ -149,7 +149,7 @@ def get_portfolio():
             "coverAssetUrl": p_dict["cover_asset_url"] or (asset_list[0]["card"] if asset_list else "assets/hero.png"),
             "tags": tags,
             "featured": bool(p_dict["featured"]),
-            "driveUrl": p_dict["drive_url"] or "https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link",
+            "driveUrl": p_dict["drive_url"] or "#",
             "assets": asset_list
         })
 

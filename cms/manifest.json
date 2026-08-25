@@ -1,7 +1,7 @@
 {
   "version": 1,
   "rootFolderId": "1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7",
-  "rootFolderUrl": "https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link",
+  "rootFolderUrl": "#",
   "lastSyncedAt": "2026-08-25T16:20:39.305263",
   "syncStatus": "synced",
   "stats": {
@@ -14,7 +14,7 @@
     {
       "id": "cat_cover-arts",
       "driveFolderId": "146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo",
-      "driveUrl": "https://drive.google.com/drive/folders/146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo",
+      "driveUrl": "#",
       "name": "Cover Arts",
       "slug": "cover-arts",
       "order": 1,
@@ -24,7 +24,7 @@
     {
       "id": "cat_poster-designs",
       "driveFolderId": "12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd",
-      "driveUrl": "https://drive.google.com/drive/folders/12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd",
+      "driveUrl": "#",
       "name": "Poster Designs",
       "slug": "poster-designs",
       "order": 2,
@@ -34,7 +34,7 @@
     {
       "id": "cat_music-videos",
       "driveFolderId": "12oYwrPcRs0dslsn2BvzmdDMn04j5dInm",
-      "driveUrl": "https://drive.google.com/drive/folders/12oYwrPcRs0dslsn2BvzmdDMn04j5dInm",
+      "driveUrl": "#",
       "name": "Music Videos",
       "slug": "music-videos",
       "order": 3,
@@ -44,7 +44,7 @@
     {
       "id": "cat_promotional-edits",
       "driveFolderId": "1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc",
-      "driveUrl": "https://drive.google.com/drive/folders/1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc",
+      "driveUrl": "#",
       "name": "Promotional Edits",
       "slug": "promotional-edits",
       "order": 4,
@@ -54,7 +54,7 @@
     {
       "id": "cat_thumbnails",
       "driveFolderId": "1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr",
-      "driveUrl": "https://drive.google.com/drive/folders/1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr",
+      "driveUrl": "#",
       "name": "Thumbnails",
       "slug": "thumbnails",
       "order": 5,
@@ -64,7 +64,7 @@
     {
       "id": "cat_edits",
       "driveFolderId": "1_Z77fo6ZkhHXmb8jwEgltlPHL6ccDIbQ",
-      "driveUrl": "https://drive.google.com/drive/folders/1_Z77fo6ZkhHXmb8jwEgltlPHL6ccDIbQ",
+      "driveUrl": "#",
       "name": "Edits",
       "slug": "edits",
       "order": 6,
@@ -74,7 +74,7 @@
     {
       "id": "cat_title-cards",
       "driveFolderId": "1k86ewtjEjY4rtvCtX4sFzDPOplwMnzca",
-      "driveUrl": "https://drive.google.com/drive/folders/1k86ewtjEjY4rtvCtX4sFzDPOplwMnzca",
+      "driveUrl": "#",
       "name": "Title Cards",
       "slug": "title-cards",
       "order": 7,
@@ -86,7 +86,7 @@
     {
       "id": "proj_sonic-dimensions-album-artwork-series",
       "driveFolderId": "146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo",
-      "driveUrl": "https://drive.google.com/drive/folders/146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo",
+      "driveUrl": "#",
       "title": "Sonic Dimensions - Album Artwork Series",
       "slug": "sonic-dimensions-album-artwork-series",
       "category": "Cover Arts",
@@ -134,7 +134,7 @@
     {
       "id": "proj_midnight-resonance-sonic-cover",
       "driveFolderId": "146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo",
-      "driveUrl": "https://drive.google.com/drive/folders/146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo",
+      "driveUrl": "#",
       "title": "Midnight Resonance - Sonic Cover",
       "slug": "midnight-resonance-sonic-cover",
       "category": "Cover Arts",
@@ -183,7 +183,7 @@
     {
       "id": "proj_experimental-typography-poster-collection",
       "driveFolderId": "12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd",
-      "driveUrl": "https://drive.google.com/drive/folders/12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd",
+      "driveUrl": "#",
       "title": "Experimental Typography & Poster Collection",
       "slug": "experimental-typography-poster-collection",
       "category": "Poster Designs",
@@ -231,7 +231,7 @@
     {
       "id": "proj_data-editorial-zine-poster-layouts",
       "driveFolderId": "12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd",
-      "driveUrl": "https://drive.google.com/drive/folders/12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd",
+      "driveUrl": "#",
       "title": "Data & Editorial Zine Poster Layouts",
       "slug": "data-editorial-zine-poster-layouts",
       "category": "Poster Designs",
@@ -279,7 +279,7 @@
     {
       "id": "proj_heavyweight-visual-music-video-direction",
       "driveFolderId": "12oYwrPcRs0dslsn2BvzmdDMn04j5dInm",
-      "driveUrl": "https://drive.google.com/drive/folders/12oYwrPcRs0dslsn2BvzmdDMn04j5dInm",
+      "driveUrl": "#",
       "title": "Heavyweight Visual & Music Video Direction",
       "slug": "heavyweight-visual-music-video-direction",
       "category": "Music Videos",
@@ -327,7 +327,7 @@
     {
       "id": "proj_cyber-digital-promotional-edits",
       "driveFolderId": "1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc",
-      "driveUrl": "https://drive.google.com/drive/folders/1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc",
+      "driveUrl": "#",
       "title": "Cyber Digital & Promotional Edits",
       "slug": "cyber-digital-promotional-edits",
       "category": "Promotional Edits",
@@ -375,7 +375,7 @@
     {
       "id": "proj_sensorial-campaign-promotional-visuals",
       "driveFolderId": "1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc",
-      "driveUrl": "https://drive.google.com/drive/folders/1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc",
+      "driveUrl": "#",
       "title": "Sensorial Campaign & Promotional Visuals",
       "slug": "sensorial-campaign-promotional-visuals",
       "category": "Promotional Edits",
@@ -423,7 +423,7 @@
     {
       "id": "proj_high-ctr-stream-video-thumbnails",
       "driveFolderId": "1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr",
-      "driveUrl": "https://drive.google.com/drive/folders/1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr",
+      "driveUrl": "#",
       "title": "High-CTR Stream & Video Thumbnails",
       "slug": "high-ctr-stream-video-thumbnails",
       "category": "Thumbnails",
@@ -471,7 +471,7 @@
     {
       "id": "proj_tactile-creative-video-thumbnails",
       "driveFolderId": "1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr",
-      "driveUrl": "https://drive.google.com/drive/folders/1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr",
+      "driveUrl": "#",
       "title": "Tactile Creative & Video Thumbnails",
       "slug": "tactile-creative-video-thumbnails",
       "category": "Thumbnails",
@@ -519,7 +519,7 @@
     {
       "id": "proj_edits-works-explorations",
       "driveFolderId": "1_Z77fo6ZkhHXmb8jwEgltlPHL6ccDIbQ",
-      "driveUrl": "https://drive.google.com/drive/folders/1_Z77fo6ZkhHXmb8jwEgltlPHL6ccDIbQ",
+      "driveUrl": "#",
       "title": "Edits Works & Explorations",
       "slug": "edits-works-explorations",
       "category": "Edits",
@@ -567,7 +567,7 @@
     {
       "id": "proj_title-cards-works-explorations",
       "driveFolderId": "1k86ewtjEjY4rtvCtX4sFzDPOplwMnzca",
-      "driveUrl": "https://drive.google.com/drive/folders/1k86ewtjEjY4rtvCtX4sFzDPOplwMnzca",
+      "driveUrl": "#",
       "title": "Title Cards Works & Explorations",
       "slug": "title-cards-works-explorations",
       "category": "Title Cards",

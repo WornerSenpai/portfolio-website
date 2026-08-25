@@ -303,7 +303,7 @@ function renderPortfolioGrid(filter = 'All') {
     card.className = 'project-card group relative flex flex-col justify-between p-4 cursor-pointer';
     
     const coverImg = item.coverAsset ? (item.coverAsset.localPath || item.coverAsset.sourceUrl) : "assets/hero.png";
-    const driveUrl = item.driveUrl || "https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link";
+    const driveUrl = item.driveUrl || "#";
 
     card.innerHTML = `
       <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 dark:bg-neutral-900 mb-4 border border-[var(--border-subtle)]">
@@ -443,7 +443,7 @@ function openProjectModal(item) {
   if (descEl) descEl.textContent = item.description;
 
   if (driveBtn) {
-    driveBtn.href = item.driveUrl || "https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link";
+    driveBtn.href = item.driveUrl || "#";
     driveBtn.innerHTML = `<span>Open in Google Drive (${item.category})</span> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>`;
   }
 

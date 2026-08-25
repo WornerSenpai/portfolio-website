@@ -928,22 +928,29 @@
       }
 
       list.innerHTML = filtered.map(p => `
-        <div class="p-3.5 rounded-xl bg-[var(--card)] border border-[var(--border)] flex gap-3.5 items-center">
-          <img src="${resolveAssetUrl(p.cover_asset_url)}" class="w-16 h-16 rounded-lg object-cover bg-slate-800 border border-[var(--border)]" />
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="text-[10px] font-mono text-[var(--accent)] font-bold uppercase">${p.category_name}</span>
-              <span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold ${p.status === 'published' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}">${p.status}</span>
+        <div class="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] flex flex-col gap-3 shadow-lg">
+          <div class="flex gap-3.5 items-center">
+            <div class="w-20 h-20 rounded-xl overflow-hidden bg-neutral-900 border border-[var(--border)] flex-shrink-0 flex items-center justify-center">
+              <img src="${resolveAssetUrl(p.cover_asset_url)}" class="w-full h-full object-cover" onerror="this.src='assets/hero.png'" />
             </div>
-            <h4 class="text-sm font-bold text-white truncate mt-0.5">${p.title}</h4>
-            <p class="text-xs text-[var(--text-muted)] truncate font-light">${p.description || 'No description'}</p>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-mono text-[var(--accent)] font-bold uppercase tracking-wider">${p.category_name}</span>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold ${p.status === 'published' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">${p.status}</span>
+              </div>
+              <h4 class="text-base font-bold text-white truncate mt-1">${p.title}</h4>
+              <p class="text-xs text-[var(--text-muted)] line-clamp-1 font-light mt-0.5">${p.description || 'Curated portfolio piece'}</p>
+            </div>
           </div>
-          <div class="flex flex-col gap-1.5">
-            ${p.status === 'published' 
-              ? `<button onclick="toggleProjectPublish('${p.id}', false)" class="p-1.5 rounded-lg bg-amber-500/10 text-amber-400 hover:bg-amber-500/20" title="Unpublish"><i data-lucide="eye-off" class="w-4 h-4"></i></button>`
-              : `<button onclick="toggleProjectPublish('${p.id}', true)" class="p-1.5 rounded-lg bg-green-500/10 text-green-400 hover:bg-green-500/20" title="Publish"><i data-lucide="send" class="w-4 h-4"></i></button>`
-            }
-            <button onclick="deleteProject('${p.id}')" class="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          <div class="flex items-center justify-between pt-2.5 border-t border-[var(--border)] text-xs font-mono">
+            <span class="text-[11px] text-[var(--text-muted)]">${p.year || '2026'}</span>
+            <div class="flex items-center gap-2">
+              ${p.status === 'published' 
+                ? `<button onclick="toggleProjectPublish('${p.id}', false)" class="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 text-xs font-bold font-mono flex items-center gap-1.5"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i> Unpublish</button>`
+                : `<button onclick="toggleProjectPublish('${p.id}', true)" class="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold font-mono flex items-center gap-1.5"><i data-lucide="send" class="w-3.5 h-3.5"></i> Publish Live</button>`
+              }
+              <button onclick="deleteProject('${p.id}')" class="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20" title="Delete Artwork"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
           </div>
         </div>
       `).join('');
