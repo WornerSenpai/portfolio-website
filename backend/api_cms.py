@@ -573,7 +573,8 @@ def upload_file():
         return jsonify({"error": "Unsupported file format. Supported: JPG, PNG, WEBP, GIF, MP4, MOV"}), 400
 
     try:
-        asset_info = process_and_store_image(file, filename)
+        category_key = request.form.get("category", request.args.get("category", "cover-arts"))
+        asset_info = process_and_store_image(file, filename, category_key)
     except Exception as e:
         return jsonify({"error": f"Failed to process media: {str(e)}"}), 500
 
@@ -583,17 +584,17 @@ def upload_file():
         INSERT INTO assets (id, filename, mime_type, original_url, optimized_url, card_url, thumbnail_url, width, height, size_bytes, hash_sha256, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        asset_info["id"],
-        asset_info["filename"],
+        asset_info.get("id"),
+        asset_info.get("filename"),
         mime_type,
-        asset_info["originalUrl"],
-        asset_info["optimizedUrl"],
-        asset_info["cardUrl"],
-        asset_info["thumbnailUrl"],
-        asset_info["width"],
-        asset_info["height"],
-        asset_info["sizeBytes"],
-        asset_info["hash"],
+        asset_info.get("originalUrl", ""),
+        asset_info.get("optimizedUrl", ""),
+        asset_info.get("cardUrl", ""),
+        asset_info.get("thumbnailUrl", ""),
+        asset_info.get("width", 800),
+        asset_info.get("height", 800),
+        asset_info.get("sizeBytes", 0),
+        asset_info.get("hash", ""),
         now
     ))
     conn.commit()

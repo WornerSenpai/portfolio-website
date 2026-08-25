@@ -252,40 +252,41 @@
         </p>
       </div>
 
-      <!-- "Currently I'm Listening" Audio Widget -->
-      <div class="w-full max-w-md pt-2">
-        <div class="music-player-card p-5 flex items-center gap-4">
-          <!-- Album Thumbnail -->
-          <div class="relative w-16 h-16 rounded-2xl overflow-hidden bg-neutral-800 border border-[var(--border-subtle)] flex-shrink-0">
-            <img src="assets/project_wematch.jpg" alt="Album Cover" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-black/20"></div>
-          </div>
-
-          <!-- Track Info -->
-          <div class="flex-1 text-left">
-            <div class="flex items-center gap-2">
-              <span class="text-[10px] font-mono text-[var(--accent-blue)] uppercase tracking-wider font-bold">CURRENTLY LISTENING</span>
-              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-blue)] animate-ping"></span>
+      <!-- Dedicated Standalone Currently Listening Section -->
+      <div class="w-full max-w-xl mx-auto pt-8">
+        <a id="lastfm-link" href="https://www.last.fm/user/dragxsy" target="_blank" rel="noopener noreferrer" class="group block music-player-card p-4 sm:p-5 transition-all duration-300 hover:border-[var(--accent-blue)] shadow-xl">
+          <div class="flex items-center gap-4">
+            <!-- Album Thumbnail / Vinyl Disc -->
+            <div class="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden bg-neutral-900 border border-[var(--border-subtle)] flex-shrink-0 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-500">
+              <img id="lastfm-album-art" src="assets/pfp.jpg" alt="Album Cover" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-black/20"></div>
             </div>
-            <h4 class="text-sm font-bold text-[var(--text-primary)] truncate mt-0.5">Midnight Resonance (Acid Mix)</h4>
-            <p class="text-xs text-[var(--text-secondary)] truncate">Sonic Visual Session</p>
-          </div>
 
-          <!-- Visualizer & Play/Pause Controls -->
-          <div class="flex items-center gap-3">
-            <div class="flex items-end gap-1 h-6 px-1">
-              <div class="equalizer-bar"></div>
-              <div class="equalizer-bar"></div>
-              <div class="equalizer-bar"></div>
-              <div class="equalizer-bar"></div>
-              <div class="equalizer-bar"></div>
-              <div class="equalizer-bar"></div>
+            <!-- Track Info from Last.fm -->
+            <div class="flex-1 min-w-0 text-left">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-mono text-[var(--accent-blue)] uppercase tracking-wider font-bold">CURRENTLY LISTENING</span>
+                <span id="lastfm-pulse-dot" class="w-2 h-2 rounded-full bg-[var(--accent-blue)] animate-pulse"></span>
+              </div>
+              <h4 id="lastfm-track-title" class="text-sm sm:text-base font-bold text-[var(--text-primary)] truncate mt-0.5 group-hover:text-[var(--accent-blue)] transition-colors">Midnight Resonance</h4>
+              <p id="lastfm-artist-name" class="text-xs text-[var(--text-secondary)] truncate font-light">dragxsy on Last.fm</p>
             </div>
-            <button id="music-play-btn" class="w-8 h-8 rounded-full pill-badge hover:bg-[var(--accent-blue)] hover:text-white text-[var(--text-primary)] flex items-center justify-center transition-colors cursor-pointer" title="Toggle Playback">
-              <i data-lucide="pause" class="w-3.5 h-3.5"></i>
-            </button>
+
+            <!-- Visualizer Equalizer Wave & Last.fm Action Icon -->
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <div class="flex items-end gap-1 h-6 px-1">
+                <div class="equalizer-bar eq-bar"></div>
+                <div class="equalizer-bar eq-bar"></div>
+                <div class="equalizer-bar eq-bar"></div>
+                <div class="equalizer-bar eq-bar"></div>
+                <div class="equalizer-bar eq-bar"></div>
+              </div>
+              <div class="w-8 h-8 rounded-full pill-badge text-[var(--accent-blue)] flex items-center justify-center group-hover:bg-[var(--accent-blue)] group-hover:text-black transition-colors" title="View on Last.fm">
+                <i data-lucide="disc-3" class="w-4 h-4 animate-spin" style="animation-duration: 4s;"></i>
+              </div>
+            </div>
           </div>
-        </div>
+        </a>
       </div>
 
     </div>
@@ -406,35 +407,7 @@
 
             
 
-                        <!-- Last.fm Real-Time Listening Widget -->
-            <a id="lastfm-link" href="https://www.last.fm/user/dragxsy" target="_blank" rel="noopener noreferrer" class="group block p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-[var(--border-subtle)] transition-all duration-300 shadow-sm text-left">
-              <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0">
-                  <div class="relative w-12 h-12 rounded-xl overflow-hidden bg-neutral-900 flex-shrink-0 border border-[var(--border-subtle)] flex items-center justify-center shadow-inner">
-                    <img id="lastfm-album-art" src="assets/pfp.jpg" alt="Album Art" class="w-full h-full object-cover hidden transition-transform duration-500 group-hover:scale-110" />
-                    <i id="lastfm-default-icon" data-lucide="music-2" class="w-5 h-5 text-[var(--accent-blue)]"></i>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-1.5 text-[10px] font-mono text-[var(--accent-blue)] uppercase tracking-wider font-bold">
-                      <span id="lastfm-pulse-dot" class="w-2 h-2 rounded-full bg-[var(--accent-blue)] animate-pulse"></span>
-                      <span id="lastfm-status-label">CURRENTLY LISTENING</span>
-                    </div>
-                    <h4 id="lastfm-track-title" class="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-blue)] transition-colors truncate mt-0.5">Fetching track...</h4>
-                    <p id="lastfm-artist-name" class="text-xs text-[var(--text-muted)] truncate font-light">dragxsy on Last.fm</p>
-                  </div>
-                </div>
-
-                <!-- Live Animated Audio Equalizer Bars -->
-                <div id="lastfm-equalizer" class="flex items-end gap-1 h-5 flex-shrink-0 px-1">
-                  <span class="eq-bar w-1 bg-[var(--accent-blue)] rounded-full"></span>
-                  <span class="eq-bar w-1 bg-[var(--accent-blue)] rounded-full"></span>
-                  <span class="eq-bar w-1 bg-[var(--accent-blue)] rounded-full"></span>
-                  <span class="eq-bar w-1 bg-[var(--accent-blue)] rounded-full"></span>
-                </div>
-              </div>
-            </a>
-
-            <!-- Action Buttons: Share Idea & Book Call -->
+                        <!-- Action Buttons: Share Idea & Book Call -->
             <div class="grid grid-cols-2 gap-3 pt-1">
               <button id="btn-share-idea" class="px-4 py-3 rounded-xl bg-slate-900 text-white dark:bg-white/10 hover:bg-slate-800 dark:hover:bg-white/15 text-xs font-bold font-mono flex items-center justify-center gap-2 border border-black/10 dark:border-white/10 transition-all shadow-sm active:scale-95 cursor-pointer">
                 <i data-lucide="circle-plus" class="w-4 h-4 text-[var(--accent-blue)]"></i>
@@ -485,8 +458,8 @@
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-slate-100 dark:bg-neutral-900 mb-6 border border-[var(--border-subtle)]">
-        <img id="modal-project-img" src="" alt="Project Full View" class="w-full h-full object-cover" />
+      <div class="relative w-full max-h-[72vh] rounded-2xl overflow-hidden bg-black/60 mb-6 border border-[var(--border-subtle)] flex items-center justify-center p-2 sm:p-4 shadow-2xl">
+        <img id="modal-project-img" src="" alt="Project Full View" class="max-h-[68vh] w-auto max-w-full object-contain rounded-xl transition-all duration-300 cursor-zoom-in" onclick="openFullscreenLightbox(this.src)" />
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-4 mb-4">

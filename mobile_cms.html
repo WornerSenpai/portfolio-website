@@ -1126,9 +1126,10 @@
       for (const file of files) {
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('category', SELECTED_CATEGORY !== 'all' ? SELECTED_CATEGORY : 'cover-arts');
 
         try {
-          showToast(`Uploading ${file.name}...`);
+          showToast(`Uploading ${file.name} to GitHub repository...`);
           const resp = await fetch(`${base}/api/cms/upload`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${TOKEN}` },
