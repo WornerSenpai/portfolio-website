@@ -41,6 +41,13 @@ def serve_admin_cms():
     """Alias for CMS interface."""
     return send_from_directory(BASE_DIR, "mobile_cms.html")
 
+
+@app.route("/dragxsy-cms.apk")
+@app.route("/download/apk")
+def download_apk():
+    apk_path = os.path.join(BASE_DIR, "dragxsy-cms.apk")
+    return send_file(apk_path, as_attachment=True, download_name="dragxsy-cms.apk", mimetype="application/vnd.android.package-archive")
+
 @app.route("/uploads/<path:filename>")
 def serve_upload(filename):
     """Serve processed media files."""
