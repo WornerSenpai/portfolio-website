@@ -291,13 +291,33 @@ class ThreeImageWheel {
     window.addEventListener('wheel', onWindowWheel, { passive: false });
     el.addEventListener('click', onClick);
 
-    window.addEventListener('resize', () => {
+    const updateResponsiveCamera = () => {
       const w = el.clientWidth || window.innerWidth;
       const h = el.clientHeight || window.innerHeight;
+      
+      // Adapt camera position for Phone, Tablet, and Desktop displays
+      if (w < 768) {
+        // Mobile Phone: increase distance to fit portrait viewport
+        const aspectFactor = Math.max(h / w, 1.4);
+        this.camera.position.z = this.options.cameraDistance * (aspectFactor * 0.72);
+        this.camera.position.y = this.options.cameraHeight * 0.65;
+      } else if (w < 1024) {
+        // Tablet display
+        this.camera.position.z = this.options.cameraDistance * 1.1;
+        this.camera.position.y = this.options.cameraHeight * 0.85;
+      } else {
+        // Desktop
+        this.camera.position.z = this.options.cameraDistance;
+        this.camera.position.y = this.options.cameraHeight;
+      }
+
       this.camera.aspect = w / h;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(w, h);
-    });
+    };
+
+    updateResponsiveCamera();
+    window.addEventListener('resize', updateResponsiveCamera);
   }
 
   animate() {

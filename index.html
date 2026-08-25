@@ -42,17 +42,19 @@
   <!-- ========================================================================= -->
   <!-- 1. FIXED EDITORIAL NAVIGATION BAR -->
   <!-- ========================================================================= -->
-  <header class="theme-header fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between backdrop-blur-md transition-all duration-300">
+  <header class="theme-header fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between backdrop-blur-md transition-all duration-300 border-b border-[var(--border-subtle)]">
     <!-- Left: Identity / Title -->
     <div class="flex items-center gap-3">
-      <a href="#hero-3d" class="text-base font-bold tracking-tight text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-colors lowercase font-mono">
-        dragxsy
+      <a href="#hero-3d" class="text-base sm:text-lg font-bold tracking-tight text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-colors lowercase font-mono flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-blue)] inline-block"></span>
+        <span>dragxsy</span>
       </a>
     </div>
 
-    <!-- Right: Navigation Menu & Theme Toggle -->
-    <div class="flex items-center gap-4 sm:gap-6 text-xs font-mono uppercase tracking-wider">
-      <nav class="hidden sm:flex items-center gap-5">
+    <!-- Right: Navigation Menu, Theme Toggle & Mobile Hamburger -->
+    <div class="flex items-center gap-2.5 sm:gap-6 text-xs font-mono uppercase tracking-wider">
+      <!-- Desktop Navigation Menu (Visible on Tablet/PC) -->
+      <nav class="hidden md:flex items-center gap-5">
         <a href="#hero-3d" class="text-[var(--text-secondary)] hover:text-[var(--accent-blue)] transition-colors">Home</a>
         <a href="#about" class="text-[var(--text-secondary)] hover:text-[var(--accent-blue)] transition-colors">Bio</a>
         <a href="#works" class="text-[var(--text-secondary)] hover:text-[var(--accent-blue)] transition-colors">Works</a>
@@ -61,17 +63,91 @@
       </nav>
 
       <!-- Theme Mode Toggle -->
-      <button id="theme-toggle-btn" class="p-2 rounded-full border border-[var(--border-strong)] bg-[var(--badge-bg)] text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-all cursor-pointer" title="Switch Theme">
+      <button id="theme-toggle-btn" class="p-2 sm:p-2.5 rounded-full border border-[var(--border-strong)] bg-[var(--badge-bg)] text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-all cursor-pointer flex items-center justify-center" title="Switch Theme">
         <i data-lucide="moon" class="w-4 h-4"></i>
       </button>
 
-      <!-- Direct Collaboration CTA -->
-      <button onclick="openModal(document.getElementById('share-idea-modal'))" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--accent-blue)] text-white dark:text-black font-bold hover:opacity-90 transition-all cursor-pointer shadow-sm">
+      <!-- Desktop Direct Collaboration CTA -->
+      <button onclick="openModal(document.getElementById('share-idea-modal'))" class="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--accent-blue)] text-white dark:text-black font-bold hover:opacity-90 transition-all cursor-pointer shadow-sm">
         <span>GET IN TOUCH</span>
         <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
       </button>
+
+      <!-- Mobile / Tablet Hamburger Menu Button -->
+      <button id="mobile-menu-btn" aria-label="Toggle navigation menu" class="md:hidden p-2 rounded-xl border border-[var(--border-strong)] bg-[var(--badge-bg)] text-[var(--text-primary)] hover:text-[var(--accent-blue)] hover:border-[var(--accent-blue)] transition-all cursor-pointer flex items-center justify-center">
+        <i data-lucide="menu" id="menu-icon-bars" class="w-5 h-5"></i>
+        <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 hidden"></i>
+      </button>
     </div>
   </header>
+
+  <!-- ========================================================================= -->
+  <!-- MOBILE NAVIGATION DRAWER (Slide-Down Glassmorphism Menu) -->
+  <!-- ========================================================================= -->
+  <div id="mobile-nav-drawer" class="fixed inset-x-0 top-[57px] sm:top-[65px] bottom-0 z-40 bg-[var(--bg-primary)]/95 backdrop-blur-2xl border-b border-[var(--border-strong)] flex flex-col justify-between p-6 transition-all duration-300 opacity-0 pointer-events-none -translate-y-4 md:hidden overflow-y-auto">
+    <div class="space-y-6 pt-2">
+      <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+        <span class="text-[11px] font-mono uppercase tracking-widest text-[var(--accent-blue)] font-bold">Navigation</span>
+        <span class="text-[10px] font-mono text-[var(--text-muted)]">dragxsy visual direction</span>
+      </div>
+      
+      <nav class="flex flex-col gap-2 font-mono font-bold tracking-wider">
+        <a href="#hero-3d" class="mobile-nav-link text-base text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-colors flex items-center justify-between py-3 border-b border-[var(--border-subtle)]">
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-[var(--accent-blue)]">01</span>
+            <span>Home (3D Wheel)</span>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-[var(--text-muted)]"></i>
+        </a>
+        <a href="#about" class="mobile-nav-link text-base text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-colors flex items-center justify-between py-3 border-b border-[var(--border-subtle)]">
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-[var(--accent-blue)]">02</span>
+            <span>Bio & Manifesto</span>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-[var(--text-muted)]"></i>
+        </a>
+        <a href="#works" class="mobile-nav-link text-base text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-colors flex items-center justify-between py-3 border-b border-[var(--border-subtle)]">
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-[var(--accent-blue)]">03</span>
+            <span>Curated Works</span>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-[var(--text-muted)]"></i>
+        </a>
+        <a href="#writing" class="mobile-nav-link text-base text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-colors flex items-center justify-between py-3 border-b border-[var(--border-subtle)]">
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-[var(--accent-blue)]">04</span>
+            <span>Notes & Dispatches</span>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-[var(--text-muted)]"></i>
+        </a>
+        <a href="#contact" class="mobile-nav-link text-base text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-colors flex items-center justify-between py-3 border-b border-[var(--border-subtle)]">
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-[var(--accent-blue)]">05</span>
+            <span>Inquiries & Contact</span>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-[var(--text-muted)]"></i>
+        </a>
+        <a href="/cms" class="mobile-nav-link text-base text-[var(--accent-blue)] hover:underline flex items-center justify-between py-3">
+          <div class="flex items-center gap-3">
+            <span class="text-xs">06</span>
+            <span>Mobile CMS Portal</span>
+          </div>
+          <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+        </a>
+      </nav>
+    </div>
+
+    <div class="space-y-3 pt-6 border-t border-[var(--border-subtle)]">
+      <button onclick="closeMobileMenu(); openModal(document.getElementById('share-idea-modal'));" class="w-full py-3.5 rounded-2xl bg-[var(--accent-blue)] text-white dark:text-black font-bold font-mono text-xs tracking-wider flex items-center justify-center gap-2 shadow-lg">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span>START A PROJECT / COLLABORATE</span>
+      </button>
+      <div class="flex items-center justify-between text-xs font-mono text-[var(--text-muted)] pt-1">
+        <span>© 2026 dragxsy</span>
+        <span>Google Drive CMS</span>
+      </div>
+    </div>
+  </div>
 
   <!-- ========================================================================= -->
   <!-- 2. HERO SECTION: 3D CYLINDRICAL IMAGE WHEEL -->

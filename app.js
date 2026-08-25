@@ -53,6 +53,7 @@ const BLOG_POSTS = [
 // Initialize Application
 document.addEventListener('DOMContentLoaded', async () => {
   initThemeToggle();
+  initMobileMenu();
   initExploreBioButton();
   initCurrentlyListening();
   initModals();
@@ -657,4 +658,58 @@ function openBlogArticle(id) {
   }
 
   openModal(modal);
+}
+
+
+// Responsive Mobile Navigation Menu Handler
+function initMobileMenu() {
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const drawer = document.getElementById('mobile-nav-drawer');
+  const barsIcon = document.getElementById('menu-icon-bars');
+  const closeIcon = document.getElementById('menu-icon-close');
+  const navLinks = document.querySelectorAll('.mobile-nav-link');
+
+  if (!menuBtn || !drawer) return;
+
+  function toggleMenu() {
+    const isOpen = drawer.classList.contains('menu-open');
+    if (isOpen) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  }
+
+  function openMenu() {
+    drawer.classList.add('menu-open');
+    if (barsIcon) barsIcon.classList.add('hidden');
+    if (closeIcon) closeIcon.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    initLucideIcons();
+  }
+
+  function closeMenu() {
+    drawer.classList.remove('menu-open');
+    if (barsIcon) barsIcon.classList.remove('hidden');
+    if (closeIcon) closeIcon.classList.add('hidden');
+    document.body.style.overflow = '';
+    initLucideIcons();
+  }
+
+  window.closeMobileMenu = closeMenu;
+
+  menuBtn.addEventListener('click', toggleMenu);
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      closeMenu();
+    });
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('menu-open')) {
+      closeMenu();
+    }
+  });
 }

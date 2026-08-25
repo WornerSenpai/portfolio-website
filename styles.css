@@ -422,3 +422,58 @@ html.dark .modal-backdrop {
     margin: 0 auto;
   }
 }
+
+/* ========================================================================= */
+/* RESPONSIVE & MOBILE NAVIGATION DRAWER STYLES */
+/* ========================================================================= */
+
+#mobile-nav-drawer.menu-open {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
+}
+
+@media (max-width: 768px) {
+  /* Prevent horizontal scroll on small screens */
+  body, html {
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+
+  /* Compact 3D preview box on phone screens */
+  .live-preview-box {
+    width: calc(100vw - 2rem) !important;
+    max-width: 320px !important;
+    bottom: 5.5rem !important;
+    right: 1rem !important;
+    padding: 1rem !important;
+    border-radius: 1.25rem !important;
+  }
+
+  /* Hide decorative floating tags on mobile */
+  .floating-tag {
+    display: none !important;
+  }
+
+  /* Responsive typography line breaking */
+  .font-serif-headline {
+    word-break: break-word;
+  }
+
+  .contact-hub-card {
+    padding: 1.25rem !important;
+    border-radius: 1.5rem !important;
+  }
+
+  /* Smooth horizontal filter pill scrolling on touch */
+  #filter-container {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #filter-container button {
+    flex-shrink: 0;
+  }
+}
