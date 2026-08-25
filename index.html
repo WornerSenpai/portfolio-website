@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en" class="light" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dragxsy</title>
+  <meta name="description" content="Visual portfolio of dragxsy. Creative direction across cover arts, poster designs, music videos, promotional edits, and thumbnails." />
+  
+  <!-- Favicon -->
+  <link rel="icon" href="assets/pfp.jpg" type="image/jpeg" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#0284c7',
+              dark: '#090b0e',
+              card: '#ffffff'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-[var(--bg-primary)] text-[var(--text-primary)] selection:bg-[var(--accent-blue)] selection:text-white transition-colors duration-300">
+
+  <!-- ========================================================================= -->
+  <!-- 1. FIXED EDITORIAL NAVIGATION BAR -->
+  <!-- ========================================================================= -->
+  <header class="theme-header fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between backdrop-blur-md transition-all duration-300">
+    <!-- Left: Identity / Title -->
+    <div class="flex items-center gap-3">
+      <a href="#hero-3d" class="text-base font-bold tracking-tight text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-colors lowercase font-mono">
+        dragxsy
+      </a>
+      <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-blue)]"></span>
+      <a href="https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1 text-[11px] font-mono text-[var(--text-muted)] hover:text-[var(--accent-blue)] uppercase tracking-wider transition-colors" title="Open Google Drive Project Source">
+        <i data-lucide="folder-git-2" class="w-3.5 h-3.5 text-[var(--accent-blue)]"></i>
+        <span>Drive Archive ↗</span>
+      </a>
+    </div>
+
+    <!-- Right: Navigation Menu & Theme Toggle -->
+    <div class="flex items-center gap-4 sm:gap-6 text-xs font-mono uppercase tracking-wider">
+      <nav class="hidden sm:flex items-center gap-5">
+        <a href="#hero-3d" class="text-[var(--text-secondary)] hover:text-[var(--accent-blue)] transition-colors">3D Wheel</a>
+        <a href="#about" class="text-[var(--text-secondary)] hover:text-[var(--accent-blue)] transition-colors">Bio</a>
+        <a href="#works" class="text-[var(--text-secondary)] hover:text-[var(--accent-blue)] transition-colors">Works</a>
+        <a href="#writing" class="text-[var(--text-secondary)] hover:text-[var(--accent-blue)] transition-colors">Notes</a>
+        <a href="#contact" class="text-[var(--text-secondary)] hover:text-[var(--accent-blue)] transition-colors">Contact</a>
+      </nav>
+
+      <!-- Theme Mode Toggle -->
+      <button id="theme-toggle-btn" class="p-2 rounded-full border border-[var(--border-strong)] bg-[var(--badge-bg)] text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-all cursor-pointer" title="Switch Theme">
+        <i data-lucide="moon" class="w-4 h-4"></i>
+      </button>
+
+      <!-- Direct Collaboration CTA -->
+      <button onclick="openModal(document.getElementById('share-idea-modal'))" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--accent-blue)] text-white dark:text-black font-bold hover:opacity-90 transition-all cursor-pointer shadow-sm">
+        <span>GET IN TOUCH</span>
+        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. HERO SECTION: 3D CYLINDRICAL IMAGE WHEEL -->
+  <!-- ========================================================================= -->
+  <section id="hero-3d" class="relative w-full h-screen overflow-hidden flex flex-col justify-between pt-16">
+    <!-- WebGL Three.js Container -->
+    <div id="three-canvas-container" class="absolute inset-0"></div>
+
+    <!-- 3D Wheel Instruction HUD Overlays -->
+    <div class="wheel-hud p-6 md:p-10 flex justify-between items-start pointer-events-none">
+      <div class="space-y-1">
+        <p class="text-[11px] font-mono text-[var(--accent-blue)] tracking-[0.2em] uppercase font-bold">Google Drive Powered 3D Cylinder</p>
+        <h1 class="text-xl md:text-2xl font-bold tracking-tight text-[var(--text-primary)] font-serif-headline italic">
+          Visual Direction & Graphic Creations
+        </h1>
+      </div>
+      <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full pill-badge backdrop-blur-md text-[11px] font-mono text-[var(--text-secondary)]">
+        <i data-lucide="move" class="w-3.5 h-3.5 text-[var(--accent-blue)]"></i>
+        <span>Scroll / Drag to Spin 3D Wheel</span>
+      </div>
+    </div>
+
+    <!-- Live Preview Tooltip Box (Bottom Right) -->
+    <div id="wheel-preview-box" class="live-preview-box hidden-preview">
+      <div class="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-100 dark:bg-neutral-900 mb-3 border border-[var(--border-subtle)]">
+        <img id="preview-img" src="assets/project_wematch.jpg" alt="Preview" class="w-full h-full object-cover" />
+      </div>
+      <div class="flex items-start justify-between gap-2 mb-1">
+        <h3 id="preview-title" class="text-base font-bold text-[var(--text-primary)] leading-snug">Sonic Dimensions</h3>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--accent-blue)]/15 text-[var(--accent-blue)] font-bold">CLICK</span>
+      </div>
+      <p id="preview-category" class="text-xs font-mono text-[var(--text-muted)] mb-2">Cover Arts • 2026</p>
+      <p id="preview-desc" class="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed mb-3 font-light">
+        Visual exploration for digital music releases and sonic covers.
+      </p>
+      <div class="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-[11px] font-mono">
+        <span class="text-[var(--accent-blue)] font-bold flex items-center gap-1">
+          Open Case Study <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+        </span>
+        <span class="text-[var(--text-muted)] font-mono">CMS Connected</span>
+      </div>
+    </div>
+
+    <!-- Explore Bio Down Button Trigger -->
+    <div class="relative z-30 pb-8 flex flex-col items-center pointer-events-auto">
+      <button id="explore-bio-btn" class="group flex flex-col items-center gap-2 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--accent-blue)] transition-colors cursor-pointer bg-transparent border-0 outline-none">
+        <span class="tracking-widest uppercase font-bold text-[11px] px-3.5 py-1 rounded-full pill-badge border border-[var(--border-subtle)] group-hover:border-[var(--accent-blue)] transition-all">
+          Explore Bio & Works Below ↓
+        </span>
+        <div class="w-9 h-9 rounded-full border border-[var(--border-strong)] pill-badge flex items-center justify-center group-hover:border-[var(--accent-blue)] group-hover:translate-y-1 transition-all shadow-sm">
+          <i data-lucide="arrow-down" class="w-4 h-4 text-[var(--accent-blue)]"></i>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 3. HERO & BIO SECTION -->
+  <!-- ========================================================================= -->
+  <section id="about" class="section-primary relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 border-t overflow-hidden transition-colors duration-300 flex flex-col justify-center items-center">
+    <!-- Floating Personality Badges -->
+    <div class="pointer-events-none absolute inset-0 hidden lg:block overflow-hidden">
+      <span class="floating-tag absolute left-[10%] top-[22%] px-3 py-1 rounded-full border text-xs font-mono">visual artist *</span>
+      <span class="floating-tag absolute right-[12%] top-[25%] px-3 py-1 rounded-full border text-xs font-mono">music consumer *</span>
+      <span class="floating-tag absolute left-[14%] bottom-[20%] px-3 py-1 rounded-full border text-xs font-mono">digital creator *</span>
+      <span class="floating-tag absolute right-[15%] bottom-[22%] px-3 py-1 rounded-full border text-xs font-mono">design explorer *</span>
+    </div>
+
+    <div class="max-w-5xl mx-auto flex flex-col items-center text-center space-y-10 relative z-10">
+      
+      <!-- Greeting Pill Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full pill-badge">
+        <span class="w-2 h-2 rounded-full bg-[var(--accent-blue)]"></span>
+        <p class="text-sm font-light text-[var(--text-primary)]">Hi, I am Dheeraj (<span class="font-medium text-[var(--accent-blue)]">dragxsy</span>)</p>
+      </div>
+
+      <!-- Avatar & Sticker Visual Composition -->
+      <div class="relative w-full max-w-md mx-auto">
+        <div class="relative z-10 w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-3xl overflow-hidden border-2 border-[var(--border-strong)] bg-slate-100 dark:bg-neutral-900 shadow-xl group">
+          <img src="assets/stickers_me.png" alt="dragxsy Avatar Sticker" class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500" />
+        </div>
+        <img src="assets/hero.png" alt="Hero Graphics" class="relative -mt-6 mx-auto max-w-[280px] sm:max-w-[340px] opacity-90" />
+      </div>
+
+      <!-- Main Editorial Bio Statement -->
+      <div class="max-w-4xl space-y-6">
+        <h2 class="font-serif-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-tight text-[var(--text-primary)]">
+          I work in visuals across music, brands, and apparel.
+        </h2>
+
+        <p class="text-base sm:text-lg md:text-xl text-[var(--text-secondary)] leading-relaxed max-w-3xl mx-auto font-light">
+          My creative work spans cover arts, poster designs, music videos, promotional edits, and thumbnails.
+          For major artworks and core visual direction I work primarily in
+          <span class="inline-flex items-center gap-2 mx-1 px-3 py-1 rounded-full pill-badge align-middle font-medium text-sm">
+            <img src="assets/icons_photoshop.png" alt="Photoshop" class="w-4 h-4 object-contain inline" /> Photoshop
+          </span>
+          and for rapid layouts, editorial assets, and visual structures I utilize
+          <span class="inline-flex items-center gap-2 mx-1 px-3 py-1 rounded-full pill-badge align-middle font-medium text-sm">
+            <img src="assets/icons_canva.png" alt="Canva" class="w-5 h-5 object-contain inline" /> Canva
+          </span>.
+          Visually, my work operates between disciplined composition and raw energy—driven by tactile textures, analog distortion, and deliberate artistic experimentation.
+        </p>
+      </div>
+
+      <!-- "Currently I'm Listening" Audio Widget -->
+      <div class="w-full max-w-md pt-2">
+        <div class="music-player-card p-5 flex items-center gap-4">
+          <!-- Album Thumbnail -->
+          <div class="relative w-16 h-16 rounded-2xl overflow-hidden bg-neutral-800 border border-[var(--border-subtle)] flex-shrink-0">
+            <img src="assets/project_wematch.jpg" alt="Album Cover" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-black/20"></div>
+          </div>
+
+          <!-- Track Info -->
+          <div class="flex-1 text-left">
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-mono text-[var(--accent-blue)] uppercase tracking-wider font-bold">CURRENTLY LISTENING</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-blue)] animate-ping"></span>
+            </div>
+            <h4 class="text-sm font-bold text-[var(--text-primary)] truncate mt-0.5">Midnight Resonance (Acid Mix)</h4>
+            <p class="text-xs text-[var(--text-secondary)] truncate">Sonic Visual Session</p>
+          </div>
+
+          <!-- Visualizer & Play/Pause Controls -->
+          <div class="flex items-center gap-3">
+            <div class="flex items-end gap-1 h-6 px-1">
+              <div class="equalizer-bar"></div>
+              <div class="equalizer-bar"></div>
+              <div class="equalizer-bar"></div>
+              <div class="equalizer-bar"></div>
+              <div class="equalizer-bar"></div>
+              <div class="equalizer-bar"></div>
+            </div>
+            <button id="music-play-btn" class="w-8 h-8 rounded-full pill-badge hover:bg-[var(--accent-blue)] hover:text-white text-[var(--text-primary)] flex items-center justify-center transition-colors cursor-pointer" title="Toggle Playback">
+              <i data-lucide="pause" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 4. SELECTED WORKS / PORTFOLIO CATALOG (Drive CMS Powered) -->
+  <!-- ========================================================================= -->
+  <section id="works" class="section-secondary min-h-screen py-20 px-4 sm:px-6 lg:px-8 border-t transition-colors duration-300">
+    <div class="max-w-7xl mx-auto">
+      
+      <!-- Section Header with Direct Drive Link -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <p class="text-xs font-mono uppercase tracking-widest text-[var(--accent-blue)] font-bold">Google Drive Headless CMS</p>
+            <span class="text-xs text-[var(--text-muted)]">•</span>
+            <a href="https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-mono text-[var(--accent-blue)] hover:underline font-bold">
+              <span>Open Master Drive</span>
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[var(--text-primary)]">Curated Projects & Visual Art</h2>
+          <p class="max-w-2xl text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed font-light">
+            Dynamic content automatically discovered from Google Drive folders. No hardcoded templates or manual uploads required.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="project-counter" class="text-xs font-mono uppercase tracking-[0.2em] text-[var(--text-muted)] px-3.5 py-1.5 rounded-full pill-badge font-bold">
+            Loading CMS...
+          </span>
+        </div>
+      </div>
+
+      <!-- Dynamic Filter Category Container (Injected by app.js from CMS) -->
+      <div id="filter-container" class="flex flex-wrap gap-2.5 mb-10">
+        <!-- Injected dynamically by app.js -->
+      </div>
+
+      <!-- Dynamic Portfolio Grid -->
+      <div id="portfolio-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <!-- Injected dynamically by app.js -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 5. EDITORIAL / BLOG SECTION: "Off the Record." -->
+  <!-- ========================================================================= -->
+  <section id="writing" class="section-primary relative py-20 px-4 sm:px-6 lg:px-8 border-t transition-colors duration-300">
+    <div class="max-w-5xl mx-auto">
+      
+      <div class="flex items-center justify-between mb-6">
+        <p class="text-xs font-mono tracking-[0.25em] text-[var(--accent-blue)] uppercase font-bold">[DISPATCHES] // THOUGHTS & PROCESS</p>
+        <span class="text-xs font-mono text-[var(--text-muted)]">OFF THE RECORD</span>
+      </div>
+      
+      <hr class="border-[var(--border-subtle)] mb-8" />
+
+      <a href="#writing" class="block mb-10 group">
+        <h2 class="glitch text-5xl sm:text-7xl md:text-8xl font-serif-headline font-bold group-hover:text-[var(--accent-blue)] transition-colors" data-text="Off the Record.">
+          Off the Record.
+        </h2>
+      </a>
+
+      <hr class="border-[var(--border-subtle)] mb-10" />
+
+      <!-- Article Posts List -->
+      <div id="blog-posts-list" class="space-y-4">
+        <!-- Injected via app.js -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 6. INTERACTIVE COLLABORATION CARD & CONTACT HUB -->
+  <!-- ========================================================================= -->
+  <section id="contact" class="section-secondary min-h-screen py-24 px-4 sm:px-6 lg:px-8 border-t flex flex-col justify-center items-center transition-colors duration-300">
+    <div class="max-w-4xl mx-auto w-full text-center space-y-8">
+      
+      <!-- Top Badge -->
+      <div class="inline-block px-4 py-2 rounded-full pill-badge">
+        <p class="text-xs sm:text-sm font-mono tracking-widest uppercase text-[var(--accent-blue)] font-bold">Connect & Commission</p>
+      </div>
+
+      <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[var(--text-primary)]">
+        Let's create together
+      </h2>
+      <p class="text-base sm:text-lg text-[var(--text-secondary)] max-w-xl mx-auto font-light leading-relaxed">
+        Interested in commissioning Cover Arts, Poster Designs, Music Videos, Promotional Edits, or Thumbnails? Send an inquiry or reserve a creative discovery session.
+      </p>
+
+      <!-- Luxury Interactive Contact Card with Pullout Chef Tab -->
+      <div class="pt-8 flex justify-center">
+        <div class="chef-tab-container relative w-full max-w-[380px]">
+          
+          <!-- Main Card Container -->
+          <div class="contact-hub-card relative z-20 w-full rounded-[2.2rem] p-6 flex flex-col gap-5 shadow-2xl transition-all duration-300">
+            
+            <!-- Card Header: Availability -->
+            <div class="flex items-center justify-between text-[var(--text-muted)] text-xs font-mono">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[var(--accent-blue)] animate-pulse"></span>
+                <span class="text-[var(--text-primary)] font-medium">Available for work</span>
+              </div>
+              <span class="text-[var(--text-muted)]">OPEN FOR COMMISSIONS</span>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="flex items-center gap-3.5 text-left">
+              <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-[var(--border-strong)] flex-shrink-0 bg-slate-200 dark:bg-neutral-800 shadow-md">
+                <img src="assets/pfp.jpg" alt="dragxsy" class="w-full h-full object-cover" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="text-base font-bold text-[var(--text-primary)] truncate">Dheeraj</h3>
+                <div class="text-xs flex items-center gap-1.5 text-[var(--text-muted)] mt-0.5">
+                  <span class="text-[var(--accent-blue)] font-medium font-mono">dragxsy</span>
+                  <span>●</span>
+                  <span>Visual Artist</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Google Drive Source Button -->
+            <a href="https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl pill-badge flex items-center justify-between text-xs font-mono hover:border-[var(--accent-blue)] transition-all">
+              <div class="flex items-center gap-2 text-[var(--text-secondary)]">
+                <i data-lucide="folder-git-2" class="w-4 h-4 text-[var(--accent-blue)]"></i>
+                <span>Google Drive Portfolio Source</span>
+              </div>
+              <span class="text-[var(--accent-blue)] font-bold">Open ↗</span>
+            </a>
+
+            <!-- Action Buttons: Share Idea & Book Call -->
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <button id="btn-share-idea" class="px-4 py-3 rounded-xl bg-slate-900 text-white dark:bg-white/10 hover:bg-slate-800 dark:hover:bg-white/15 text-xs font-bold font-mono flex items-center justify-center gap-2 border border-black/10 dark:border-white/10 transition-all shadow-sm active:scale-95 cursor-pointer">
+                <i data-lucide="circle-plus" class="w-4 h-4 text-[var(--accent-blue)]"></i>
+                <span>Share idea</span>
+              </button>
+
+              <button id="btn-book-call" class="px-4 py-3 rounded-xl bg-[var(--accent-blue)] hover:opacity-90 text-white dark:text-black text-xs font-bold font-mono flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95 cursor-pointer">
+                <i data-lucide="calendar" class="w-4 h-4"></i>
+                <span>Book call</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Animated Pullout Tab -->
+          <div onclick="openModal(document.getElementById('share-idea-modal'))" class="chef-tab absolute left-1/2 -translate-x-1/2 w-[90%] h-[50px] z-10 rounded-b-[2rem] -bottom-10 flex items-end justify-center pb-2.5 shadow-lg cursor-pointer hover:opacity-95 transition-all" title="Click to share your project idea">
+            <div class="flex items-center gap-2 font-bold text-xs">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              <span>Let's collaborate!</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 7. MULTI-LAYER GRADUAL BLUR FOOTER DOCK -->
+  <!-- ========================================================================= -->
+  <div class="gradual-blur-footer">
+    <div class="blur-1"></div>
+    <div class="blur-2"></div>
+    <div class="blur-3"></div>
+    <div class="blur-4"></div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 8. MODALS -->
+  <!-- ========================================================================= -->
+
+  <!-- Modal A: Project Case Study Lightbox with Drive Link -->
+  <div id="project-modal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+    <div class="modal-backdrop absolute inset-0"></div>
+    <div class="modal-content relative z-10 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 sm:p-8 text-left">
+      <button id="modal-close-btn" class="absolute top-6 right-6 p-2 rounded-full pill-badge hover:bg-[var(--accent-blue)] hover:text-white text-[var(--text-primary)] transition-colors cursor-pointer" title="Close">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-slate-100 dark:bg-neutral-900 mb-6 border border-[var(--border-subtle)]">
+        <img id="modal-project-img" src="" alt="Project Full View" class="w-full h-full object-cover" />
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+        <div>
+          <span id="modal-project-category" class="text-xs font-mono text-[var(--accent-blue)] uppercase tracking-wider font-bold">Category</span>
+          <h2 id="modal-project-title" class="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mt-1">Project Name</h2>
+        </div>
+        <div class="text-right">
+          <p class="text-xs font-mono text-[var(--text-muted)]">ARTIST</p>
+          <p class="text-sm font-bold text-[var(--text-primary)] font-mono">dragxsy</p>
+        </div>
+      </div>
+
+      <p id="modal-project-desc" class="text-[var(--text-secondary)] leading-relaxed mb-6 font-light text-sm sm:text-base">
+        Description content...
+      </p>
+
+      <!-- Direct Google Drive Category Link Button -->
+      <div class="mb-6">
+        <a id="modal-drive-link" href="https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--badge-bg)] hover:bg-[var(--accent-blue)] hover:text-white border border-[var(--border-strong)] text-xs font-mono font-bold text-[var(--text-primary)] transition-all shadow-sm">
+          <span>Open in Google Drive</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-[var(--border-subtle)]">
+        <div id="modal-project-tags" class="flex flex-wrap gap-2"></div>
+        <span id="modal-project-year" class="text-xs font-mono text-[var(--text-muted)] font-bold">2026</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal B: Share Idea Form -->
+  <div id="share-idea-modal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="closeModalById('share-idea-modal')"></div>
+    <div class="modal-content relative z-10 w-full max-w-lg rounded-3xl p-6 sm:p-8 text-left">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2">
+          <i data-lucide="sparkles" class="w-5 h-5 text-[var(--accent-blue)]"></i>
+          <h3 class="text-xl font-bold text-[var(--text-primary)]">Start a Creative Project</h3>
+        </div>
+        <button onclick="closeModalById('share-idea-modal')" class="p-2 rounded-full pill-badge text-[var(--text-primary)] cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="idea-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1.5 uppercase font-bold">Your Name / Alias</label>
+          <input type="text" required placeholder="e.g. Alex" class="theme-input w-full px-4 py-3 rounded-xl text-sm transition-colors" />
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1.5 uppercase font-bold">Your Email</label>
+          <input type="email" required placeholder="name@email.com" class="theme-input w-full px-4 py-3 rounded-xl text-sm transition-colors" />
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1.5 uppercase font-bold">Project Discipline</label>
+          <select class="theme-input w-full px-4 py-3 rounded-xl text-sm transition-colors">
+            <option value="cover">Cover Arts & Album Artwork</option>
+            <option value="poster">Poster Designs & Typography</option>
+            <option value="music_video">Music Videos & Visual Direction</option>
+            <option value="promo">Promotional Edits & Motion Clips</option>
+            <option value="thumbnail">Thumbnails & Content Visuals</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1.5 uppercase font-bold">Project Details</label>
+          <textarea rows="3" required placeholder="Tell me about your creative vision, references, or timeline..." class="theme-input w-full px-4 py-3 rounded-xl text-sm transition-colors"></textarea>
+        </div>
+        
+        <div id="idea-form-feedback" class="hidden p-3 rounded-xl bg-[var(--accent-blue)]/15 border border-[var(--accent-blue)]/30 text-xs text-[var(--text-primary)]"></div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-[var(--accent-blue)] text-white dark:text-black font-bold font-mono text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
+          <span>SEND INQUIRY</span>
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal C: Book Call Calendar -->
+  <div id="book-call-modal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="closeModalById('book-call-modal')"></div>
+    <div class="modal-content relative z-10 w-full max-w-lg rounded-3xl p-6 sm:p-8 text-left">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2">
+          <i data-lucide="calendar" class="w-5 h-5 text-[var(--accent-blue)]"></i>
+          <h3 class="text-xl font-bold text-[var(--text-primary)]">Book 30-Min Creative Session</h3>
+        </div>
+        <button onclick="closeModalById('book-call-modal')" class="p-2 rounded-full pill-badge text-[var(--text-primary)] cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-[var(--text-muted)] mb-4 font-mono">Select an open slot to discuss your project:</p>
+      
+      <div class="grid grid-cols-2 gap-2.5 mb-6">
+        <button type="button" data-slot="Tomorrow 14:00" class="cal-slot p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--badge-bg)] text-xs text-[var(--text-primary)] hover:border-[var(--accent-blue)] transition-all text-left cursor-pointer">
+          <span class="block font-bold">Tomorrow</span>
+          <span class="text-[var(--text-muted)] font-mono">14:00 (Session A)</span>
+        </button>
+        <button type="button" data-slot="Tomorrow 16:30" class="cal-slot p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--badge-bg)] text-xs text-[var(--text-primary)] hover:border-[var(--accent-blue)] transition-all text-left cursor-pointer">
+          <span class="block font-bold">Tomorrow</span>
+          <span class="text-[var(--text-muted)] font-mono">16:30 (Session B)</span>
+        </button>
+        <button type="button" data-slot="Thursday 11:00" class="cal-slot p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--badge-bg)] text-xs text-[var(--text-primary)] hover:border-[var(--accent-blue)] transition-all text-left cursor-pointer">
+          <span class="block font-bold">Thursday</span>
+          <span class="text-[var(--text-muted)] font-mono">11:00 (Session C)</span>
+        </button>
+        <button type="button" data-slot="Friday 15:00" class="cal-slot p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--badge-bg)] text-xs text-[var(--text-primary)] hover:border-[var(--accent-blue)] transition-all text-left cursor-pointer">
+          <span class="block font-bold">Friday</span>
+          <span class="text-[var(--text-muted)] font-mono">15:00 (Session D)</span>
+        </button>
+      </div>
+
+      <div id="book-slot-feedback" class="p-3 rounded-xl pill-badge text-xs font-mono text-[var(--accent-blue)] mb-4 font-bold">
+        Click any slot to reserve.
+      </div>
+
+      <button id="confirm-booking-btn" class="w-full py-3.5 rounded-xl bg-[var(--accent-blue)] text-white dark:text-black font-bold font-mono text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
+        <span>CONFIRM SESSION</span>
+        <i data-lucide="check" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal D: Blog Article Reader -->
+  <div id="article-modal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="closeModalById('article-modal')"></div>
+    <div class="modal-content relative z-10 w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-6 sm:p-8 text-left">
+      <div class="flex items-center justify-between mb-4">
+        <span id="article-modal-tag" class="text-xs font-mono text-[var(--accent-blue)] font-bold uppercase tracking-widest">DISPATCH 01</span>
+        <button onclick="closeModalById('article-modal')" class="p-2 rounded-full pill-badge text-[var(--text-primary)] cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <span id="article-modal-date" class="text-xs font-mono text-[var(--text-muted)] block mb-2 font-bold">Aug 2026 • 4 min read</span>
+      <h2 id="article-modal-title" class="text-3xl font-bold text-[var(--text-primary)] mb-6 leading-tight">Article Title</h2>
+      
+      <div id="article-modal-content" class="text-[var(--text-secondary)] leading-relaxed font-light text-base space-y-4">
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal E: Admin CMS Dashboard Modal -->
+  <div id="admin-cms-modal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="closeModalById('admin-cms-modal')"></div>
+    <div class="modal-content relative z-10 w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-3xl p-6 sm:p-8 text-left space-y-6">
+      
+      <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-blue)] animate-pulse"></span>
+          <h3 class="text-lg font-bold font-mono text-[var(--text-primary)]">Google Drive Headless CMS</h3>
+        </div>
+        <button onclick="closeModalById('admin-cms-modal')" class="p-2 rounded-full pill-badge text-[var(--text-primary)] cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Live Stats -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="p-3 rounded-xl bg-[var(--badge-bg)] border border-[var(--border-subtle)]">
+          <p class="text-[10px] font-mono text-[var(--text-muted)]">STATUS</p>
+          <p id="admin-sync-status" class="text-sm font-bold text-emerald-500 font-mono mt-0.5 capitalize">synced</p>
+        </div>
+        <div class="p-3 rounded-xl bg-[var(--badge-bg)] border border-[var(--border-subtle)]">
+          <p class="text-[10px] font-mono text-[var(--text-muted)]">CATEGORIES</p>
+          <p id="admin-cat-count" class="text-sm font-bold text-[var(--text-primary)] font-mono mt-0.5">0</p>
+        </div>
+        <div class="p-3 rounded-xl bg-[var(--badge-bg)] border border-[var(--border-subtle)]">
+          <p class="text-[10px] font-mono text-[var(--text-muted)]">PROJECTS</p>
+          <p id="admin-proj-count" class="text-sm font-bold text-[var(--text-primary)] font-mono mt-0.5">0</p>
+        </div>
+        <div class="p-3 rounded-xl bg-[var(--badge-bg)] border border-[var(--border-subtle)]">
+          <p class="text-[10px] font-mono text-[var(--text-muted)]">LAST SYNC</p>
+          <p id="admin-last-sync" class="text-[11px] font-bold text-[var(--text-primary)] font-mono mt-0.5 truncate">Never</p>
+        </div>
+      </div>
+
+      <!-- Sync Trigger -->
+      <div class="flex items-center justify-between p-4 rounded-2xl bg-[var(--badge-bg)] border border-[var(--border-strong)]">
+        <div>
+          <h4 class="text-sm font-bold text-[var(--text-primary)]">On-Demand Reconciliation</h4>
+          <p class="text-xs text-[var(--text-muted)] font-light">Scan Google Drive folders for changes & re-index</p>
+        </div>
+        <button id="admin-sync-btn" class="px-4 py-2 rounded-xl bg-[var(--accent-blue)] hover:opacity-90 text-white dark:text-black font-bold font-mono text-xs shadow-md transition-all active:scale-95 cursor-pointer">
+          <span>Sync Google Drive Now</span>
+        </button>
+      </div>
+
+      <!-- Audit Logs Stream -->
+      <div class="space-y-2">
+        <h4 class="text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] font-bold">Recent Synchronization Logs</h4>
+        <div id="admin-logs-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+
+      <div class="pt-2 text-center">
+        <a href="/admin/cms" target="_blank" class="text-xs font-mono text-[var(--accent-blue)] hover:underline">
+          Open Dedicated Admin CMS Page ↗
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Main Application Logic -->
+  <script src="three-wheel.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

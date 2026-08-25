@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>dragxsy | Private Android CMS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#0284c7',
+              cyan: '#00e5ff',
+              dark: '#090b0e',
+              card: '#12161c',
+              border: '#1f2937'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .phone-frame {
+      max-width: 440px;
+      height: 100dvh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      background: #090b0e;
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body class="bg-black text-slate-100 flex items-center justify-center min-h-screen">
+
+  <div class="phone-frame overflow-hidden w-full border-x border-slate-800/80">
+    
+    <!-- Status Bar (Android Header) -->
+    <div class="px-6 pt-3 pb-2 flex items-center justify-between text-xs font-mono text-slate-400 select-none bg-[#090b0e] z-30">
+      <span>09:41</span>
+      <div class="flex items-center gap-2">
+        <i data-lucide="wifi" class="w-3.5 h-3.5 text-slate-300"></i>
+        <i data-lucide="battery-medium" class="w-4 h-4 text-cyan-400"></i>
+      </div>
+    </div>
+
+    <!-- Screen Container -->
+    <div id="screen-container" class="flex-1 overflow-y-auto hide-scrollbar p-5 pb-24 relative">
+      
+      <!-- ================================================================= -->
+      <!-- 1. LOGIN SCREEN -->
+      <!-- ================================================================= -->
+      <div id="screen-login" class="space-y-6 pt-12">
+        <div class="text-center space-y-2">
+          <div class="w-16 h-16 rounded-3xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="sparkles" class="w-8 h-8 text-cyan-400"></i>
+          </div>
+          <h1 class="text-2xl font-bold font-mono tracking-tight text-white">dragxsy CMS</h1>
+          <p class="text-xs text-slate-400">Private Android Portfolio Manager</p>
+        </div>
+
+        <form id="login-form" class="space-y-4 pt-4">
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1">Email</label>
+            <input type="email" id="login-email" value="admin@dragxsy.com" required class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-white focus:border-cyan-400 focus:outline-none transition-colors" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1">Password</label>
+            <input type="password" id="login-password" value="dragxsy2026" required class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-white focus:border-cyan-400 focus:outline-none transition-colors" />
+          </div>
+          <div id="login-error" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-400"></div>
+          <button type="submit" class="w-full py-3.5 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold font-mono text-sm transition-all active:scale-98 shadow-lg shadow-cyan-500/20">
+            Sign In
+          </button>
+        </form>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- 2. HOME SCREEN -->
+      <!-- ================================================================= -->
+      <div id="screen-home" class="space-y-6 hidden">
+        <div class="flex items-center justify-between">
+          <div>
+            <p id="user-greeting" class="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">Good morning, Sakshi</p>
+            <h1 class="text-2xl font-bold tracking-tight text-white mt-0.5">Portfolio Overview</h1>
+          </div>
+          <div class="w-10 h-10 rounded-full border border-slate-800 overflow-hidden bg-slate-800">
+            <img src="assets/pfp.jpg" alt="Avatar" class="w-full h-full object-cover" />
+          </div>
+        </div>
+
+        <!-- Metric Grid -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="p-4 rounded-2xl bg-[#12161c] border border-slate-800/80">
+            <p class="text-[10px] font-mono text-slate-400 uppercase">Categories</p>
+            <p id="stat-categories" class="text-2xl font-bold text-white font-mono mt-1">--</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-[#12161c] border border-slate-800/80">
+            <p class="text-[10px] font-mono text-slate-400 uppercase">Total Projects</p>
+            <p id="stat-projects" class="text-2xl font-bold text-white font-mono mt-1">--</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-[#12161c] border border-emerald-900/40 bg-emerald-950/10">
+            <p class="text-[10px] font-mono text-emerald-400 uppercase">Published</p>
+            <p id="stat-published" class="text-2xl font-bold text-emerald-400 font-mono mt-1">--</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-[#12161c] border border-amber-900/40 bg-amber-950/10">
+            <p class="text-[10px] font-mono text-amber-400 uppercase">Drafts</p>
+            <p id="stat-drafts" class="text-2xl font-bold text-amber-400 font-mono mt-1">--</p>
+          </div>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="navTo('create')" class="p-4 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold font-mono text-xs flex flex-col items-start gap-2 shadow-lg shadow-cyan-500/10 active:scale-95 transition-all">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+            <span>New Project</span>
+          </button>
+          <button onclick="navTo('upload')" class="p-4 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-white font-bold font-mono text-xs flex flex-col items-start gap-2 active:scale-95 transition-all">
+            <i data-lucide="upload-cloud" class="w-5 h-5 text-cyan-400"></i>
+            <span>Upload Artwork</span>
+          </button>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">Recent Activity</h3>
+            <span class="text-[10px] font-mono text-slate-500">Live DB Stream</span>
+          </div>
+          <div id="home-activity-list" class="space-y-2 font-mono text-xs">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- 3. PORTFOLIO SCREEN -->
+      <!-- ================================================================= -->
+      <div id="screen-portfolio" class="space-y-5 hidden">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-mono text-cyan-400 font-bold uppercase">Manage Work</p>
+            <h1 class="text-2xl font-bold text-white">Portfolio</h1>
+          </div>
+          <button onclick="openNewCategoryModal()" class="p-2 rounded-full bg-slate-900 border border-slate-800 text-cyan-400 hover:bg-slate-800">
+            <i data-lucide="folder-plus" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Categories & Projects List -->
+        <div id="portfolio-categories-list" class="space-y-4">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- 4. CREATE PROJECT SCREEN -->
+      <!-- ================================================================= -->
+      <div id="screen-create" class="space-y-5 hidden">
+        <div class="flex items-center justify-between">
+          <button onclick="navTo('portfolio')" class="p-2 rounded-full bg-slate-900 text-slate-400 hover:text-white">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          </button>
+          <h1 class="text-lg font-bold font-mono text-white">Create Artwork Project</h1>
+          <div class="w-8"></div>
+        </div>
+
+        <form id="create-project-form" class="space-y-4">
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Project Title</label>
+            <input type="text" id="cp-title" required placeholder="e.g. Midnight Resonance Vol 2" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-white focus:border-cyan-400 focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Category</label>
+            <select id="cp-category" required class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-white focus:border-cyan-400 focus:outline-none">
+              <!-- Injected dynamically -->
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Description</label>
+            <textarea id="cp-desc" rows="3" placeholder="Artistic concept, tools, sonic frequency..." class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-white focus:border-cyan-400 focus:outline-none"></textarea>
+          </div>
+
+          <!-- Multi-Image Upload / Picker -->
+          <div class="space-y-2">
+            <label class="block text-[11px] font-mono text-slate-400 uppercase">Artwork Media (Gallery / Files)</label>
+            <div class="border-2 border-dashed border-slate-800 hover:border-cyan-500/50 rounded-2xl p-4 text-center cursor-pointer relative bg-slate-900/50">
+              <input type="file" id="cp-file-input" multiple accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onchange="handleFileSelect(event)" />
+              <i data-lucide="image-plus" class="w-6 h-6 text-cyan-400 mx-auto mb-2"></i>
+              <p class="text-xs text-slate-300 font-medium">Select Images / Videos from Gallery</p>
+              <p class="text-[10px] text-slate-500 font-mono mt-0.5">JPG, PNG, WEBP, MP4</p>
+            </div>
+            <div id="cp-selected-files" class="grid grid-cols-3 gap-2 pt-2"></div>
+          </div>
+
+          <!-- Featured Toggle -->
+          <div class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-900 border border-slate-800">
+            <div>
+              <p class="text-xs font-bold text-white">Feature on Homepage</p>
+              <p class="text-[10px] text-slate-400">Display in 3D Cylinder & Highlights</p>
+            </div>
+            <input type="checkbox" id="cp-featured" class="w-4 h-4 text-cyan-400 rounded bg-slate-800 border-slate-700" />
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <button type="button" onclick="submitProject('draft')" class="py-3 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 font-mono text-xs font-bold transition-all">
+              Save Draft
+            </button>
+            <button type="button" onclick="submitProject('published')" class="py-3 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-mono text-xs font-bold shadow-lg shadow-cyan-500/20 transition-all">
+              Publish Now
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- 5. UPLOAD QUEUE SCREEN -->
+      <!-- ================================================================= -->
+      <div id="screen-upload" class="space-y-5 hidden">
+        <div>
+          <p class="text-xs font-mono text-cyan-400 font-bold uppercase">Background Queue</p>
+          <h1 class="text-2xl font-bold text-white">Media Upload</h1>
+        </div>
+
+        <div class="border-2 border-dashed border-slate-800 hover:border-cyan-500/50 rounded-2xl p-6 text-center cursor-pointer relative bg-slate-900/50">
+          <input type="file" id="direct-upload-input" multiple accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onchange="handleDirectUpload(event)" />
+          <i data-lucide="upload-cloud" class="w-8 h-8 text-cyan-400 mx-auto mb-2"></i>
+          <p class="text-sm font-bold text-white">Tap to Select Files</p>
+          <p class="text-xs text-slate-400 font-mono mt-1">Multi-file background upload</p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-400">
+            <span>Upload Queue Status</span>
+            <span id="queue-count">0 items</span>
+          </div>
+          <div id="upload-queue-list" class="space-y-2">
+            <!-- Populated during uploads -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- 6. SETTINGS SCREEN -->
+      <!-- ================================================================= -->
+      <div id="screen-settings" class="space-y-5 hidden">
+        <div>
+          <p class="text-xs font-mono text-cyan-400 font-bold uppercase">System & Account</p>
+          <h1 class="text-2xl font-bold text-white">Settings</h1>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full overflow-hidden border border-slate-700 bg-slate-800">
+              <img src="assets/pfp.jpg" alt="Avatar" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <p class="text-sm font-bold text-white">Sakshi</p>
+              <p class="text-xs font-mono text-cyan-400">admin@dragxsy.com</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Google Drive One-Time Migration -->
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+          <div class="flex items-center gap-2">
+            <i data-lucide="folder-git-2" class="w-4 h-4 text-cyan-400"></i>
+            <h3 class="text-xs font-bold font-mono text-white uppercase">Google Drive Migration</h3>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed font-light">
+            Import existing Drive folders and artwork into this private CMS database.
+          </p>
+          <button onclick="triggerDriveImport()" id="btn-import-drive" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-mono font-bold border border-slate-700 transition-colors">
+            Seed Database from Drive
+          </button>
+        </div>
+
+        <!-- Logout -->
+        <button onclick="handleLogout()" class="w-full py-3 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 font-mono text-xs font-bold transition-colors">
+          Logout of CMS
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar (Android Tab Bar) -->
+    <nav class="absolute bottom-0 left-0 right-0 h-16 bg-[#0c1017] border-t border-slate-800/80 px-6 flex items-center justify-between z-30">
+      <button onclick="navTo('home')" id="tab-home" class="flex flex-col items-center gap-1 text-cyan-400 text-[10px] font-mono font-bold">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span>HOME</span>
+      </button>
+      <button onclick="navTo('portfolio')" id="tab-portfolio" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[10px] font-mono">
+        <i data-lucide="grid" class="w-5 h-5"></i>
+        <span>WORK</span>
+      </button>
+      <button onclick="navTo('upload')" id="tab-upload" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[10px] font-mono">
+        <i data-lucide="upload" class="w-5 h-5"></i>
+        <span>UPLOAD</span>
+      </button>
+      <button onclick="navTo('settings')" id="tab-settings" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[10px] font-mono">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>SETTINGS</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script>
+    let AUTH_TOKEN = localStorage.getItem('dragxsy_cms_token') || '';
+    let CMS_STATE = { overview: null, categories: [], projects: [] };
+    let selectedUploadFiles = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      if (AUTH_TOKEN) {
+        showMainApp();
+      } else {
+        showLogin();
+      }
+
+      // Handle Login Form
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const errEl = document.getElementById('login-error');
+        errEl.classList.add('hidden');
+
+        try {
+          const resp = await fetch('/api/cms/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await resp.json();
+          if (data.success) {
+            AUTH_TOKEN = data.token;
+            localStorage.setItem('dragxsy_cms_token', AUTH_TOKEN);
+            showMainApp();
+          } else {
+            errEl.textContent = data.error || 'Login failed';
+            errEl.classList.remove('hidden');
+          }
+        } catch (err) {
+          errEl.textContent = 'Server connection error';
+          errEl.classList.remove('hidden');
+        }
+      });
+    });
+
+    function showLogin() {
+      document.querySelectorAll('#screen-container > div').forEach(d => d.classList.add('hidden'));
+      document.getElementById('screen-login').classList.remove('hidden');
+      document.querySelector('nav').classList.add('hidden');
+    }
+
+    async function showMainApp() {
+      document.querySelector('nav').classList.remove('hidden');
+      navTo('home');
+      await refreshAllData();
+    }
+
+    function navTo(screen) {
+      document.querySelectorAll('#screen-container > div').forEach(d => d.classList.add('hidden'));
+      const target = document.getElementById(`screen-${screen}`);
+      if (target) target.classList.remove('hidden');
+
+      // Update Nav Tab highlight
+      ['home', 'portfolio', 'upload', 'settings'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === screen) {
+            btn.className = 'flex flex-col items-center gap-1 text-cyan-400 text-[10px] font-mono font-bold';
+          } else {
+            btn.className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[10px] font-mono';
+          }
+        }
+      });
+
+      if (screen === 'portfolio') renderPortfolioView();
+      if (screen === 'create') populateCategoryDropdown();
+      lucide.createIcons();
+    }
+
+    async function refreshAllData() {
+      try {
+        // 1. Fetch Overview
+        const ovResp = await fetch('/api/cms/overview', { headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` } });
+        if (ovResp.status === 401) { handleLogout(); return; }
+        const ov = await ovResp.json();
+        CMS_STATE.overview = ov;
+
+        document.getElementById('stat-categories').textContent = ov.stats.categories;
+        document.getElementById('stat-projects').textContent = ov.stats.projects;
+        document.getElementById('stat-published').textContent = ov.stats.published;
+        document.getElementById('stat-drafts').textContent = ov.stats.drafts;
+
+        const actList = document.getElementById('home-activity-list');
+        actList.innerHTML = (ov.recentActivity || []).slice(0, 5).map(a => `
+          <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800/80 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-cyan-950 text-cyan-400 border border-cyan-800/60">${a.action}</span>
+              <span class="text-slate-200">${a.item_name}</span>
+            </div>
+            <span class="text-[10px] text-slate-500">${a.timestamp.split(' ')[1]}</span>
+          </div>
+        `).join('');
+
+        // 2. Fetch Categories & Projects
+        const catResp = await fetch('/api/cms/categories', { headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` } });
+        CMS_STATE.categories = await catResp.json();
+
+        const projResp = await fetch('/api/cms/projects?status=all', { headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` } });
+        CMS_STATE.projects = await projResp.json();
+
+      } catch (err) {
+        console.error('[CMS] Error fetching data:', err);
+      }
+      lucide.createIcons();
+    }
+
+    function renderPortfolioView() {
+      const container = document.getElementById('portfolio-categories-list');
+      if (!container) return;
+
+      container.innerHTML = (CMS_STATE.categories || []).map(cat => {
+        const catProjects = (CMS_STATE.projects || []).filter(p => p.category_id === cat.id);
+        return `
+          <div class="p-4 rounded-2xl bg-[#12161c] border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-sm text-white">${cat.name}</h3>
+                <p class="text-[10px] font-mono text-slate-500">${catProjects.length} projects</p>
+              </div>
+              <button onclick="navTo('create')" class="p-1.5 rounded-lg bg-slate-800 text-cyan-400 text-xs font-mono flex items-center gap-1">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add
+              </button>
+            </div>
+
+            <div class="space-y-2">
+              ${catProjects.map(p => `
+                <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800/80 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-800 flex-shrink-0">
+                      <img src="${p.cover_asset_url || 'assets/hero.png'}" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="min-w-0">
+                      <h4 class="text-xs font-bold text-white truncate">${p.title}</h4>
+                      <span class="inline-block px-1.5 py-0.2 rounded text-[9px] font-mono ${p.status === 'published' ? 'bg-emerald-950 text-emerald-400' : 'bg-amber-950 text-amber-400'}">${p.status}</span>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-1">
+                    ${p.status === 'published'
+                      ? `<button onclick="togglePublish('${p.id}', false)" class="px-2 py-1 rounded bg-slate-800 text-slate-400 hover:text-amber-400 text-[10px] font-mono font-bold">Unpublish</button>`
+                      : `<button onclick="togglePublish('${p.id}', true)" class="px-2 py-1 rounded bg-cyan-400 text-slate-950 text-[10px] font-mono font-bold">Publish</button>`
+                    }
+                    <button onclick="deleteProject('${p.id}')" class="p-1.5 rounded text-slate-500 hover:text-rose-400">
+                      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function populateCategoryDropdown() {
+      const select = document.getElementById('cp-category');
+      if (!select) return;
+      select.innerHTML = (CMS_STATE.categories || []).map(c => `
+        <option value="${c.id}">${c.name}</option>
+      `).join('');
+    }
+
+    function handleFileSelect(e) {
+      const files = Array.from(e.target.files);
+      selectedUploadFiles = files;
+      const preview = document.getElementById('cp-selected-files');
+      preview.innerHTML = files.map((f, i) => `
+        <div class="relative aspect-square rounded-xl overflow-hidden bg-slate-800 border border-slate-700 p-1 flex flex-col justify-end text-[9px] font-mono text-cyan-300">
+          <span class="truncate bg-black/60 px-1 rounded">${f.name}</span>
+        </div>
+      `).join('');
+    }
+
+    async function submitProject(status) {
+      const title = document.getElementById('cp-title').value;
+      const categoryId = document.getElementById('cp-category').value;
+      const description = document.getElementById('cp-desc').value;
+      const featured = document.getElementById('cp-featured').checked;
+
+      if (!title) { alert('Please enter a project title'); return; }
+
+      // Upload selected files first if any
+      let uploadedAssetIds = [];
+      let coverUrl = 'assets/hero.png';
+
+      for (const file of selectedUploadFiles) {
+        const fd = new FormData();
+        fd.append('file', file);
+        try {
+          const uResp = await fetch('/api/cms/upload', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` },
+            body: fd
+          });
+          const uData = await uResp.json();
+          if (uData.success) {
+            uploadedAssetIds.push(uData.asset.id);
+            if (!coverUrl || coverUrl === 'assets/hero.png') {
+              coverUrl = uData.asset.optimizedUrl;
+            }
+          }
+        } catch (err) {
+          console.error('File upload failed:', err);
+        }
+      }
+
+      // Create Project
+      const projPayload = {
+        title,
+        categoryId,
+        description,
+        status,
+        featured,
+        coverAssetUrl: coverUrl,
+        assetIds: uploadedAssetIds
+      };
+
+      const resp = await fetch('/api/cms/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${AUTH_TOKEN}`
+        },
+        body: JSON.stringify(projPayload)
+      });
+
+      const res = await resp.json();
+      if (res.success) {
+        alert(status === 'published' ? 'Project published directly to website!' : 'Project saved as draft!');
+        await refreshAllData();
+        navTo('portfolio');
+      } else {
+        alert('Error: ' + res.error);
+      }
+    }
+
+    async function togglePublish(projectId, shouldPublish) {
+      const endpoint = shouldPublish ? `/api/cms/projects/${projectId}/publish` : `/api/cms/projects/${projectId}/unpublish`;
+      const resp = await fetch(endpoint, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+      });
+      const res = await resp.json();
+      if (res.success) {
+        await refreshAllData();
+        renderPortfolioView();
+      }
+    }
+
+    async function deleteProject(projectId) {
+      if (!confirm('Are you sure you want to delete this project?')) return;
+      const resp = await fetch(`/api/cms/projects/${projectId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+      });
+      const res = await resp.json();
+      if (res.success) {
+        await refreshAllData();
+        renderPortfolioView();
+      }
+    }
+
+    async function handleDirectUpload(e) {
+      const files = Array.from(e.target.files);
+      const queueList = document.getElementById('upload-queue-list');
+      document.getElementById('queue-count').textContent = `${files.length} items`;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const itemEl = document.createElement('div');
+        itemEl.className = 'p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono flex items-center justify-between';
+        itemEl.innerHTML = `<span>${file.name}</span> <span class="text-cyan-400 font-bold">Uploading...</span>`;
+        queueList.appendChild(itemEl);
+
+        const fd = new FormData();
+        fd.append('file', file);
+        try {
+          const resp = await fetch('/api/cms/upload', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` },
+            body: fd
+          });
+          const res = await resp.json();
+          if (res.success) {
+            itemEl.innerHTML = `<span>${file.name}</span> <span class="text-emerald-400 font-bold">✓ Synced</span>`;
+          } else {
+            itemEl.innerHTML = `<span>${file.name}</span> <span class="text-rose-400 font-bold">✗ Failed</span>`;
+          }
+        } catch (err) {
+          itemEl.innerHTML = `<span>${file.name}</span> <span class="text-rose-400 font-bold">✗ Error</span>`;
+        }
+      }
+      await refreshAllData();
+    }
+
+    async function triggerDriveImport() {
+      const btn = document.getElementById('btn-import-drive');
+      btn.textContent = 'Importing Drive Data...';
+      btn.disabled = true;
+      try {
+        const resp = await fetch('/api/cms/import-drive', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        const res = await resp.json();
+        alert(res.message || 'Import Complete!');
+        await refreshAllData();
+      } catch (err) {
+        alert('Migration error: ' + err);
+      } finally {
+        btn.textContent = 'Seed Database from Drive';
+        btn.disabled = false;
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('dragxsy_cms_token');
+      AUTH_TOKEN = '';
+      showLogin();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+package com.dragxsy.cms.ui.theme
+
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.runtime.Composable
+
+private val DarkColorScheme = darkColorScheme(
+    primary = AccentCyan,
+    secondary = AccentBlue,
+    background = DarkBg,
+    surface = CardBg,
+    onPrimary = DarkBg,
+    onSecondary = TextPrimary,
+    onBackground = TextPrimary,
+    onSurface = TextPrimary
+)
+
+@Composable
+fun DragxsyCMSTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = DarkColorScheme,
+        content = content
+    )
+}

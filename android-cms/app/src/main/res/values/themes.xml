@@ -1,0 +1,6 @@
+<resources>
+    <style name="Theme.DragxsyCMS" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#090B0E</item>
+        <item name="android:navigationBarColor">#090B0E</item>
+    </style>
+</resources>
