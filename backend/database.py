@@ -10,8 +10,21 @@ import uuid
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH = os.path.join(BASE_DIR, "backend", "portfolio_cms.db")
+ORIG_DB_PATH = os.path.join(BASE_DIR, "backend", "portfolio_cms.db")
+
+if os.getenv("VERCEL"):
+    DB_PATH = "/tmp/portfolio_cms.db"
+    if not os.path.exists(DB_PATH) and os.path.exists(ORIG_DB_PATH):
+        try:
+            import shutil
+            shutil.copy(ORIG_DB_PATH, DB_PATH)
+        except Exception:
+            pass
+else:
+    DB_PATH = ORIG_DB_PATH
+
 
 def get_db_connection():
     """Get SQLite database connection with row factory."""
