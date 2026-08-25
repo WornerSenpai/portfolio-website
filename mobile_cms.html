@@ -477,11 +477,25 @@
           <textarea id="proj-desc" rows="3" placeholder="Context, typography, frequency..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono"></textarea>
         </div>
 
-        <div>
-          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Cover Image Asset URL</label>
-          <div class="flex gap-2">
-            <input type="text" id="proj-cover" placeholder="assets/hero.png or /uploads/..." class="flex-1 px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
-            <button type="button" onclick="pasteClipboardToCover()" class="px-3 py-2 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-xs font-mono text-[var(--accent)] font-bold">Paste</button>
+        <div class="space-y-2">
+          <label class="block text-xs font-mono text-[var(--text-muted)] uppercase">Cover Image *</label>
+          
+          <div class="flex items-center gap-3">
+            <div class="w-16 h-16 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] overflow-hidden flex items-center justify-center flex-shrink-0">
+              <img id="proj-cover-preview" src="assets/hero.png" class="w-full h-full object-cover" />
+            </div>
+            
+            <div class="flex-1 flex flex-col gap-1.5">
+              <input type="file" id="proj-file-input" accept="image/*" class="hidden" onchange="handleModalProjectUpload(event)" />
+              <button type="button" onclick="document.getElementById('proj-file-input').click()" class="py-2 px-3 rounded-xl bg-[var(--accent)] text-black text-xs font-mono font-bold flex items-center justify-center gap-1.5 shadow-sm hover:opacity-90">
+                <i data-lucide="image-plus" class="w-3.5 h-3.5"></i>
+                <span>Choose Photo from Phone</span>
+              </button>
+              <div class="flex items-center gap-2">
+                <input type="text" id="proj-cover" placeholder="Or enter /uploads/..." class="flex-1 px-2.5 py-1.5 rounded-lg bg-[var(--card-inner)] border border-[var(--border)] text-[11px] text-white focus:outline-none focus:border-[var(--accent)] font-mono" oninput="document.getElementById('proj-cover-preview').src = resolveAssetUrl(this.value)" />
+                <button type="button" onclick="pasteClipboardToCover()" class="px-2.5 py-1.5 rounded-lg bg-[var(--card-inner)] border border-[var(--border)] text-[10px] font-mono text-[var(--accent)] font-bold">Paste</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -555,6 +569,15 @@
   <script>
     let TOKEN = localStorage.getItem('dragxsy_cms_token') || '';
     let SERVER_BASE = localStorage.getItem('dragxsy_server_url') || '';
+
+    
+    function resolveAssetUrl(url) {
+      if (!url) return 'assets/hero.png';
+      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+      const base = getApiBase();
+      const cleanPath = url.replace(/^\//, '');
+      return `${base}/${cleanPath}`;
+    }
 
     function getApiBase() {
       if (SERVER_BASE) return SERVER_BASE.replace(/\/$/, '');
@@ -906,7 +929,7 @@
 
       list.innerHTML = filtered.map(p => `
         <div class="p-3.5 rounded-xl bg-[var(--card)] border border-[var(--border)] flex gap-3.5 items-center">
-          <img src="${p.cover_asset_url || 'assets/hero.png'}" class="w-16 h-16 rounded-lg object-cover bg-slate-800 border border-[var(--border)]" />
+          <img src="${resolveAssetUrl(p.cover_asset_url)}" class="w-16 h-16 rounded-lg object-cover bg-slate-800 border border-[var(--border)]" />
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
               <span class="text-[10px] font-mono text-[var(--accent)] font-bold uppercase">${p.category_name}</span>
@@ -1108,6 +1131,7 @@
       document.getElementById('proj-title').value = '';
       document.getElementById('proj-desc').value = '';
       document.getElementById('proj-cover').value = LAST_UPLOADED_URL || '';
+      document.getElementById('proj-cover-preview').src = resolveAssetUrl(LAST_UPLOADED_URL || 'assets/hero.png');
       openModal('modal-project');
     }
 

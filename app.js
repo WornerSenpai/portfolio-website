@@ -713,3 +713,42 @@ function initMobileMenu() {
     }
   });
 }
+
+
+// Full-Screen High-Resolution Lightbox Viewer
+function openFullscreenLightbox(imgUrl) {
+  const lightbox = document.getElementById('fullscreen-lightbox');
+  const fullImg = document.getElementById('lightbox-full-img');
+  if (!lightbox || !fullImg) return;
+
+  fullImg.src = imgUrl || '';
+  lightbox.classList.remove('opacity-0', 'pointer-events-none');
+  lightbox.classList.add('opacity-100', 'pointer-events-auto');
+  document.body.style.overflow = 'hidden';
+  initLucideIcons();
+}
+
+function closeFullscreenLightbox() {
+  const lightbox = document.getElementById('fullscreen-lightbox');
+  if (!lightbox) return;
+
+  lightbox.classList.remove('opacity-100', 'pointer-events-auto');
+  lightbox.classList.add('opacity-0', 'pointer-events-none');
+  document.body.style.overflow = '';
+}
+
+window.openFullscreenLightbox = openFullscreenLightbox;
+window.closeFullscreenLightbox = closeFullscreenLightbox;
+
+// Close lightbox on backdrop click or ESC key
+document.addEventListener('DOMContentLoaded', () => {
+  const lightbox = document.getElementById('fullscreen-lightbox');
+  if (lightbox) {
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeFullscreenLightbox();
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeFullscreenLightbox();
+  });
+});

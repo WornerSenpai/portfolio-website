@@ -144,7 +144,7 @@
       </button>
       <div class="flex items-center justify-between text-xs font-mono text-[var(--text-muted)] pt-1">
         <span>© 2026 dragxsy</span>
-        <span>Google Drive CMS</span>
+        <span>dragxsy studio</span>
       </div>
     </div>
   </div>
@@ -159,7 +159,7 @@
     <!-- 3D Wheel Instruction HUD Overlays -->
     <div class="wheel-hud p-6 md:p-10 flex justify-between items-start pointer-events-none">
       <div class="space-y-1">
-        <p class="text-[11px] font-mono text-[var(--accent-blue)] tracking-[0.2em] uppercase font-bold">Google Drive Powered 3D Cylinder</p>
+        <p class="text-[11px] font-mono text-[var(--accent-blue)] tracking-[0.2em] uppercase font-bold">Visual Direction & 3D Gallery</p>
         <h1 class="text-xl md:text-2xl font-bold tracking-tight text-[var(--text-primary)] font-serif-headline italic">
           Visual Direction & Graphic Creations
         </h1>
@@ -171,7 +171,7 @@
     </div>
 
     <!-- Live Preview Tooltip Box (Bottom Right) -->
-    <div id="wheel-preview-box" class="live-preview-box hidden-preview">
+    <div id="wheel-preview-box" class="live-preview-box hidden-preview hidden md:block">
       <div class="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-100 dark:bg-neutral-900 mb-3 border border-[var(--border-subtle)]">
         <img id="preview-img" src="assets/project_wematch.jpg" alt="Preview" class="w-full h-full object-cover" />
       </div>
@@ -226,8 +226,8 @@
 
       <!-- Avatar & Sticker Visual Composition -->
       <div class="relative w-full max-w-md mx-auto">
-        <div class="relative z-10 w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-3xl overflow-hidden border-2 border-[var(--border-strong)] bg-slate-100 dark:bg-neutral-900 shadow-xl group">
-          <img src="assets/stickers_me.png" alt="dragxsy Avatar Sticker" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <div class="relative z-10 w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-3xl overflow-hidden border-2 border-[var(--border-strong)] bg-white/20 dark:bg-white/10 backdrop-blur-xl shadow-2xl group flex items-center justify-center">
+          <img src="assets/stickers_me.png" alt="dragxsy Avatar Sticker" class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500 drop-shadow-md" />
         </div>
         <img src="assets/hero.png" alt="Hero Graphics" class="relative -mt-6 mx-auto max-w-[280px] sm:max-w-[340px] opacity-90" />
       </div>
@@ -300,17 +300,10 @@
       <!-- Section Header with Direct Drive Link -->
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div class="space-y-2">
-          <div class="flex items-center gap-2">
-            <p class="text-xs font-mono uppercase tracking-widest text-[var(--accent-blue)] font-bold">Google Drive Headless CMS</p>
-            <span class="text-xs text-[var(--text-muted)]">•</span>
-            <a href="https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-mono text-[var(--accent-blue)] hover:underline font-bold">
-              <span>Open Master Drive</span>
-              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-            </a>
-          </div>
+          <div class="flex items-center gap-2"><p class="text-xs font-mono uppercase tracking-widest text-[var(--accent-blue)] font-bold">Selected Archive</p></div>
           <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[var(--text-primary)]">Curated Projects & Visual Art</h2>
           <p class="max-w-2xl text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed font-light">
-            Dynamic content automatically discovered from Google Drive folders. No hardcoded templates or manual uploads required.
+            Curated visual direction spanning cover art, poster designs, editorial zines, and brand identities.
           </p>
         </div>
         <div class="flex items-center gap-3">
@@ -411,14 +404,7 @@
               </div>
             </div>
 
-            <!-- Google Drive Source Button -->
-            <a href="https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl pill-badge flex items-center justify-between text-xs font-mono hover:border-[var(--accent-blue)] transition-all">
-              <div class="flex items-center gap-2 text-[var(--text-secondary)]">
-                <i data-lucide="folder-git-2" class="w-4 h-4 text-[var(--accent-blue)]"></i>
-                <span>Google Drive Portfolio Source</span>
-              </div>
-              <span class="text-[var(--accent-blue)] font-bold">Open ↗</span>
-            </a>
+            
 
             <!-- Action Buttons: Share Idea & Book Call -->
             <div class="grid grid-cols-2 gap-3 pt-1">
@@ -490,13 +476,7 @@
         Description content...
       </p>
 
-      <!-- Direct Google Drive Category Link Button -->
-      <div class="mb-6">
-        <a id="modal-drive-link" href="https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--badge-bg)] hover:bg-[var(--accent-blue)] hover:text-white border border-[var(--border-strong)] text-xs font-mono font-bold text-[var(--text-primary)] transition-all shadow-sm">
-          <span>Open in Google Drive</span>
-          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-        </a>
-      </div>
+      
 
       <div class="flex items-center justify-between pt-4 border-t border-[var(--border-subtle)]">
         <div id="modal-project-tags" class="flex flex-wrap gap-2"></div>
@@ -684,5 +664,18 @@
   <!-- Main Application Logic -->
   <script src="three-wheel.js"></script>
   <script src="app.js"></script>
+
+  <!-- ========================================================================= -->
+  <!-- FULL-SCREEN HIGH-RESOLUTION LIGHTBOX IMAGE VIEWER -->
+  <!-- ========================================================================= -->
+  <div id="fullscreen-lightbox" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-black/95 backdrop-blur-2xl opacity-0 pointer-events-none transition-all duration-300">
+    <button onclick="closeFullscreenLightbox()" class="absolute top-4 right-4 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer shadow-lg" title="Close Fullscreen View">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <div class="relative max-w-[95vw] max-h-[92vh] flex items-center justify-center overflow-hidden rounded-2xl">
+      <img id="lightbox-full-img" src="" alt="Artwork Full View" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl transition-transform duration-300" />
+    </div>
+  </div>
+
 </body>
 </html>
