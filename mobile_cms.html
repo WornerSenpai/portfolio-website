@@ -380,10 +380,18 @@
       <div class="space-y-2">
         <button type="button" onclick="setPresetServer('https://portfolio-website-wornersenpai.vercel.app')" class="w-full p-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] hover:border-[var(--accent)] text-left flex items-center justify-between text-xs font-mono">
           <div>
-            <div class="text-white font-bold">☁️ Vercel Cloud Domain</div>
-            <div class="text-[10px] text-[var(--text-muted)]">portfolio-website.vercel.app</div>
+            <div class="text-white font-bold">☁️ Connect to Vercel & Open Dashboard</div>
+            <div class="text-[10px] text-[var(--text-muted)]">Selects Vercel and redirects to dashboard</div>
           </div>
-          <span class="text-[10px] text-[var(--accent)]">Live Cloud</span>
+          <span class="text-[10px] text-[var(--accent)] font-bold">Redirect ↗</span>
+        </button>
+
+        <button type="button" onclick="openVercelDashboard()" class="w-full p-2.5 rounded-xl bg-black/60 border border-[var(--border)] hover:border-white text-left flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 fill-white" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z"/></svg>
+            <div class="text-white font-bold">Open Vercel Dashboard Directly</div>
+          </div>
+          <span class="text-[10px] text-white/70">vercel.com ↗</span>
         </button>
 
         <button type="button" onclick="setPresetServer('http://10.60.231.5:5000')" class="w-full p-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] hover:border-[var(--accent)] text-left flex items-center justify-between text-xs font-mono">
@@ -701,7 +709,21 @@
 
     function setPresetServer(url) {
       document.getElementById('custom-server-input').value = url;
-      testServerConnection();
+      SERVER_BASE = url;
+      localStorage.setItem('dragxsy_server_url', url);
+      updateServerDisplays();
+      
+      if (url.includes('vercel')) {
+        closeModal('modal-server-config');
+        // Redirect directly to Vercel Dashboard
+        window.location.href = 'https://vercel.com/dashboard';
+      } else {
+        testServerConnection();
+      }
+    }
+
+    function openVercelDashboard() {
+      window.location.href = 'https://vercel.com/dashboard';
     }
 
     async function testServerConnection() {
