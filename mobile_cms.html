@@ -631,19 +631,19 @@
       loadPosts();
     }
 
-    // View Site Viewer in-app
+    // Direct Redirect to Portfolio Website
     function openLiveSiteViewer() {
-      const base = getApiBase();
-      const iframe = document.getElementById('site-iframe');
-      const modal = document.getElementById('modal-site-viewer');
-      if (iframe) iframe.src = base + '/';
-      if (modal) modal.classList.remove('hidden');
-      lucide.createIcons();
-    }
+      let targetUrl = getApiBase();
+      if (!targetUrl || targetUrl.includes('10.') || targetUrl.includes('192.') || targetUrl.includes('localhost')) {
+        // If local, check if custom server is set, else use Vercel / server root
+        targetUrl = SERVER_BASE || targetUrl || 'https://portfolio-website-wornersenpai.vercel.app';
+      }
+      
+      // Ensure trailing slash or root
+      if (!targetUrl.endsWith('/')) targetUrl += '/';
 
-    function reloadSiteIframe() {
-      const iframe = document.getElementById('site-iframe');
-      if (iframe) iframe.src = iframe.src;
+      // Direct redirection
+      window.location.href = targetUrl;
     }
 
     // Login Form Handler (Clean empty inputs)
