@@ -1,9 +1,9 @@
 """
 Unified Dragxsy Portfolio & Private Mobile CMS Server
-Handles public portfolio API, dynamic blog posts, media delivery, and CMS endpoints.
+Handles public portfolio API, dynamic blog posts, media delivery, CORS, and CMS endpoints.
 """
 
-from flask import Flask, send_from_directory, jsonify, send_file, request
+from flask import Flask, send_from_directory, jsonify, send_file, request, make_response
 import os
 import json
 from datetime import datetime
@@ -16,6 +16,25 @@ from backend.api_cms import cms_bp
 init_db()
 
 app = Flask(__name__, static_folder=".", static_url_path="")
+
+# ----------------------------------------------------------------------
+# Universal CORS Headers & Preflight Handling for Android & Vercel
+# ----------------------------------------------------------------------
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
+    response.headers["Access-Control-Max-Age"] = "86400"
+    return response
+
+@app.route("/api/<path:path>", methods=["OPTIONS"])
+def handle_api_options(path):
+    response = make_response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
+    return response, 204
 
 # Register Private CMS API Blueprint
 app.register_blueprint(cms_bp)
@@ -40,7 +59,6 @@ def serve_mobile_cms():
 def serve_admin_cms():
     """Alias for CMS interface."""
     return send_from_directory(BASE_DIR, "mobile_cms.html")
-
 
 @app.route("/dragxsy-cms.apk")
 @app.route("/download/apk")
