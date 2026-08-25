@@ -15,7 +15,7 @@ import urllib.request
 from PIL import Image
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "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")
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "")
 GITHUB_REPO = "WornerSenpai/portfolio-website"
 
 if os.getenv("VERCEL"):

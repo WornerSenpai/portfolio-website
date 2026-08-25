@@ -709,12 +709,16 @@
           TOKEN = '';
           localStorage.removeItem('dragxsy_cms_token');
           showAuthScreen();
-          throw new Error('Unauthorized');
+          throw new Error('Session expired. Please log in again.');
         }
-        return await resp.json();
+        const resData = await resp.json();
+        if (!resp.ok) {
+          throw new Error(resData.error || `Request failed with status ${resp.status}`);
+        }
+        return resData;
       } catch (err) {
-        if (err.message === 'Unauthorized') throw err;
-        throw new Error(`Cannot connect to server at ${base}. Please check your connection.`);
+        console.error(`API Error on [${method}] ${url}:`, err);
+        throw err;
       }
     }
 

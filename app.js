@@ -292,8 +292,8 @@ function renderPortfolioGrid(filter = 'All') {
   const projects = CMS_DATA.projects || [];
 
   const filtered = filter === 'All'
-    ? projects
-    : projects.filter(p => p.category === filter || (p.tags && p.tags.includes(filter)));
+    ? projects.filter(p => p.showInAll !== false)
+    : projects.filter(p => p.category === filter || p.categorySlug === filter || (p.tags && p.tags.includes(filter)));
 
   if (countEl) {
     countEl.textContent = `${filtered.length} project${filtered.length === 1 ? '' : 's'}`;
@@ -303,20 +303,19 @@ function renderPortfolioGrid(filter = 'All') {
     const card = document.createElement('div');
     card.className = 'project-card group relative flex flex-col justify-between p-4 cursor-pointer';
     
-    const coverImg = item.coverAsset ? (item.coverAsset.localPath || item.coverAsset.sourceUrl) : "assets/hero.png";
-    const driveUrl = item.driveUrl || "#";
+    // Support coverAssetUrl, coverAsset object, or local hero fallback
+    const coverImg = item.coverAssetUrl || (item.coverAsset ? (item.coverAsset.localPath || item.coverAsset.sourceUrl) : 'assets/hero.png');
 
     card.innerHTML = `
-      <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 dark:bg-neutral-900 mb-4 border border-[var(--border-subtle)]">
-        <img src="${coverImg}" alt="${item.title}" class="w-full h-full object-cover" loading="lazy" />
+      <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 dark:bg-neutral-900 mb-4 border border-[var(--border-subtle)] shadow-md">
+        <img src="${coverImg}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='assets/hero.png'" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--accent-blue)] text-white dark:text-black text-xs font-bold font-mono shadow-md">
-            DETAILS →
+          <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--accent-blue)] text-white dark:text-black text-xs font-bold font-mono shadow-md">
+            VIEW CASE STUDY →
           </span>
-          <a href="${driveUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-mono hover:bg-[var(--accent-blue)] hover:text-white transition-colors" title="Open Google Drive folder">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
-            <span>DRIVE</span>
-          </a>
+          <span class="text-[10px] font-mono text-white/80 px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-sm">
+            ${item.year || '2026'}
+          </span>
         </div>
       </div>
       <div class="flex items-start justify-between gap-2">
@@ -326,7 +325,7 @@ function renderPortfolioGrid(filter = 'All') {
         </div>
         <span class="text-xs font-mono text-[var(--text-muted)]">${item.year || "2026"}</span>
       </div>
-      <p class="text-xs text-[var(--text-secondary)] mt-2 line-clamp-2 leading-relaxed font-light">${item.description}</p>
+      <p class="text-xs text-[var(--text-secondary)] mt-2 line-clamp-2 leading-relaxed font-light">${item.description || 'Visual direction & design artwork'}</p>
       <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-[var(--border-subtle)]">
         ${(item.tags || []).map(tag => `<span class="text-[9px] font-mono px-2 py-0.5 rounded-md bg-[var(--badge-bg)] text-[var(--text-secondary)] border border-[var(--border-subtle)] font-medium">${tag}</span>`).join('')}
       </div>
@@ -752,4 +751,92 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeFullscreenLightbox();
   });
+});
+
+
+// =========================================================================
+// LAST.FM API REAL-TIME LISTENING INTEGRATION
+// =========================================================================
+const LASTFM_CONFIG = {
+  apiKey: '5d430fd337f3838ff79e20caed1fe716',
+  username: 'dragxsy',
+  refreshIntervalMs: 25000 // Refresh every 25s
+};
+
+async function initLastFmWidget() {
+  const linkEl = document.getElementById('lastfm-link');
+  const imgEl = document.getElementById('lastfm-album-art');
+  const iconEl = document.getElementById('lastfm-default-icon');
+  const statusLabel = document.getElementById('lastfm-status-label');
+  const pulseDot = document.getElementById('lastfm-pulse-dot');
+  const titleEl = document.getElementById('lastfm-track-title');
+  const artistEl = document.getElementById('lastfm-artist-name');
+  const eqBars = document.querySelectorAll('.eq-bar');
+
+  if (!titleEl) return;
+
+  async function updateTrack() {
+    try {
+      const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${LASTFM_CONFIG.username}&api_key=${LASTFM_CONFIG.apiKey}&format=json&limit=1`;
+      const resp = await fetch(url);
+      if (!resp.ok) return;
+
+      const data = await resp.json();
+      const tracks = data?.recenttracks?.track;
+      if (!tracks || tracks.length === 0) return;
+
+      const track = Array.isArray(tracks) ? tracks[0] : tracks;
+      const isNowPlaying = track['@attr']?.nowplaying === 'true';
+      const trackName = track.name || 'Unknown Track';
+      const artistName = track.artist?.['#text'] || track.artist?.name || 'Unknown Artist';
+      const trackUrl = track.url || `https://www.last.fm/user/${LASTFM_CONFIG.username}`;
+
+      // Get highest resolution album art
+      let albumArt = '';
+      if (track.image && Array.isArray(track.image)) {
+        const largeImg = track.image.find(i => i.size === 'extralarge') || track.image.find(i => i.size === 'large') || track.image[track.image.length - 1];
+        albumArt = largeImg?.['#text'] || '';
+      }
+
+      if (linkEl) linkEl.href = trackUrl;
+      titleEl.textContent = trackName;
+      artistEl.textContent = artistName;
+
+      if (albumArt) {
+        imgEl.src = albumArt;
+        imgEl.classList.remove('hidden');
+        if (iconEl) iconEl.classList.add('hidden');
+      } else {
+        imgEl.classList.add('hidden');
+        if (iconEl) iconEl.classList.remove('hidden');
+      }
+
+      if (isNowPlaying) {
+        if (statusLabel) statusLabel.textContent = 'CURRENTLY LISTENING';
+        if (pulseDot) {
+          pulseDot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+        }
+        eqBars.forEach(b => b.classList.add('eq-playing'));
+      } else {
+        if (statusLabel) statusLabel.textContent = 'RECENTLY PLAYED';
+        if (pulseDot) {
+          pulseDot.className = 'w-2 h-2 rounded-full bg-[var(--accent-blue)]';
+        }
+        eqBars.forEach(b => b.classList.remove('eq-playing'));
+      }
+    } catch (err) {
+      console.warn('Last.fm fetch error:', err);
+    }
+  }
+
+  // Initial fetch
+  await updateTrack();
+
+  // Polling interval
+  setInterval(updateTrack, LASTFM_CONFIG.refreshIntervalMs);
+}
+
+// Attach to DOM load
+document.addEventListener('DOMContentLoaded', () => {
+  initLastFmWidget();
 });

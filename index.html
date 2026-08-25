@@ -406,6 +406,34 @@
 
             
 
+                        <!-- Last.fm Real-Time Listening Widget -->
+            <a id="lastfm-link" href="https://www.last.fm/user/dragxsy" target="_blank" rel="noopener noreferrer" class="group block p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-[var(--border-subtle)] transition-all duration-300 shadow-sm text-left">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="relative w-12 h-12 rounded-xl overflow-hidden bg-neutral-900 flex-shrink-0 border border-[var(--border-subtle)] flex items-center justify-center shadow-inner">
+                    <img id="lastfm-album-art" src="assets/pfp.jpg" alt="Album Art" class="w-full h-full object-cover hidden transition-transform duration-500 group-hover:scale-110" />
+                    <i id="lastfm-default-icon" data-lucide="music-2" class="w-5 h-5 text-[var(--accent-blue)]"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1.5 text-[10px] font-mono text-[var(--accent-blue)] uppercase tracking-wider font-bold">
+                      <span id="lastfm-pulse-dot" class="w-2 h-2 rounded-full bg-[var(--accent-blue)] animate-pulse"></span>
+                      <span id="lastfm-status-label">CURRENTLY LISTENING</span>
+                    </div>
+                    <h4 id="lastfm-track-title" class="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-blue)] transition-colors truncate mt-0.5">Fetching track...</h4>
+                    <p id="lastfm-artist-name" class="text-xs text-[var(--text-muted)] truncate font-light">dragxsy on Last.fm</p>
+                  </div>
+                </div>
+
+                <!-- Live Animated Audio Equalizer Bars -->
+                <div id="lastfm-equalizer" class="flex items-end gap-1 h-5 flex-shrink-0 px-1">
+                  <span class="eq-bar w-1 bg-[var(--accent-blue)] rounded-full"></span>
+                  <span class="eq-bar w-1 bg-[var(--accent-blue)] rounded-full"></span>
+                  <span class="eq-bar w-1 bg-[var(--accent-blue)] rounded-full"></span>
+                  <span class="eq-bar w-1 bg-[var(--accent-blue)] rounded-full"></span>
+                </div>
+              </div>
+            </a>
+
             <!-- Action Buttons: Share Idea & Book Call -->
             <div class="grid grid-cols-2 gap-3 pt-1">
               <button id="btn-share-idea" class="px-4 py-3 rounded-xl bg-slate-900 text-white dark:bg-white/10 hover:bg-slate-800 dark:hover:bg-white/15 text-xs font-bold font-mono flex items-center justify-center gap-2 border border-black/10 dark:border-white/10 transition-all shadow-sm active:scale-95 cursor-pointer">

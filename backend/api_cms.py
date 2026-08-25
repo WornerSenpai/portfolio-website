@@ -235,10 +235,18 @@ def create_project():
         return jsonify({"error": "Title and category are required"}), 400
 
     conn = get_db_connection()
-    cat = conn.execute("SELECT name FROM categories WHERE id = ?", (category_id,)).fetchone()
+    # Flexible category lookup by ID, slug, or name with hyphen/underscore normalization
+    norm_id = category_id.replace('_', '-')
+    cat = conn.execute(
+        "SELECT id, name, slug FROM categories WHERE id = ? OR id = ? OR slug = ? OR slug = ? OR name LIKE ?",
+        (category_id, norm_id, category_id, norm_id, f"%{category_id}%")
+    ).fetchone()
+
     if not cat:
-        conn.close()
-        return jsonify({"error": "Invalid category ID"}), 400
+        # Fallback to first available category
+        cat = conn.execute("SELECT id, name, slug FROM categories LIMIT 1").fetchone()
+
+    category_id = cat["id"]
 
     slug = data.get("slug") or slugify(title)
     existing = conn.execute("SELECT id FROM projects WHERE slug = ?", (slug,)).fetchone()
@@ -248,24 +256,22 @@ def create_project():
     proj_id = "proj_" + str(uuid.uuid4())[:8]
     description = data.get("description", "")
     year = data.get("year", "2026")
-    status = data.get("status", "draft")
+    status = data.get("status", "published")
     featured = 1 if data.get("featured") else 0
+    showcase_3d = 1 if data.get("showcase3d", True) else 0
+    show_in_all = 1 if data.get("showInAll", True) else 0
     cover_url = data.get("coverAssetUrl") or "assets/hero.png"
     tags_json = json.dumps(data.get("tags", [cat["name"], "Artwork"]))
-    drive_url = data.get("driveUrl", "#")
+    drive_url = "#"
     
     now = datetime.now().isoformat()
     pub_at = now if status == 'published' else None
     max_order = conn.execute("SELECT MAX(sort_order) as m FROM projects WHERE category_id = ?", (category_id,)).fetchone()["m"] or 0
 
     conn.execute("""
-        INSERT INTO projects (id, category_id, title, slug, description, year, cover_asset_url, status, featured, sort_order, tags_json, drive_url, created_at, updated_at, published_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (proj_id, category_id, title, slug, description, year, cover_url, status, featured, max_order + 1, tags_json, drive_url, now, now, pub_at))
-
-    asset_ids = data.get("assetIds", [])
-    for idx, aid in enumerate(asset_ids):
-        conn.execute("UPDATE assets SET project_id = ?, sort_order = ? WHERE id = ?", (proj_id, idx + 1, aid))
+        INSERT INTO projects (id, category_id, title, slug, description, year, cover_asset_url, status, featured, showcase_3d, show_in_all, sort_order, tags_json, drive_url, created_at, updated_at, published_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (proj_id, category_id, title, slug, description, year, cover_url, status, featured, showcase_3d, show_in_all, max_order + 1, tags_json, drive_url, now, now, pub_at))
 
     conn.commit()
     conn.close()
