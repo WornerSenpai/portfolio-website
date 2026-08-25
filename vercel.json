@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/cms",
+      "destination": "/mobile_cms.html"
+    },
+    {
+      "source": "/admin/cms",
+      "destination": "/mobile_cms.html"
+    }
+  ]
+}

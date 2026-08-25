@@ -1,6 +1,6 @@
 """
 Secure Authenticated CMS API Blueprint for Android Client
-Handles JWT auth, Categories, Projects, Media Uploads, Draft/Publish lifecycle, Reordering, Activity stream.
+Handles JWT auth, Categories, Projects, Media Uploads, Blog Posts/Dispatches, Draft/Publish lifecycle, Activity stream.
 """
 
 import os
@@ -20,11 +20,8 @@ cms_bp = Blueprint("cms_api", __name__, url_prefix="/api/cms")
 
 JWT_SECRET = os.getenv("JWT_SECRET", "dragxsy_android_cms_jwt_secret_2026")
 JWT_ALGORITHM = "HS256"
-JWT_EXPIRATION_HOURS = 72 # 3 days access token
+JWT_EXPIRATION_HOURS = 72
 
-# ----------------------------------------------------------------------
-# Auth Helpers & Decorator
-# ----------------------------------------------------------------------
 def generate_token(user_id, email, name):
     payload = {
         "userId": user_id,
@@ -65,7 +62,6 @@ def slugify(text):
 # ----------------------------------------------------------------------
 @cms_bp.route("/auth/login", methods=["POST"])
 def login():
-    """Authenticate Android client and issue JWT token."""
     data = request.get_json(silent=True) or {}
     email = data.get("email", "").strip().lower()
     password = data.get("password", "")
@@ -81,7 +77,7 @@ def login():
         return jsonify({"error": "Invalid email or password"}), 401
 
     token = generate_token(user["id"], user["email"], user["name"])
-    log_activity("LOGIN", "Android App", f"User {user['name']} logged in")
+    log_activity("LOGIN", "Mobile CMS", f"User {user['name']} logged in")
 
     return jsonify({
         "success": True,
@@ -96,10 +92,7 @@ def login():
 @cms_bp.route("/auth/me", methods=["GET"])
 @require_auth
 def get_me():
-    """Get current authenticated user info."""
-    return jsonify({
-        "user": g.user
-    })
+    return jsonify({"user": g.user})
 
 # ----------------------------------------------------------------------
 # 2. Home Overview Endpoint
@@ -107,13 +100,12 @@ def get_me():
 @cms_bp.route("/overview", methods=["GET"])
 @require_auth
 def get_overview():
-    """Home screen metrics and recent activity."""
     conn = get_db_connection()
-    
     categories_count = conn.execute("SELECT COUNT(*) as cnt FROM categories").fetchone()["cnt"]
     projects_count = conn.execute("SELECT COUNT(*) as cnt FROM projects").fetchone()["cnt"]
     published_count = conn.execute("SELECT COUNT(*) as cnt FROM projects WHERE status = 'published'").fetchone()["cnt"]
     drafts_count = conn.execute("SELECT COUNT(*) as cnt FROM projects WHERE status = 'draft'").fetchone()["cnt"]
+    posts_count = conn.execute("SELECT COUNT(*) as cnt FROM posts").fetchone()["cnt"]
     
     recent_activity = conn.execute("SELECT * FROM activity_logs ORDER BY timestamp DESC LIMIT 10").fetchall()
     conn.close()
@@ -124,7 +116,8 @@ def get_overview():
             "categories": categories_count,
             "projects": projects_count,
             "published": published_count,
-            "drafts": drafts_count
+            "drafts": drafts_count,
+            "posts": posts_count
         },
         "recentActivity": [dict(r) for r in recent_activity]
     })
@@ -135,7 +128,6 @@ def get_overview():
 @cms_bp.route("/categories", methods=["GET"])
 @require_auth
 def get_categories():
-    """List all categories with project counts."""
     conn = get_db_connection()
     categories = conn.execute("""
         SELECT c.*, COUNT(p.id) as projects_count 
@@ -150,7 +142,6 @@ def get_categories():
 @cms_bp.route("/categories", methods=["POST"])
 @require_auth
 def create_category():
-    """Create a new category from Android."""
     data = request.get_json(silent=True) or {}
     name = data.get("name", "").strip()
     if not name:
@@ -161,7 +152,6 @@ def create_category():
     cat_id = "cat_" + str(uuid.uuid4())[:8]
 
     conn = get_db_connection()
-    # Check duplicate slug
     existing = conn.execute("SELECT id FROM categories WHERE slug = ?", (slug,)).fetchone()
     if existing:
         slug = f"{slug}-{str(uuid.uuid4())[:4]}"
@@ -179,38 +169,9 @@ def create_category():
     log_activity("CREATE_CATEGORY", name, f"ID: {cat_id}")
     return jsonify({"success": True, "id": cat_id, "name": name, "slug": slug}), 201
 
-@cms_bp.route("/categories/<cat_id>", methods=["PUT"])
-@require_auth
-def update_category(cat_id):
-    """Update an existing category."""
-    data = request.get_json(silent=True) or {}
-    name = data.get("name", "").strip()
-    cover_url = data.get("coverAssetUrl")
-
-    conn = get_db_connection()
-    cat = conn.execute("SELECT * FROM categories WHERE id = ?", (cat_id,)).fetchone()
-    if not cat:
-        conn.close()
-        return jsonify({"error": "Category not found"}), 404
-
-    new_name = name or cat["name"]
-    new_cover = cover_url if cover_url is not None else cat["cover_asset_url"]
-    now = datetime.now().isoformat()
-
-    conn.execute(
-        "UPDATE categories SET name = ?, cover_asset_url = ?, updated_at = ? WHERE id = ?",
-        (new_name, new_cover, now, cat_id)
-    )
-    conn.commit()
-    conn.close()
-
-    log_activity("UPDATE_CATEGORY", new_name, f"ID: {cat_id}")
-    return jsonify({"success": True, "message": "Category updated"})
-
 @cms_bp.route("/categories/<cat_id>", methods=["DELETE"])
 @require_auth
 def delete_category(cat_id):
-    """Delete a category."""
     conn = get_db_connection()
     cat = conn.execute("SELECT name FROM categories WHERE id = ?", (cat_id,)).fetchone()
     if not cat:
@@ -224,29 +185,12 @@ def delete_category(cat_id):
     log_activity("DELETE_CATEGORY", cat["name"], f"ID: {cat_id}")
     return jsonify({"success": True, "message": "Category deleted"})
 
-@cms_bp.route("/categories/reorder", methods=["PUT"])
-@require_auth
-def reorder_categories():
-    """Reorder categories."""
-    data = request.get_json(silent=True) or {}
-    order_list = data.get("order", []) # Array of category IDs in order
-
-    conn = get_db_connection()
-    for index, cid in enumerate(order_list):
-        conn.execute("UPDATE categories SET sort_order = ? WHERE id = ?", (index + 1, cid))
-    conn.commit()
-    conn.close()
-
-    log_activity("REORDER_CATEGORIES", "Categories", f"Updated order for {len(order_list)} categories")
-    return jsonify({"success": True, "message": "Categories reordered"})
-
 # ----------------------------------------------------------------------
 # 4. Projects Management
 # ----------------------------------------------------------------------
 @cms_bp.route("/projects", methods=["GET"])
 @require_auth
 def get_projects():
-    """List all projects with category names and assets."""
     status_filter = request.args.get("status")
     category_id = request.args.get("categoryId")
 
@@ -273,7 +217,6 @@ def get_projects():
     for r in rows:
         p_dict = dict(r)
         p_dict["tags"] = json.loads(p_dict.get("tags_json") or "[]")
-        # Fetch assets
         assets = conn.execute("SELECT * FROM assets WHERE project_id = ? ORDER BY sort_order ASC", (p_dict["id"],)).fetchall()
         p_dict["assets"] = [dict(a) for a in assets]
         projects.append(p_dict)
@@ -281,34 +224,9 @@ def get_projects():
     conn.close()
     return jsonify(projects)
 
-@cms_bp.route("/projects/<project_id>", methods=["GET"])
-@require_auth
-def get_project_detail(project_id):
-    """Get project details including all gallery assets."""
-    conn = get_db_connection()
-    row = conn.execute("""
-        SELECT p.*, c.name as category_name, c.slug as category_slug
-        FROM projects p
-        JOIN categories c ON p.category_id = c.id
-        WHERE p.id = ? OR p.slug = ?
-    """, (project_id, project_id)).fetchone()
-
-    if not row:
-        conn.close()
-        return jsonify({"error": "Project not found"}), 404
-
-    p_dict = dict(row)
-    p_dict["tags"] = json.loads(p_dict.get("tags_json") or "[]")
-    assets = conn.execute("SELECT * FROM assets WHERE project_id = ? ORDER BY sort_order ASC", (p_dict["id"],)).fetchall()
-    p_dict["assets"] = [dict(a) for a in assets]
-    conn.close()
-
-    return jsonify(p_dict)
-
 @cms_bp.route("/projects", methods=["POST"])
 @require_auth
 def create_project():
-    """Create a new project from Android CMS."""
     data = request.get_json(silent=True) or {}
     title = data.get("title", "").strip()
     category_id = data.get("categoryId")
@@ -330,7 +248,7 @@ def create_project():
     proj_id = "proj_" + str(uuid.uuid4())[:8]
     description = data.get("description", "")
     year = data.get("year", "2026")
-    status = data.get("status", "draft") # 'draft' or 'published'
+    status = data.get("status", "draft")
     featured = 1 if data.get("featured") else 0
     cover_url = data.get("coverAssetUrl") or "assets/hero.png"
     tags_json = json.dumps(data.get("tags", [cat["name"], "Artwork"]))
@@ -345,7 +263,6 @@ def create_project():
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (proj_id, category_id, title, slug, description, year, cover_url, status, featured, max_order + 1, tags_json, drive_url, now, now, pub_at))
 
-    # Link any asset IDs provided
     asset_ids = data.get("assetIds", [])
     for idx, aid in enumerate(asset_ids):
         conn.execute("UPDATE assets SET project_id = ?, sort_order = ? WHERE id = ?", (proj_id, idx + 1, aid))
@@ -356,53 +273,9 @@ def create_project():
     log_activity("CREATE_PROJECT", title, f"Status: {status}, Category: {cat['name']}")
     return jsonify({"success": True, "id": proj_id, "slug": slug, "status": status}), 201
 
-@cms_bp.route("/projects/<project_id>", methods=["PUT"])
-@require_auth
-def update_project(project_id):
-    """Update project details from Android."""
-    data = request.get_json(silent=True) or {}
-    
-    conn = get_db_connection()
-    proj = conn.execute("SELECT * FROM projects WHERE id = ?", (project_id,)).fetchone()
-    if not proj:
-        conn.close()
-        return jsonify({"error": "Project not found"}), 404
-
-    title = data.get("title", proj["title"]).strip()
-    category_id = data.get("categoryId", proj["category_id"])
-    description = data.get("description", proj["description"])
-    year = data.get("year", proj["year"])
-    cover_url = data.get("coverAssetUrl", proj["cover_asset_url"])
-    featured = 1 if data.get("featured", proj["featured"]) else 0
-    tags = data.get("tags")
-    tags_json = json.dumps(tags) if tags is not None else proj["tags_json"]
-    status = data.get("status", proj["status"])
-    now = datetime.now().isoformat()
-    pub_at = proj["published_at"]
-    if status == 'published' and not pub_at:
-        pub_at = now
-
-    conn.execute("""
-        UPDATE projects 
-        SET title = ?, category_id = ?, description = ?, year = ?, cover_asset_url = ?, status = ?, featured = ?, tags_json = ?, updated_at = ?, published_at = ?
-        WHERE id = ?
-    """, (title, category_id, description, year, cover_url, status, featured, tags_json, now, pub_at, project_id))
-
-    # Update asset linkages if passed
-    if "assetIds" in data:
-        for idx, aid in enumerate(data["assetIds"]):
-            conn.execute("UPDATE assets SET project_id = ?, sort_order = ? WHERE id = ?", (project_id, idx + 1, aid))
-
-    conn.commit()
-    conn.close()
-
-    log_activity("UPDATE_PROJECT", title, f"Status: {status}")
-    return jsonify({"success": True, "message": "Project updated"})
-
 @cms_bp.route("/projects/<project_id>/publish", methods=["PUT"])
 @require_auth
 def publish_project(project_id):
-    """Publish a project directly to the live website."""
     conn = get_db_connection()
     proj = conn.execute("SELECT title FROM projects WHERE id = ?", (project_id,)).fetchone()
     if not proj:
@@ -420,7 +293,6 @@ def publish_project(project_id):
 @cms_bp.route("/projects/<project_id>/unpublish", methods=["PUT"])
 @require_auth
 def unpublish_project(project_id):
-    """Unpublish a project from the live website."""
     conn = get_db_connection()
     proj = conn.execute("SELECT title FROM projects WHERE id = ?", (project_id,)).fetchone()
     if not proj:
@@ -438,7 +310,6 @@ def unpublish_project(project_id):
 @cms_bp.route("/projects/<project_id>", methods=["DELETE"])
 @require_auth
 def delete_project(project_id):
-    """Delete a project."""
     conn = get_db_connection()
     proj = conn.execute("SELECT title FROM projects WHERE id = ?", (project_id,)).fetchone()
     if not proj:
@@ -452,29 +323,146 @@ def delete_project(project_id):
     log_activity("DELETE_PROJECT", proj["title"], f"ID: {project_id}")
     return jsonify({"success": True, "message": "Project deleted"})
 
-@cms_bp.route("/projects/reorder", methods=["PUT"])
+# ----------------------------------------------------------------------
+# 5. Blog Posts / Dispatches Management (NEW)
+# ----------------------------------------------------------------------
+@cms_bp.route("/posts", methods=["GET"])
 @require_auth
-def reorder_projects():
-    """Reorder projects."""
+def get_posts():
+    """List all blog posts including drafts."""
+    conn = get_db_connection()
+    rows = conn.execute("SELECT * FROM posts ORDER BY sort_order ASC, created_at DESC").fetchall()
+    conn.close()
+    return jsonify([dict(r) for r in rows])
+
+@cms_bp.route("/posts", methods=["POST"])
+@require_auth
+def create_post():
+    """Create a new blog post/dispatch."""
     data = request.get_json(silent=True) or {}
-    order_list = data.get("order", [])
+    title = data.get("title", "").strip()
+    tag = data.get("tag", "DISPATCH").strip().upper()
+    summary = data.get("summary", "").strip()
+    content = data.get("content", "").strip()
+    read_time = data.get("readTime", "4 min read").strip()
+    date_str = data.get("date", datetime.now().strftime("%b %Y"))
+    status = data.get("status", "published")
+
+    if not title or not content:
+        return jsonify({"error": "Title and content are required"}), 400
+
+    slug = data.get("slug") or slugify(title)
+    post_id = "post_" + str(uuid.uuid4())[:8]
 
     conn = get_db_connection()
-    for index, pid in enumerate(order_list):
-        conn.execute("UPDATE projects SET sort_order = ? WHERE id = ?", (index + 1, pid))
+    existing = conn.execute("SELECT id FROM posts WHERE slug = ?", (slug,)).fetchone()
+    if existing:
+        slug = f"{slug}-{str(uuid.uuid4())[:4]}"
+
+    max_order = conn.execute("SELECT MAX(sort_order) as m FROM posts").fetchone()["m"] or 0
+    now = datetime.now().isoformat()
+    pub_at = now if status == 'published' else None
+
+    conn.execute("""
+        INSERT INTO posts (id, tag, title, slug, date, read_time, summary, content, status, sort_order, created_at, updated_at, published_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (post_id, tag, title, slug, date_str, read_time, summary, content, status, max_order + 1, now, now, pub_at))
     conn.commit()
     conn.close()
 
-    log_activity("REORDER_PROJECTS", "Projects", f"Updated order for {len(order_list)} projects")
-    return jsonify({"success": True, "message": "Projects reordered"})
+    log_activity("CREATE_POST", title, f"Status: {status}, Tag: {tag}")
+    return jsonify({"success": True, "id": post_id, "slug": slug, "status": status}), 201
+
+@cms_bp.route("/posts/<post_id>", methods=["PUT"])
+@require_auth
+def update_post(post_id):
+    """Update an existing blog post."""
+    data = request.get_json(silent=True) or {}
+    
+    conn = get_db_connection()
+    post = conn.execute("SELECT * FROM posts WHERE id = ?", (post_id,)).fetchone()
+    if not post:
+        conn.close()
+        return jsonify({"error": "Post not found"}), 404
+
+    title = data.get("title", post["title"]).strip()
+    tag = data.get("tag", post["tag"]).strip().upper()
+    summary = data.get("summary", post["summary"]).strip()
+    content = data.get("content", post["content"]).strip()
+    read_time = data.get("readTime", post["read_time"]).strip()
+    status = data.get("status", post["status"])
+    now = datetime.now().isoformat()
+    pub_at = post["published_at"]
+    if status == 'published' and not pub_at:
+        pub_at = now
+
+    conn.execute("""
+        UPDATE posts
+        SET title = ?, tag = ?, summary = ?, content = ?, read_time = ?, status = ?, updated_at = ?, published_at = ?
+        WHERE id = ?
+    """, (title, tag, summary, content, read_time, status, now, pub_at, post_id))
+    conn.commit()
+    conn.close()
+
+    log_activity("UPDATE_POST", title, f"Status: {status}")
+    return jsonify({"success": True, "message": "Post updated successfully"})
+
+@cms_bp.route("/posts/<post_id>/publish", methods=["PUT"])
+@require_auth
+def publish_post(post_id):
+    conn = get_db_connection()
+    post = conn.execute("SELECT title FROM posts WHERE id = ?", (post_id,)).fetchone()
+    if not post:
+        conn.close()
+        return jsonify({"error": "Post not found"}), 404
+
+    now = datetime.now().isoformat()
+    conn.execute("UPDATE posts SET status = 'published', updated_at = ?, published_at = ? WHERE id = ?", (now, now, post_id))
+    conn.commit()
+    conn.close()
+
+    log_activity("PUBLISH_POST", post["title"], "Published to live website")
+    return jsonify({"success": True, "message": "Post published to live website", "status": "published"})
+
+@cms_bp.route("/posts/<post_id>/unpublish", methods=["PUT"])
+@require_auth
+def unpublish_post(post_id):
+    conn = get_db_connection()
+    post = conn.execute("SELECT title FROM posts WHERE id = ?", (post_id,)).fetchone()
+    if not post:
+        conn.close()
+        return jsonify({"error": "Post not found"}), 404
+
+    now = datetime.now().isoformat()
+    conn.execute("UPDATE posts SET status = 'unpublished', updated_at = ? WHERE id = ?", (now, post_id))
+    conn.commit()
+    conn.close()
+
+    log_activity("UNPUBLISH_POST", post["title"], "Hidden from live website")
+    return jsonify({"success": True, "message": "Post unpublished", "status": "unpublished"})
+
+@cms_bp.route("/posts/<post_id>", methods=["DELETE"])
+@require_auth
+def delete_post(post_id):
+    conn = get_db_connection()
+    post = conn.execute("SELECT title FROM posts WHERE id = ?", (post_id,)).fetchone()
+    if not post:
+        conn.close()
+        return jsonify({"error": "Post not found"}), 404
+
+    conn.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+    conn.commit()
+    conn.close()
+
+    log_activity("DELETE_POST", post["title"], f"ID: {post_id}")
+    return jsonify({"success": True, "message": "Post deleted"})
 
 # ----------------------------------------------------------------------
-# 5. Media Upload Endpoint
+# 6. Media Upload Endpoint
 # ----------------------------------------------------------------------
 @cms_bp.route("/upload", methods=["POST"])
 @require_auth
 def upload_file():
-    """Handle multipart media upload from Android."""
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -490,7 +478,6 @@ def upload_file():
     except Exception as e:
         return jsonify({"error": f"Failed to process media: {str(e)}"}), 500
 
-    # Save to SQLite Database
     conn = get_db_connection()
     now = datetime.now().isoformat()
     conn.execute("""
@@ -514,70 +501,7 @@ def upload_file():
     conn.close()
 
     log_activity("UPLOAD_MEDIA", filename, f"Size: {round(asset_info['sizeBytes']/1024, 1)} KB")
-    return jsonify({
-        "success": True,
-        "asset": asset_info
-    }), 201
-
-# ----------------------------------------------------------------------
-# 6. One-Time Google Drive Import
-# ----------------------------------------------------------------------
-@cms_bp.route("/import-drive", methods=["POST"])
-@require_auth
-def import_drive():
-    """One-time migration from existing Google Drive manifest into SQLite database."""
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    manifest_path = os.path.join(base_dir, "cms", "manifest.json")
-
-    if not os.path.exists(manifest_path):
-        return jsonify({"error": "Drive manifest not found to import"}), 404
-
-    with open(manifest_path, "r", encoding="utf-8") as f:
-        manifest = json.load(f)
-
-    conn = get_db_connection()
-    imported_cats = 0
-    imported_projs = 0
-
-    now = datetime.now().isoformat()
-
-    # Import categories
-    for cat in manifest.get("categories", []):
-        cat_id = cat.get("id") or f"cat_{cat['slug']}"
-        existing = conn.execute("SELECT id FROM categories WHERE id = ? OR slug = ?", (cat_id, cat["slug"])).fetchone()
-        if not existing:
-            conn.execute("""
-                INSERT INTO categories (id, name, slug, cover_asset_url, drive_folder_id, sort_order, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, (cat_id, cat["name"], cat["slug"], "assets/hero.png", cat.get("driveFolderId"), cat.get("order", 1), now, now))
-            imported_cats += 1
-
-    # Import projects
-    for proj in manifest.get("projects", []):
-        proj_id = proj.get("id") or f"proj_{proj['slug']}"
-        existing = conn.execute("SELECT id FROM projects WHERE id = ? OR slug = ?", (proj_id, proj["slug"])).fetchone()
-        if not existing:
-            cat_id = proj.get("categoryId") or f"cat_{slugify(proj['category'])}"
-            cover_url = proj.get("coverAsset", {}).get("localPath") or "assets/hero.png"
-            tags_json = json.dumps(proj.get("tags", [proj.get("category", "Artwork")]))
-            drive_url = proj.get("driveUrl", "https://drive.google.com/drive/folders/1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7?usp=drive_link")
-            
-            conn.execute("""
-                INSERT INTO projects (id, category_id, title, slug, description, year, cover_asset_url, status, featured, sort_order, tags_json, drive_url, created_at, updated_at, published_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (proj_id, cat_id, proj["title"], proj["slug"], proj.get("description", ""), proj.get("year", "2026"), cover_url, 'published', 0, proj.get("order", 1), tags_json, drive_url, now, now, now))
-            imported_projs += 1
-
-    conn.commit()
-    conn.close()
-
-    log_activity("IMPORT_DRIVE", "Google Drive Portfolio", f"Migrated {imported_cats} categories, {imported_projs} projects into CMS DB")
-    return jsonify({
-        "success": True,
-        "message": f"Successfully migrated {imported_cats} categories and {imported_projs} projects into database",
-        "categoriesImported": imported_cats,
-        "projectsImported": imported_projs
-    })
+    return jsonify({"success": True, "asset": asset_info}), 201
 
 # ----------------------------------------------------------------------
 # 7. Activity Logs Endpoint
@@ -585,7 +509,6 @@ def import_drive():
 @cms_bp.route("/activity", methods=["GET"])
 @require_auth
 def get_activity():
-    """Get activity logs."""
     conn = get_db_connection()
     logs = conn.execute("SELECT * FROM activity_logs ORDER BY timestamp DESC LIMIT 50").fetchall()
     conn.close()

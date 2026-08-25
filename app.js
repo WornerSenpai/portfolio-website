@@ -453,7 +453,8 @@ function openProjectModal(item) {
   openModal(modal);
 }
 
-function openBlogArticle(id) {
+// Replaced by dynamic openBlogArticle
+function _old_openBlogArticle(id) {
   const post = BLOG_POSTS.find(p => p.id === id);
   if (!post) return;
 
@@ -598,3 +599,62 @@ window.closeModal = closeModal;
 window.openBlogArticle = openBlogArticle;
 window.openProjectModal = openProjectModal;
 window.closeModalById = (id) => closeModal(document.getElementById(id));
+
+// Dynamic Blog Posts Rendering
+function renderBlogPosts() {
+  const blogContainer = document.getElementById('blog-posts-list');
+  if (!blogContainer) return;
+
+  const posts = (CMS_DATA.posts && CMS_DATA.posts.length > 0) ? CMS_DATA.posts : [];
+
+  if (posts.length === 0) {
+    blogContainer.innerHTML = `
+      <div class="col-span-full py-12 text-center text-xs font-mono text-[var(--text-muted)]">
+        No dispatches published yet. Add articles via the Mobile CMS.
+      </div>
+    `;
+    return;
+  }
+
+  blogContainer.innerHTML = posts.map(post => `
+    <article class="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] hover:border-[var(--accent-blue)] transition-all duration-300 group cursor-pointer shadow-sm" onclick="openBlogArticle('${post.id}')">
+      <div class="flex items-center justify-between gap-4 mb-3">
+        <span class="text-xs font-mono text-[var(--accent-blue)] tracking-widest font-bold">${post.tag || 'DISPATCH'}</span>
+        <div class="flex items-center gap-3 text-xs font-mono text-[var(--text-muted)]">
+          <span>${post.date || ''}</span>
+          <span>•</span>
+          <span>${post.readTime || '4 min read'}</span>
+        </div>
+      </div>
+      <h3 class="text-2xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-blue)] transition-colors mb-2">${post.title}</h3>
+      <p class="text-sm text-[var(--text-secondary)] leading-relaxed font-light">${post.summary || ''}</p>
+      <div class="mt-4 flex items-center gap-1 text-xs font-mono font-bold text-[var(--accent-blue)]">
+        <span>READ ENTRY</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </div>
+    </article>
+  `).join('');
+}
+
+function openBlogArticle(id) {
+  const posts = (CMS_DATA.posts && CMS_DATA.posts.length > 0) ? CMS_DATA.posts : [];
+  const post = posts.find(p => p.id === id);
+  if (!post) return;
+
+  const modal = document.getElementById('article-modal');
+  if (!modal) return;
+
+  const tagEl = document.getElementById('article-modal-tag');
+  const dateEl = document.getElementById('article-modal-date');
+  const titleEl = document.getElementById('article-modal-title');
+  const contentEl = document.getElementById('article-modal-content');
+
+  if (tagEl) tagEl.textContent = post.tag || 'DISPATCH';
+  if (dateEl) dateEl.textContent = `${post.date || ''} • ${post.readTime || '4 min read'}`;
+  if (titleEl) titleEl.textContent = post.title;
+  if (contentEl) {
+    contentEl.innerHTML = (post.content || '').split('\n\n').map(p => `<p class="mb-4 leading-relaxed font-light">${p.replace(/\n/g, '<br>')}</p>`).join('');
+  }
+
+  openModal(modal);
+}

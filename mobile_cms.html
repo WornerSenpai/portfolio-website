@@ -1,650 +1,836 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>dragxsy | Private Android CMS</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>dragxsy — Mobile CMS & Cloud Publisher</title>
+  <meta name="theme-color" content="#090b0e" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              blue: '#0284c7',
-              cyan: '#00e5ff',
-              dark: '#090b0e',
-              card: '#12161c',
-              border: '#1f2937'
-            }
-          }
-        }
-      }
-    }
-  </script>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    .hide-scrollbar::-webkit-scrollbar { display: none; }
-    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .phone-frame {
-      max-width: 440px;
-      height: 100dvh;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      background: #090b0e;
-      position: relative;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --bg: #090b0e;
+      --card: #11141a;
+      --card-inner: #171b23;
+      --border: #212631;
+      --accent: #00e5ff;
+      --accent-glow: rgba(0, 229, 255, 0.25);
+      --text: #f0f3f8;
+      --text-muted: #8b949e;
+      --danger: #ff4757;
+      --success: #2ed573;
+      --warning: #ffa502;
     }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .neon-border { box-shadow: 0 0 15px var(--accent-glow); }
+    .glass { background: rgba(17, 20, 26, 0.85); backdrop-filter: blur(16px); }
+    .active-tab { color: var(--accent); }
+    .active-tab::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+    }
+
+    /* Custom smooth scrollbar */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: #212631; border-radius: 4px; }
   </style>
 </head>
-<body class="bg-black text-slate-100 flex items-center justify-center min-h-screen">
+<body class="flex flex-col min-h-screen pb-20 select-none">
 
-  <div class="phone-frame overflow-hidden w-full border-x border-slate-800/80">
-    
-    <!-- Status Bar (Android Header) -->
-    <div class="px-6 pt-3 pb-2 flex items-center justify-between text-xs font-mono text-slate-400 select-none bg-[#090b0e] z-30">
-      <span>09:41</span>
-      <div class="flex items-center gap-2">
-        <i data-lucide="wifi" class="w-3.5 h-3.5 text-slate-300"></i>
-        <i data-lucide="battery-medium" class="w-4 h-4 text-cyan-400"></i>
+  <!-- ========================================================================= -->
+  <!-- 1. TOP MOBILE APP BAR -->
+  <!-- ========================================================================= -->
+  <header class="glass sticky top-0 z-40 px-4 py-3.5 flex items-center justify-between border-b border-[var(--border)]">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-lg bg-[var(--accent)] text-black flex items-center justify-center font-mono font-bold text-sm shadow-md">
+        d
+      </div>
+      <div>
+        <h1 class="text-sm font-bold tracking-tight lowercase font-mono leading-none">dragxsy cms</h1>
+        <div class="flex items-center gap-1.5 mt-0.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse"></span>
+          <span id="header-status" class="text-[10px] font-mono text-[var(--text-muted)]">cloud sync ready</span>
+        </div>
       </div>
     </div>
 
-    <!-- Screen Container -->
-    <div id="screen-container" class="flex-1 overflow-y-auto hide-scrollbar p-5 pb-24 relative">
-      
-      <!-- ================================================================= -->
-      <!-- 1. LOGIN SCREEN -->
-      <!-- ================================================================= -->
-      <div id="screen-login" class="space-y-6 pt-12">
-        <div class="text-center space-y-2">
-          <div class="w-16 h-16 rounded-3xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-4">
-            <i data-lucide="sparkles" class="w-8 h-8 text-cyan-400"></i>
-          </div>
-          <h1 class="text-2xl font-bold font-mono tracking-tight text-white">dragxsy CMS</h1>
-          <p class="text-xs text-slate-400">Private Android Portfolio Manager</p>
-        </div>
+    <div class="flex items-center gap-2">
+      <a href="/" target="_blank" class="px-2.5 py-1 rounded-full bg-[var(--card-inner)] border border-[var(--border)] text-[11px] font-mono text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black transition-all flex items-center gap-1">
+        <span>Site ↗</span>
+      </a>
+      <button onclick="switchTab('settings')" class="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-white hover:bg-[var(--card-inner)]">
+        <i data-lucide="settings" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </header>
 
-        <form id="login-form" class="space-y-4 pt-4">
-          <div>
-            <label class="block text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1">Email</label>
-            <input type="email" id="login-email" value="admin@dragxsy.com" required class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-white focus:border-cyan-400 focus:outline-none transition-colors" />
-          </div>
-          <div>
-            <label class="block text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1">Password</label>
-            <input type="password" id="login-password" value="dragxsy2026" required class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-white focus:border-cyan-400 focus:outline-none transition-colors" />
-          </div>
-          <div id="login-error" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-400"></div>
-          <button type="submit" class="w-full py-3.5 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold font-mono text-sm transition-all active:scale-98 shadow-lg shadow-cyan-500/20">
-            Sign In
-          </button>
-        </form>
+  <!-- ========================================================================= -->
+  <!-- 2. AUTH SCREEN (SHOWN IF NOT LOGGED IN) -->
+  <!-- ========================================================================= -->
+  <section id="screen-auth" class="hidden flex-1 flex flex-col justify-center px-6 py-12 max-w-md mx-auto w-full">
+    <div class="p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] shadow-xl">
+      <div class="w-12 h-12 rounded-xl bg-[var(--accent)] text-black flex items-center justify-center font-mono font-extrabold text-xl mb-4 mx-auto shadow-lg">
+        d
       </div>
+      <h2 class="text-xl font-bold text-center mb-1">Private CMS Access</h2>
+      <p class="text-xs text-[var(--text-muted)] text-center mb-6 font-mono">dragxsy creative portfolio</p>
 
-      <!-- ================================================================= -->
-      <!-- 2. HOME SCREEN -->
-      <!-- ================================================================= -->
-      <div id="screen-home" class="space-y-6 hidden">
-        <div class="flex items-center justify-between">
-          <div>
-            <p id="user-greeting" class="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">Good morning, Sakshi</p>
-            <h1 class="text-2xl font-bold tracking-tight text-white mt-0.5">Portfolio Overview</h1>
-          </div>
-          <div class="w-10 h-10 rounded-full border border-slate-800 overflow-hidden bg-slate-800">
-            <img src="assets/pfp.jpg" alt="Avatar" class="w-full h-full object-cover" />
-          </div>
-        </div>
-
-        <!-- Metric Grid -->
-        <div class="grid grid-cols-2 gap-3">
-          <div class="p-4 rounded-2xl bg-[#12161c] border border-slate-800/80">
-            <p class="text-[10px] font-mono text-slate-400 uppercase">Categories</p>
-            <p id="stat-categories" class="text-2xl font-bold text-white font-mono mt-1">--</p>
-          </div>
-          <div class="p-4 rounded-2xl bg-[#12161c] border border-slate-800/80">
-            <p class="text-[10px] font-mono text-slate-400 uppercase">Total Projects</p>
-            <p id="stat-projects" class="text-2xl font-bold text-white font-mono mt-1">--</p>
-          </div>
-          <div class="p-4 rounded-2xl bg-[#12161c] border border-emerald-900/40 bg-emerald-950/10">
-            <p class="text-[10px] font-mono text-emerald-400 uppercase">Published</p>
-            <p id="stat-published" class="text-2xl font-bold text-emerald-400 font-mono mt-1">--</p>
-          </div>
-          <div class="p-4 rounded-2xl bg-[#12161c] border border-amber-900/40 bg-amber-950/10">
-            <p class="text-[10px] font-mono text-amber-400 uppercase">Drafts</p>
-            <p id="stat-drafts" class="text-2xl font-bold text-amber-400 font-mono mt-1">--</p>
-          </div>
-        </div>
-
-        <!-- Quick Action Buttons -->
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="navTo('create')" class="p-4 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold font-mono text-xs flex flex-col items-start gap-2 shadow-lg shadow-cyan-500/10 active:scale-95 transition-all">
-            <i data-lucide="plus-circle" class="w-5 h-5"></i>
-            <span>New Project</span>
-          </button>
-          <button onclick="navTo('upload')" class="p-4 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-white font-bold font-mono text-xs flex flex-col items-start gap-2 active:scale-95 transition-all">
-            <i data-lucide="upload-cloud" class="w-5 h-5 text-cyan-400"></i>
-            <span>Upload Artwork</span>
-          </button>
-        </div>
-
-        <!-- Recent Activity Feed -->
-        <div class="space-y-3 pt-2">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">Recent Activity</h3>
-            <span class="text-[10px] font-mono text-slate-500">Live DB Stream</span>
-          </div>
-          <div id="home-activity-list" class="space-y-2 font-mono text-xs">
-            <!-- Injected dynamically -->
-          </div>
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- 3. PORTFOLIO SCREEN -->
-      <!-- ================================================================= -->
-      <div id="screen-portfolio" class="space-y-5 hidden">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-mono text-cyan-400 font-bold uppercase">Manage Work</p>
-            <h1 class="text-2xl font-bold text-white">Portfolio</h1>
-          </div>
-          <button onclick="openNewCategoryModal()" class="p-2 rounded-full bg-slate-900 border border-slate-800 text-cyan-400 hover:bg-slate-800">
-            <i data-lucide="folder-plus" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <!-- Categories & Projects List -->
-        <div id="portfolio-categories-list" class="space-y-4">
-          <!-- Injected dynamically -->
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- 4. CREATE PROJECT SCREEN -->
-      <!-- ================================================================= -->
-      <div id="screen-create" class="space-y-5 hidden">
-        <div class="flex items-center justify-between">
-          <button onclick="navTo('portfolio')" class="p-2 rounded-full bg-slate-900 text-slate-400 hover:text-white">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-          </button>
-          <h1 class="text-lg font-bold font-mono text-white">Create Artwork Project</h1>
-          <div class="w-8"></div>
-        </div>
-
-        <form id="create-project-form" class="space-y-4">
-          <div>
-            <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Project Title</label>
-            <input type="text" id="cp-title" required placeholder="e.g. Midnight Resonance Vol 2" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-white focus:border-cyan-400 focus:outline-none" />
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Category</label>
-            <select id="cp-category" required class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-white focus:border-cyan-400 focus:outline-none">
-              <!-- Injected dynamically -->
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Description</label>
-            <textarea id="cp-desc" rows="3" placeholder="Artistic concept, tools, sonic frequency..." class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-white focus:border-cyan-400 focus:outline-none"></textarea>
-          </div>
-
-          <!-- Multi-Image Upload / Picker -->
-          <div class="space-y-2">
-            <label class="block text-[11px] font-mono text-slate-400 uppercase">Artwork Media (Gallery / Files)</label>
-            <div class="border-2 border-dashed border-slate-800 hover:border-cyan-500/50 rounded-2xl p-4 text-center cursor-pointer relative bg-slate-900/50">
-              <input type="file" id="cp-file-input" multiple accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onchange="handleFileSelect(event)" />
-              <i data-lucide="image-plus" class="w-6 h-6 text-cyan-400 mx-auto mb-2"></i>
-              <p class="text-xs text-slate-300 font-medium">Select Images / Videos from Gallery</p>
-              <p class="text-[10px] text-slate-500 font-mono mt-0.5">JPG, PNG, WEBP, MP4</p>
-            </div>
-            <div id="cp-selected-files" class="grid grid-cols-3 gap-2 pt-2"></div>
-          </div>
-
-          <!-- Featured Toggle -->
-          <div class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-900 border border-slate-800">
-            <div>
-              <p class="text-xs font-bold text-white">Feature on Homepage</p>
-              <p class="text-[10px] text-slate-400">Display in 3D Cylinder & Highlights</p>
-            </div>
-            <input type="checkbox" id="cp-featured" class="w-4 h-4 text-cyan-400 rounded bg-slate-800 border-slate-700" />
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="grid grid-cols-2 gap-3 pt-2">
-            <button type="button" onclick="submitProject('draft')" class="py-3 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 font-mono text-xs font-bold transition-all">
-              Save Draft
-            </button>
-            <button type="button" onclick="submitProject('published')" class="py-3 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-mono text-xs font-bold shadow-lg shadow-cyan-500/20 transition-all">
-              Publish Now
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- 5. UPLOAD QUEUE SCREEN -->
-      <!-- ================================================================= -->
-      <div id="screen-upload" class="space-y-5 hidden">
+      <form id="login-form" class="space-y-4">
         <div>
-          <p class="text-xs font-mono text-cyan-400 font-bold uppercase">Background Queue</p>
-          <h1 class="text-2xl font-bold text-white">Media Upload</h1>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Admin Email</label>
+          <input type="email" id="login-email" value="admin@dragxsy.com" required class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
         </div>
-
-        <div class="border-2 border-dashed border-slate-800 hover:border-cyan-500/50 rounded-2xl p-6 text-center cursor-pointer relative bg-slate-900/50">
-          <input type="file" id="direct-upload-input" multiple accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onchange="handleDirectUpload(event)" />
-          <i data-lucide="upload-cloud" class="w-8 h-8 text-cyan-400 mx-auto mb-2"></i>
-          <p class="text-sm font-bold text-white">Tap to Select Files</p>
-          <p class="text-xs text-slate-400 font-mono mt-1">Multi-file background upload</p>
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Password</label>
+          <input type="password" id="login-password" value="dragxsy2026" required class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
         </div>
+        <div id="login-error" class="hidden p-3 rounded-lg bg-[var(--danger)]/10 border border-[var(--danger)]/30 text-xs text-[var(--danger)] font-mono"></div>
+        <button type="submit" id="login-btn" class="w-full py-3 rounded-xl bg-[var(--accent)] text-black font-bold text-sm tracking-wide hover:opacity-90 transition-all cursor-pointer font-mono shadow-md">
+          UNLOCK CMS
+        </button>
+      </form>
+    </div>
+  </section>
 
-        <div class="space-y-2">
-          <div class="flex items-center justify-between text-xs font-mono text-slate-400">
-            <span>Upload Queue Status</span>
-            <span id="queue-count">0 items</span>
+  <!-- ========================================================================= -->
+  <!-- 3. MAIN APP SCREENS -->
+  <!-- ========================================================================= -->
+  <main id="screen-main" class="flex-1 px-4 py-4 max-w-lg mx-auto w-full">
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- TAB 1: HOME OVERVIEW -->
+    <!-- --------------------------------------------------------------------- -->
+    <section id="tab-home" class="space-y-4">
+      <!-- Greeting Banner -->
+      <div class="p-5 rounded-2xl bg-gradient-to-br from-[#11141a] to-[#171b23] border border-[var(--border)] relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-[var(--accent)]/10 blur-2xl pointer-events-none"></div>
+        <span class="text-[11px] font-mono text-[var(--accent)] uppercase tracking-wider font-bold">Authenticated Admin</span>
+        <h2 id="home-greeting" class="text-xl font-bold mt-1 text-white">Good day, Sakshi</h2>
+        <p class="text-xs text-[var(--text-muted)] mt-1">Manage artwork, write dispatches, and publish live to your site.</p>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="p-3.5 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase">Live Projects</span>
+            <div id="stat-published" class="text-2xl font-bold font-mono text-[var(--accent)] mt-0.5">0</div>
           </div>
-          <div id="upload-queue-list" class="space-y-2">
-            <!-- Populated during uploads -->
+          <div class="w-9 h-9 rounded-lg bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase">Dispatches</span>
+            <div id="stat-posts" class="text-2xl font-bold font-mono text-[var(--accent)] mt-0.5">0</div>
+          </div>
+          <div class="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
+            <i data-lucide="newspaper" class="w-5 h-5"></i>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase">Drafts</span>
+            <div id="stat-drafts" class="text-2xl font-bold font-mono text-[var(--warning)] mt-0.5">0</div>
+          </div>
+          <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <i data-lucide="file-edit" class="w-5 h-5"></i>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase">Categories</span>
+            <div id="stat-categories" class="text-2xl font-bold font-mono text-white mt-0.5">0</div>
+          </div>
+          <div class="w-9 h-9 rounded-lg bg-white/5 text-white flex items-center justify-center">
+            <i data-lucide="folder" class="w-5 h-5"></i>
           </div>
         </div>
       </div>
 
-      <!-- ================================================================= -->
-      <!-- 6. SETTINGS SCREEN -->
-      <!-- ================================================================= -->
-      <div id="screen-settings" class="space-y-5 hidden">
-        <div>
-          <p class="text-xs font-mono text-cyan-400 font-bold uppercase">System & Account</p>
-          <h1 class="text-2xl font-bold text-white">Settings</h1>
-        </div>
-
-        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-full overflow-hidden border border-slate-700 bg-slate-800">
-              <img src="assets/pfp.jpg" alt="Avatar" class="w-full h-full object-cover" />
-            </div>
-            <div>
-              <p class="text-sm font-bold text-white">Sakshi</p>
-              <p class="text-xs font-mono text-cyan-400">admin@dragxsy.com</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Google Drive One-Time Migration -->
-        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
-          <div class="flex items-center gap-2">
-            <i data-lucide="folder-git-2" class="w-4 h-4 text-cyan-400"></i>
-            <h3 class="text-xs font-bold font-mono text-white uppercase">Google Drive Migration</h3>
-          </div>
-          <p class="text-xs text-slate-400 leading-relaxed font-light">
-            Import existing Drive folders and artwork into this private CMS database.
-          </p>
-          <button onclick="triggerDriveImport()" id="btn-import-drive" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-mono font-bold border border-slate-700 transition-colors">
-            Seed Database from Drive
+      <!-- Quick Action Shortcuts -->
+      <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] space-y-2.5">
+        <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider">Quick Actions</h3>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="openCreateProjectModal()" class="py-2.5 px-3 rounded-lg bg-[var(--card-inner)] border border-[var(--border)] text-xs font-mono text-white flex items-center justify-center gap-1.5 hover:border-[var(--accent)] transition-all">
+            <i data-lucide="plus" class="w-4 h-4 text-[var(--accent)]"></i>
+            <span>New Artwork</span>
+          </button>
+          <button onclick="openCreatePostModal()" class="py-2.5 px-3 rounded-lg bg-[var(--card-inner)] border border-[var(--border)] text-xs font-mono text-white flex items-center justify-center gap-1.5 hover:border-[var(--accent)] transition-all">
+            <i data-lucide="feather" class="w-4 h-4 text-purple-400"></i>
+            <span>Write Note</span>
           </button>
         </div>
+      </div>
 
-        <!-- Logout -->
-        <button onclick="handleLogout()" class="w-full py-3 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 font-mono text-xs font-bold transition-colors">
-          Logout of CMS
+      <!-- Recent Activity Stream -->
+      <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider">Audit Stream</h3>
+          <span class="text-[10px] font-mono text-[var(--accent)]">Live</span>
+        </div>
+        <div id="home-activity-list" class="space-y-2 max-h-48 overflow-y-auto">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- TAB 2: PORTFOLIO WORK -->
+    <!-- --------------------------------------------------------------------- -->
+    <section id="tab-work" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold font-mono">Portfolio Artworks</h2>
+        <button onclick="openCreateProjectModal()" class="px-3 py-1.5 rounded-lg bg-[var(--accent)] text-black text-xs font-bold font-mono flex items-center gap-1">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          <span>New Project</span>
         </button>
       </div>
 
+      <!-- Category Filter Pills -->
+      <div id="work-category-pills" class="flex gap-2 overflow-x-auto pb-1 text-xs font-mono">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Projects List -->
+      <div id="work-projects-list" class="space-y-3">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- TAB 3: NOTES / BLOG DISPATCHES (NEW) -->
+    <!-- --------------------------------------------------------------------- -->
+    <section id="tab-notes" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold font-mono">Off the Record</h2>
+          <p class="text-[11px] text-[var(--text-muted)]">Editorial notes and design dispatches</p>
+        </div>
+        <button onclick="openCreatePostModal()" class="px-3 py-1.5 rounded-lg bg-[var(--accent)] text-black text-xs font-bold font-mono flex items-center gap-1">
+          <i data-lucide="feather" class="w-3.5 h-3.5"></i>
+          <span>Write Dispatch</span>
+        </button>
+      </div>
+
+      <!-- Posts List -->
+      <div id="notes-posts-list" class="space-y-3">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- TAB 4: UPLOAD MEDIA -->
+    <!-- --------------------------------------------------------------------- -->
+    <section id="tab-upload" class="hidden space-y-4">
+      <div class="p-6 rounded-2xl bg-[var(--card)] border-2 border-dashed border-[var(--border)] text-center cursor-pointer hover:border-[var(--accent)] transition-all" onclick="document.getElementById('file-upload-input').click()">
+        <input type="file" id="file-upload-input" multiple accept="image/*,video/*" class="hidden" onchange="handleFileUpload(event)" />
+        <div class="w-12 h-12 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-sm font-bold mb-1">Select Media from Phone</h3>
+        <p class="text-xs text-[var(--text-muted)] font-mono">JPG, PNG, WEBP, GIF, MP4 (Auto-optimized by Pillow)</p>
+      </div>
+
+      <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)]">
+        <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider mb-3">Uploaded Assets</h3>
+        <div id="uploaded-assets-grid" class="grid grid-cols-3 gap-2">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- TAB 5: SETTINGS -->
+    <!-- --------------------------------------------------------------------- -->
+    <section id="tab-settings" class="hidden space-y-4">
+      <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] space-y-3">
+        <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider">Account Info</h3>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-[var(--card-inner)] border border-[var(--border)] flex items-center justify-center font-bold text-sm text-[var(--accent)] font-mono">
+            S
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-white">Sakshi (dragxsy)</h4>
+            <p class="text-xs text-[var(--text-muted)] font-mono">admin@dragxsy.com</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] space-y-3">
+        <h3 class="text-xs font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider">Cloud Deployment</h3>
+        <div class="space-y-2 text-xs font-mono text-[var(--text-secondary)]">
+          <div class="flex items-center justify-between p-2 rounded-lg bg-[var(--card-inner)]">
+            <span>GitHub Repository:</span>
+            <a href="https://github.com/WornerSenpai/portfolio-website" target="_blank" class="text-[var(--accent)]">WornerSenpai/portfolio-website ↗</a>
+          </div>
+          <div class="flex items-center justify-between p-2 rounded-lg bg-[var(--card-inner)]">
+            <span>Live Vercel Site:</span>
+            <span class="text-[var(--success)]">Connected</span>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="handleLogout()" class="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold font-mono text-xs hover:bg-red-500/20 transition-all">
+        LOGOUT OF CMS
+      </button>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 4. BOTTOM MOBILE NAVIGATION BAR -->
+  <!-- ========================================================================= -->
+  <nav id="bottom-nav" class="glass fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--border)] flex items-center justify-around py-2 px-1">
+    <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-[var(--text-muted)] hover:text-white relative py-1 px-3 active-tab">
+      <i data-lucide="home" class="w-5 h-5"></i>
+      <span class="text-[10px] font-mono font-medium">Home</span>
+    </button>
+    <button onclick="switchTab('work')" id="nav-work" class="flex flex-col items-center gap-1 text-[var(--text-muted)] hover:text-white relative py-1 px-3">
+      <i data-lucide="grid" class="w-5 h-5"></i>
+      <span class="text-[10px] font-mono font-medium">Work</span>
+    </button>
+    <button onclick="switchTab('notes')" id="nav-notes" class="flex flex-col items-center gap-1 text-[var(--text-muted)] hover:text-white relative py-1 px-3">
+      <i data-lucide="newspaper" class="w-5 h-5"></i>
+      <span class="text-[10px] font-mono font-medium">Notes</span>
+    </button>
+    <button onclick="switchTab('upload')" id="nav-upload" class="flex flex-col items-center gap-1 text-[var(--text-muted)] hover:text-white relative py-1 px-3">
+      <i data-lucide="upload" class="w-5 h-5"></i>
+      <span class="text-[10px] font-mono font-medium">Upload</span>
+    </button>
+    <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center gap-1 text-[var(--text-muted)] hover:text-white relative py-1 px-3">
+      <i data-lucide="sliders" class="w-5 h-5"></i>
+      <span class="text-[10px] font-mono font-medium">Settings</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- 5. MODAL: CREATE / EDIT PROJECT -->
+  <!-- ========================================================================= -->
+  <div id="modal-project" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="w-full max-w-lg bg-[var(--card)] border border-[var(--border)] rounded-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between">
+        <h3 class="text-sm font-bold font-mono">Create / Edit Project</h3>
+        <button onclick="closeModal('modal-project')" class="text-[var(--text-muted)] hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="project-form" class="p-5 space-y-4 overflow-y-auto flex-1">
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Artwork Title *</label>
+          <input type="text" id="proj-title" required placeholder="e.g. Neon Cyberpunk Concept" class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Category *</label>
+            <select id="proj-category" required class="w-full px-3 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Year</label>
+            <input type="text" id="proj-year" value="2026" class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Description / Creative Concept</label>
+          <textarea id="proj-desc" rows="3" placeholder="Context, tools used, sonic background..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Cover Image Asset URL</label>
+          <input type="text" id="proj-cover" placeholder="assets/hero.png or /uploads/..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+        </div>
+
+        <div class="flex items-center gap-3 pt-2">
+          <button type="button" onclick="saveProject('draft')" class="flex-1 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-white text-xs font-mono font-bold hover:border-[var(--warning)] transition-all">
+            Save as Draft
+          </button>
+          <button type="button" onclick="saveProject('published')" class="flex-1 py-2.5 rounded-xl bg-[var(--accent)] text-black text-xs font-mono font-bold hover:opacity-90 transition-all shadow-md">
+            Publish Live 🚀
+          </button>
+        </div>
+      </form>
     </div>
-
-    <!-- Bottom Navigation Bar (Android Tab Bar) -->
-    <nav class="absolute bottom-0 left-0 right-0 h-16 bg-[#0c1017] border-t border-slate-800/80 px-6 flex items-center justify-between z-30">
-      <button onclick="navTo('home')" id="tab-home" class="flex flex-col items-center gap-1 text-cyan-400 text-[10px] font-mono font-bold">
-        <i data-lucide="home" class="w-5 h-5"></i>
-        <span>HOME</span>
-      </button>
-      <button onclick="navTo('portfolio')" id="tab-portfolio" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[10px] font-mono">
-        <i data-lucide="grid" class="w-5 h-5"></i>
-        <span>WORK</span>
-      </button>
-      <button onclick="navTo('upload')" id="tab-upload" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[10px] font-mono">
-        <i data-lucide="upload" class="w-5 h-5"></i>
-        <span>UPLOAD</span>
-      </button>
-      <button onclick="navTo('settings')" id="tab-settings" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[10px] font-mono">
-        <i data-lucide="settings" class="w-5 h-5"></i>
-        <span>SETTINGS</span>
-      </button>
-    </nav>
-
   </div>
 
+  <!-- ========================================================================= -->
+  <!-- 6. MODAL: CREATE / EDIT BLOG POST / DISPATCH (NEW) -->
+  <!-- ========================================================================= -->
+  <div id="modal-post" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="w-full max-w-lg bg-[var(--card)] border border-[var(--border)] rounded-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between">
+        <h3 class="text-sm font-bold font-mono">Write Dispatch / Editorial Note</h3>
+        <button onclick="closeModal('modal-post')" class="text-[var(--text-muted)] hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="post-form" class="p-5 space-y-4 overflow-y-auto flex-1">
+        <input type="hidden" id="edit-post-id" />
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Dispatch Title *</label>
+          <input type="text" id="post-title" required placeholder="e.g. Operating Between Deliberate Chaos" class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Tag / Badge</label>
+            <input type="text" id="post-tag" value="DISPATCH 04" placeholder="DISPATCH 04" class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Read Time</label>
+            <input type="text" id="post-readtime" value="4 min read" class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Summary Excerpt</label>
+          <textarea id="post-summary" rows="2" placeholder="Brief 1-2 sentence hook shown in the card..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase">Full Content / Story *</label>
+          <textarea id="post-content" rows="6" required placeholder="Write your full thoughts, creative philosophy, or case study notes (separate paragraphs with blank lines)..." class="w-full px-3.5 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-sm text-white focus:outline-none focus:border-[var(--accent)] font-mono"></textarea>
+        </div>
+
+        <div class="flex items-center gap-3 pt-2">
+          <button type="button" onclick="saveBlogPost('draft')" class="flex-1 py-2.5 rounded-xl bg-[var(--card-inner)] border border-[var(--border)] text-white text-xs font-mono font-bold hover:border-[var(--warning)] transition-all">
+            Save as Draft
+          </button>
+          <button type="button" onclick="saveBlogPost('published')" class="flex-1 py-2.5 rounded-xl bg-[var(--accent)] text-black text-xs font-mono font-bold hover:opacity-90 transition-all shadow-md">
+            Publish Dispatch 🚀
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 7. APPLICATION LOGIC & API INTERFACE -->
+  <!-- ========================================================================= -->
   <script>
-    let AUTH_TOKEN = localStorage.getItem('dragxsy_cms_token') || '';
-    let CMS_STATE = { overview: null, categories: [], projects: [] };
-    let selectedUploadFiles = [];
+    let TOKEN = localStorage.getItem('dragxsy_cms_token') || '';
+    let CACHE_CATEGORIES = [];
+    let CACHE_PROJECTS = [];
+    let CACHE_POSTS = [];
+    let SELECTED_CATEGORY = 'all';
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      lucide.createIcons();
-      if (AUTH_TOKEN) {
-        showMainApp();
-      } else {
-        showLogin();
+    async function apiRequest(endpoint, method = 'GET', data = null) {
+      const headers = { 'Content-Type': 'application/json' };
+      if (TOKEN) headers['Authorization'] = `Bearer ${TOKEN}`;
+      
+      const options = { method, headers };
+      if (data) options.body = JSON.stringify(data);
+
+      const resp = await fetch(`/api/cms${endpoint}`, options);
+      if (resp.status === 401) {
+        TOKEN = '';
+        localStorage.removeItem('dragxsy_cms_token');
+        showAuthScreen();
+        throw new Error('Unauthorized');
       }
+      return await resp.json();
+    }
 
-      // Handle Login Form
-      document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        const errEl = document.getElementById('login-error');
-        errEl.classList.add('hidden');
+    // Tab Switching
+    function switchTab(tabId) {
+      ['home', 'work', 'notes', 'upload', 'settings'].forEach(t => {
+        const sec = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`nav-${t}`);
+        if (sec) sec.classList.toggle('hidden', t !== tabId);
+        if (btn) {
+          btn.classList.toggle('active-tab', t === tabId);
+          btn.classList.toggle('text-white', t === tabId);
+        }
+      });
+      lucide.createIcons();
+    }
 
-        try {
-          const resp = await fetch('/api/cms/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-          });
-          const data = await resp.json();
-          if (data.success) {
-            AUTH_TOKEN = data.token;
-            localStorage.setItem('dragxsy_cms_token', AUTH_TOKEN);
-            showMainApp();
-          } else {
-            errEl.textContent = data.error || 'Login failed';
-            errEl.classList.remove('hidden');
-          }
-        } catch (err) {
-          errEl.textContent = 'Server connection error';
+    function showAuthScreen() {
+      document.getElementById('screen-auth').classList.remove('hidden');
+      document.getElementById('screen-main').classList.add('hidden');
+      document.getElementById('bottom-nav').classList.add('hidden');
+    }
+
+    function showMainApp() {
+      document.getElementById('screen-auth').classList.add('hidden');
+      document.getElementById('screen-main').classList.remove('hidden');
+      document.getElementById('bottom-nav').classList.remove('hidden');
+      loadOverview();
+      loadCategories();
+      loadProjects();
+      loadPosts();
+    }
+
+    // Login
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const errEl = document.getElementById('login-error');
+      errEl.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/cms/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          TOKEN = data.token;
+          localStorage.setItem('dragxsy_cms_token', TOKEN);
+          showMainApp();
+        } else {
+          errEl.textContent = data.error || 'Login failed';
           errEl.classList.remove('hidden');
         }
-      });
+      } catch (err) {
+        errEl.textContent = 'Server connection error';
+        errEl.classList.remove('hidden');
+      }
     });
 
-    function showLogin() {
-      document.querySelectorAll('#screen-container > div').forEach(d => d.classList.add('hidden'));
-      document.getElementById('screen-login').classList.remove('hidden');
-      document.querySelector('nav').classList.add('hidden');
+    function handleLogout() {
+      TOKEN = '';
+      localStorage.removeItem('dragxsy_cms_token');
+      showAuthScreen();
     }
 
-    async function showMainApp() {
-      document.querySelector('nav').classList.remove('hidden');
-      navTo('home');
-      await refreshAllData();
-    }
-
-    function navTo(screen) {
-      document.querySelectorAll('#screen-container > div').forEach(d => d.classList.add('hidden'));
-      const target = document.getElementById(`screen-${screen}`);
-      if (target) target.classList.remove('hidden');
-
-      // Update Nav Tab highlight
-      ['home', 'portfolio', 'upload', 'settings'].forEach(t => {
-        const btn = document.getElementById(`tab-${t}`);
-        if (btn) {
-          if (t === screen) {
-            btn.className = 'flex flex-col items-center gap-1 text-cyan-400 text-[10px] font-mono font-bold';
-          } else {
-            btn.className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[10px] font-mono';
-          }
-        }
-      });
-
-      if (screen === 'portfolio') renderPortfolioView();
-      if (screen === 'create') populateCategoryDropdown();
-      lucide.createIcons();
-    }
-
-    async function refreshAllData() {
+    // Load Overview Metrics
+    async function loadOverview() {
       try {
-        // 1. Fetch Overview
-        const ovResp = await fetch('/api/cms/overview', { headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` } });
-        if (ovResp.status === 401) { handleLogout(); return; }
-        const ov = await ovResp.json();
-        CMS_STATE.overview = ov;
+        const data = await apiRequest('/overview');
+        document.getElementById('home-greeting').textContent = data.userGreeting || 'Good day, Sakshi';
+        document.getElementById('stat-published').textContent = data.stats?.published || 0;
+        document.getElementById('stat-posts').textContent = data.stats?.posts || 0;
+        document.getElementById('stat-drafts').textContent = data.stats?.drafts || 0;
+        document.getElementById('stat-categories').textContent = data.stats?.categories || 0;
 
-        document.getElementById('stat-categories').textContent = ov.stats.categories;
-        document.getElementById('stat-projects').textContent = ov.stats.projects;
-        document.getElementById('stat-published').textContent = ov.stats.published;
-        document.getElementById('stat-drafts').textContent = ov.stats.drafts;
-
-        const actList = document.getElementById('home-activity-list');
-        actList.innerHTML = (ov.recentActivity || []).slice(0, 5).map(a => `
-          <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800/80 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-cyan-950 text-cyan-400 border border-cyan-800/60">${a.action}</span>
-              <span class="text-slate-200">${a.item_name}</span>
+        const list = document.getElementById('home-activity-list');
+        list.innerHTML = (data.recentActivity || []).map(act => `
+          <div class="p-2.5 rounded-lg bg-[var(--card-inner)] border border-[var(--border)] flex items-center justify-between text-xs font-mono">
+            <div>
+              <span class="text-[var(--accent)] font-bold">${act.action}</span>: <span class="text-white">${act.item_name}</span>
             </div>
-            <span class="text-[10px] text-slate-500">${a.timestamp.split(' ')[1]}</span>
+            <span class="text-[10px] text-[var(--text-muted)]">${act.timestamp.split(' ')[1] || ''}</span>
           </div>
         `).join('');
-
-        // 2. Fetch Categories & Projects
-        const catResp = await fetch('/api/cms/categories', { headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` } });
-        CMS_STATE.categories = await catResp.json();
-
-        const projResp = await fetch('/api/cms/projects?status=all', { headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` } });
-        CMS_STATE.projects = await projResp.json();
-
-      } catch (err) {
-        console.error('[CMS] Error fetching data:', err);
+      } catch (e) {
+        console.error(e);
       }
-      lucide.createIcons();
     }
 
-    function renderPortfolioView() {
-      const container = document.getElementById('portfolio-categories-list');
-      if (!container) return;
+    // Load Categories
+    async function loadCategories() {
+      try {
+        CACHE_CATEGORIES = await apiRequest('/categories');
+        const select = document.getElementById('proj-category');
+        select.innerHTML = CACHE_CATEGORIES.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 
-      container.innerHTML = (CMS_STATE.categories || []).map(cat => {
-        const catProjects = (CMS_STATE.projects || []).filter(p => p.category_id === cat.id);
-        return `
-          <div class="p-4 rounded-2xl bg-[#12161c] border border-slate-800 space-y-3">
-            <div class="flex items-center justify-between">
-              <div>
-                <h3 class="font-bold text-sm text-white">${cat.name}</h3>
-                <p class="text-[10px] font-mono text-slate-500">${catProjects.length} projects</p>
-              </div>
-              <button onclick="navTo('create')" class="p-1.5 rounded-lg bg-slate-800 text-cyan-400 text-xs font-mono flex items-center gap-1">
-                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add
-              </button>
-            </div>
-
-            <div class="space-y-2">
-              ${catProjects.map(p => `
-                <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800/80 flex items-center justify-between gap-3">
-                  <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-800 flex-shrink-0">
-                      <img src="${p.cover_asset_url || 'assets/hero.png'}" class="w-full h-full object-cover" />
-                    </div>
-                    <div class="min-w-0">
-                      <h4 class="text-xs font-bold text-white truncate">${p.title}</h4>
-                      <span class="inline-block px-1.5 py-0.2 rounded text-[9px] font-mono ${p.status === 'published' ? 'bg-emerald-950 text-emerald-400' : 'bg-amber-950 text-amber-400'}">${p.status}</span>
-                    </div>
-                  </div>
-
-                  <div class="flex items-center gap-1">
-                    ${p.status === 'published'
-                      ? `<button onclick="togglePublish('${p.id}', false)" class="px-2 py-1 rounded bg-slate-800 text-slate-400 hover:text-amber-400 text-[10px] font-mono font-bold">Unpublish</button>`
-                      : `<button onclick="togglePublish('${p.id}', true)" class="px-2 py-1 rounded bg-cyan-400 text-slate-950 text-[10px] font-mono font-bold">Publish</button>`
-                    }
-                    <button onclick="deleteProject('${p.id}')" class="p-1.5 rounded text-slate-500 hover:text-rose-400">
-                      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                    </button>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
+        const pills = document.getElementById('work-category-pills');
+        pills.innerHTML = `
+          <button onclick="filterCategory('all')" class="px-3 py-1 rounded-full border ${SELECTED_CATEGORY === 'all' ? 'bg-[var(--accent)] text-black border-[var(--accent)]' : 'bg-[var(--card-inner)] border-[var(--border)] text-[var(--text-secondary)]'}">All</button>
+          ${CACHE_CATEGORIES.map(c => `
+            <button onclick="filterCategory('${c.id}')" class="px-3 py-1 rounded-full border whitespace-nowrap ${SELECTED_CATEGORY === c.id ? 'bg-[var(--accent)] text-black border-[var(--accent)]' : 'bg-[var(--card-inner)] border-[var(--border)] text-[var(--text-secondary)]'}">${c.name}</button>
+          `).join('')}
         `;
-      }).join('');
-      lucide.createIcons();
+      } catch (e) {
+        console.error(e);
+      }
     }
 
-    function populateCategoryDropdown() {
-      const select = document.getElementById('cp-category');
-      if (!select) return;
-      select.innerHTML = (CMS_STATE.categories || []).map(c => `
-        <option value="${c.id}">${c.name}</option>
-      `).join('');
+    function filterCategory(catId) {
+      SELECTED_CATEGORY = catId;
+      loadCategories();
+      renderProjectsList();
     }
 
-    function handleFileSelect(e) {
-      const files = Array.from(e.target.files);
-      selectedUploadFiles = files;
-      const preview = document.getElementById('cp-selected-files');
-      preview.innerHTML = files.map((f, i) => `
-        <div class="relative aspect-square rounded-xl overflow-hidden bg-slate-800 border border-slate-700 p-1 flex flex-col justify-end text-[9px] font-mono text-cyan-300">
-          <span class="truncate bg-black/60 px-1 rounded">${f.name}</span>
+    // Load Projects
+    async function loadProjects() {
+      try {
+        CACHE_PROJECTS = await apiRequest('/projects');
+        renderProjectsList();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderProjectsList() {
+      const list = document.getElementById('work-projects-list');
+      const filtered = SELECTED_CATEGORY === 'all' 
+        ? CACHE_PROJECTS 
+        : CACHE_PROJECTS.filter(p => p.category_id === SELECTED_CATEGORY);
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="p-8 text-center text-xs font-mono text-[var(--text-muted)]">No projects found. Tap "New Project" to add artwork.</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(p => `
+        <div class="p-3.5 rounded-xl bg-[var(--card)] border border-[var(--border)] flex gap-3.5 items-center">
+          <img src="${p.cover_asset_url || 'assets/hero.png'}" class="w-16 h-16 rounded-lg object-cover bg-slate-800 border border-[var(--border)]" />
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-mono text-[var(--accent)] font-bold uppercase">${p.category_name}</span>
+              <span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold ${p.status === 'published' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}">${p.status}</span>
+            </div>
+            <h4 class="text-sm font-bold text-white truncate mt-0.5">${p.title}</h4>
+            <p class="text-xs text-[var(--text-muted)] truncate font-light">${p.description || 'No description'}</p>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            ${p.status === 'published' 
+              ? `<button onclick="toggleProjectPublish('${p.id}', false)" class="p-1.5 rounded-lg bg-amber-500/10 text-amber-400 hover:bg-amber-500/20" title="Unpublish"><i data-lucide="eye-off" class="w-4 h-4"></i></button>`
+              : `<button onclick="toggleProjectPublish('${p.id}', true)" class="p-1.5 rounded-lg bg-green-500/10 text-green-400 hover:bg-green-500/20" title="Publish"><i data-lucide="send" class="w-4 h-4"></i></button>`
+            }
+            <button onclick="deleteProject('${p.id}')" class="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </div>
         </div>
       `).join('');
+      lucide.createIcons();
     }
 
-    async function submitProject(status) {
-      const title = document.getElementById('cp-title').value;
-      const categoryId = document.getElementById('cp-category').value;
-      const description = document.getElementById('cp-desc').value;
-      const featured = document.getElementById('cp-featured').checked;
+    // Load Blog Posts / Dispatches
+    async function loadPosts() {
+      try {
+        CACHE_POSTS = await apiRequest('/posts');
+        renderPostsList();
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
-      if (!title) { alert('Please enter a project title'); return; }
+    function renderPostsList() {
+      const list = document.getElementById('notes-posts-list');
+      if (!list) return;
 
-      // Upload selected files first if any
-      let uploadedAssetIds = [];
-      let coverUrl = 'assets/hero.png';
+      if (CACHE_POSTS.length === 0) {
+        list.innerHTML = `<div class="p-8 text-center text-xs font-mono text-[var(--text-muted)]">No blog dispatches yet. Tap "Write Dispatch" to publish your thoughts.</div>`;
+        return;
+      }
 
-      for (const file of selectedUploadFiles) {
-        const fd = new FormData();
-        fd.append('file', file);
-        try {
-          const uResp = await fetch('/api/cms/upload', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` },
-            body: fd
-          });
-          const uData = await uResp.json();
-          if (uData.success) {
-            uploadedAssetIds.push(uData.asset.id);
-            if (!coverUrl || coverUrl === 'assets/hero.png') {
-              coverUrl = uData.asset.optimizedUrl;
-            }
-          }
-        } catch (err) {
-          console.error('File upload failed:', err);
+      list.innerHTML = CACHE_POSTS.map(p => `
+        <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono text-[var(--accent)] font-bold tracking-widest">${p.tag}</span>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-mono text-[var(--text-muted)]">${p.date}</span>
+              <span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold ${p.status === 'published' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}">${p.status}</span>
+            </div>
+          </div>
+          <h3 class="text-sm font-bold text-white">${p.title}</h3>
+          <p class="text-xs text-[var(--text-secondary)] line-clamp-2 font-light">${p.summary}</p>
+          <div class="flex items-center justify-between pt-2 border-t border-[var(--border)]">
+            <span class="text-[10px] font-mono text-[var(--text-muted)]">${p.read_time}</span>
+            <div class="flex items-center gap-2">
+              <button onclick="editBlogPost('${p.id}')" class="px-2.5 py-1 rounded bg-[var(--card-inner)] text-[11px] font-mono text-white hover:border-[var(--accent)] flex items-center gap-1">
+                <i data-lucide="edit-3" class="w-3 h-3"></i> Edit
+              </button>
+              ${p.status === 'published'
+                ? `<button onclick="togglePostPublish('${p.id}', false)" class="px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 text-[11px] font-mono">Unpublish</button>`
+                : `<button onclick="togglePostPublish('${p.id}', true)" class="px-2.5 py-1 rounded bg-green-500/10 text-green-400 text-[11px] font-mono">Publish Live</button>`
+              }
+              <button onclick="deleteBlogPost('${p.id}')" class="p-1 rounded text-red-400 hover:bg-red-500/10"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // Modal Triggers
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); lucide.createIcons(); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function openCreateProjectModal() {
+      document.getElementById('proj-title').value = '';
+      document.getElementById('proj-desc').value = '';
+      document.getElementById('proj-cover').value = '';
+      openModal('modal-project');
+    }
+
+    function openCreatePostModal() {
+      document.getElementById('edit-post-id').value = '';
+      document.getElementById('post-title').value = '';
+      document.getElementById('post-tag').value = `DISPATCH 0${CACHE_POSTS.length + 1}`;
+      document.getElementById('post-summary').value = '';
+      document.getElementById('post-content').value = '';
+      openModal('modal-post');
+    }
+
+    function editBlogPost(id) {
+      const post = CACHE_POSTS.find(p => p.id === id);
+      if (!post) return;
+      document.getElementById('edit-post-id').value = post.id;
+      document.getElementById('post-title').value = post.title;
+      document.getElementById('post-tag').value = post.tag;
+      document.getElementById('post-readtime').value = post.read_time;
+      document.getElementById('post-summary').value = post.summary;
+      document.getElementById('post-content').value = post.content;
+      openModal('modal-post');
+    }
+
+    // Save Blog Post
+    async function saveBlogPost(status) {
+      const editId = document.getElementById('edit-post-id').value;
+      const title = document.getElementById('post-title').value.trim();
+      const tag = document.getElementById('post-tag').value.trim();
+      const readTime = document.getElementById('post-readtime').value.trim();
+      const summary = document.getElementById('post-summary').value.trim();
+      const content = document.getElementById('post-content').value.trim();
+
+      if (!title || !content) {
+        alert('Please provide title and content');
+        return;
+      }
+
+      const payload = { title, tag, readTime, summary, content, status };
+
+      try {
+        if (editId) {
+          await apiRequest(`/posts/${editId}`, 'PUT', payload);
+        } else {
+          await apiRequest('/posts', 'POST', payload);
         }
-      }
-
-      // Create Project
-      const projPayload = {
-        title,
-        categoryId,
-        description,
-        status,
-        featured,
-        coverAssetUrl: coverUrl,
-        assetIds: uploadedAssetIds
-      };
-
-      const resp = await fetch('/api/cms/projects', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${AUTH_TOKEN}`
-        },
-        body: JSON.stringify(projPayload)
-      });
-
-      const res = await resp.json();
-      if (res.success) {
-        alert(status === 'published' ? 'Project published directly to website!' : 'Project saved as draft!');
-        await refreshAllData();
-        navTo('portfolio');
-      } else {
-        alert('Error: ' + res.error);
+        closeModal('modal-post');
+        await loadPosts();
+        await loadOverview();
+      } catch (err) {
+        alert('Failed to save post: ' + err.message);
       }
     }
 
-    async function togglePublish(projectId, shouldPublish) {
-      const endpoint = shouldPublish ? `/api/cms/projects/${projectId}/publish` : `/api/cms/projects/${projectId}/unpublish`;
-      const resp = await fetch(endpoint, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
-      });
-      const res = await resp.json();
-      if (res.success) {
-        await refreshAllData();
-        renderPortfolioView();
+    async function togglePostPublish(id, publish) {
+      try {
+        await apiRequest(`/posts/${id}/${publish ? 'publish' : 'unpublish'}`, 'PUT');
+        await loadPosts();
+        await loadOverview();
+      } catch (e) {
+        alert(e.message);
       }
     }
 
-    async function deleteProject(projectId) {
+    async function deleteBlogPost(id) {
+      if (!confirm('Are you sure you want to delete this dispatch?')) return;
+      try {
+        await apiRequest(`/posts/${id}`, 'DELETE');
+        await loadPosts();
+        await loadOverview();
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    // Save Project
+    async function saveProject(status) {
+      const title = document.getElementById('proj-title').value.trim();
+      const categoryId = document.getElementById('proj-category').value;
+      const year = document.getElementById('proj-year').value.trim();
+      const description = document.getElementById('proj-desc').value.trim();
+      const coverAssetUrl = document.getElementById('proj-cover').value.trim() || 'assets/hero.png';
+
+      if (!title || !categoryId) {
+        alert('Please fill title and category');
+        return;
+      }
+
+      try {
+        await apiRequest('/projects', 'POST', { title, categoryId, year, description, coverAssetUrl, status });
+        closeModal('modal-project');
+        await loadProjects();
+        await loadOverview();
+      } catch (err) {
+        alert('Failed to save project: ' + err.message);
+      }
+    }
+
+    async function toggleProjectPublish(id, publish) {
+      try {
+        await apiRequest(`/projects/${id}/${publish ? 'publish' : 'unpublish'}`, 'PUT');
+        await loadProjects();
+        await loadOverview();
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    async function deleteProject(id) {
       if (!confirm('Are you sure you want to delete this project?')) return;
-      const resp = await fetch(`/api/cms/projects/${projectId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
-      });
-      const res = await resp.json();
-      if (res.success) {
-        await refreshAllData();
-        renderPortfolioView();
+      try {
+        await apiRequest(`/projects/${id}`, 'DELETE');
+        await loadProjects();
+        await loadOverview();
+      } catch (e) {
+        alert(e.message);
       }
     }
 
-    async function handleDirectUpload(e) {
-      const files = Array.from(e.target.files);
-      const queueList = document.getElementById('upload-queue-list');
-      document.getElementById('queue-count').textContent = `${files.length} items`;
+    // File Upload Handler
+    async function handleFileUpload(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
 
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const itemEl = document.createElement('div');
-        itemEl.className = 'p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono flex items-center justify-between';
-        itemEl.innerHTML = `<span>${file.name}</span> <span class="text-cyan-400 font-bold">Uploading...</span>`;
-        queueList.appendChild(itemEl);
+      const grid = document.getElementById('uploaded-assets-grid');
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
 
-        const fd = new FormData();
-        fd.append('file', file);
         try {
           const resp = await fetch('/api/cms/upload', {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` },
-            body: fd
+            headers: { 'Authorization': `Bearer ${TOKEN}` },
+            body: formData
           });
           const res = await resp.json();
-          if (res.success) {
-            itemEl.innerHTML = `<span>${file.name}</span> <span class="text-emerald-400 font-bold">✓ Synced</span>`;
-          } else {
-            itemEl.innerHTML = `<span>${file.name}</span> <span class="text-rose-400 font-bold">✗ Failed</span>`;
+          if (res.success && res.asset) {
+            const item = document.createElement('div');
+            item.className = 'relative aspect-square rounded-lg overflow-hidden border border-[var(--border)] group';
+            item.innerHTML = `
+              <img src="${res.asset.thumbnailUrl || res.asset.cardUrl}" class="w-full h-full object-cover" />
+              <button onclick="navigator.clipboard.writeText('${res.asset.cardUrl}'); alert('Copied image URL to clipboard!');" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] font-mono text-[var(--accent)] font-bold">
+                COPY URL
+              </button>
+            `;
+            grid.prepend(item);
           }
         } catch (err) {
-          itemEl.innerHTML = `<span>${file.name}</span> <span class="text-rose-400 font-bold">✗ Error</span>`;
+          console.error('Upload failed', err);
         }
       }
-      await refreshAllData();
+      alert('Upload complete!');
+      await loadOverview();
     }
 
-    async function triggerDriveImport() {
-      const btn = document.getElementById('btn-import-drive');
-      btn.textContent = 'Importing Drive Data...';
-      btn.disabled = true;
-      try {
-        const resp = await fetch('/api/cms/import-drive', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
-        });
-        const res = await resp.json();
-        alert(res.message || 'Import Complete!');
-        await refreshAllData();
-      } catch (err) {
-        alert('Migration error: ' + err);
-      } finally {
-        btn.textContent = 'Seed Database from Drive';
-        btn.disabled = false;
-      }
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('dragxsy_cms_token');
-      AUTH_TOKEN = '';
-      showLogin();
+    // Init App
+    if (TOKEN) {
+      showMainApp();
+    } else {
+      showAuthScreen();
     }
   </script>
 </body>
