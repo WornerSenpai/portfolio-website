@@ -1,1019 +1,442 @@
 {
-  "version": 1,
-  "rootFolderId": "1B9uH8D5bfhEK99DaApeL7fVYUcbrZbF7",
-  "rootFolderUrl": "#",
-  "lastSyncedAt": "2026-08-25T16:20:39.305263",
   "syncStatus": "synced",
+  "lastSyncedAt": "2026-08-26T23:00:00Z",
   "stats": {
     "categoriesCount": 7,
-    "projectsCount": 11,
-    "assetsCount": 11,
-    "durationMs": 9071
+    "projectsCount": 17,
+    "postsCount": 5
   },
   "categories": [
     {
       "id": "cat_cover-arts",
-      "driveFolderId": "146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo",
-      "driveUrl": "#",
       "name": "Cover Arts",
       "slug": "cover-arts",
-      "order": 1,
-      "projectsCount": 2,
-      "lastModified": "2026-08-25T16:20:31.568810"
+      "coverAssetUrl": "assets/hero.png"
     },
     {
       "id": "cat_poster-designs",
-      "driveFolderId": "12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd",
-      "driveUrl": "#",
       "name": "Poster Designs",
       "slug": "poster-designs",
-      "order": 2,
-      "projectsCount": 2,
-      "lastModified": "2026-08-25T16:20:32.777463"
+      "coverAssetUrl": "assets/hero.png"
     },
     {
       "id": "cat_music-videos",
-      "driveFolderId": "12oYwrPcRs0dslsn2BvzmdDMn04j5dInm",
-      "driveUrl": "#",
       "name": "Music Videos",
       "slug": "music-videos",
-      "order": 3,
-      "projectsCount": 1,
-      "lastModified": "2026-08-25T16:20:34.075766"
+      "coverAssetUrl": "assets/hero.png"
     },
     {
       "id": "cat_promotional-edits",
-      "driveFolderId": "1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc",
-      "driveUrl": "#",
       "name": "Promotional Edits",
       "slug": "promotional-edits",
-      "order": 4,
-      "projectsCount": 2,
-      "lastModified": "2026-08-25T16:20:34.915158"
+      "coverAssetUrl": "assets/hero.png"
     },
     {
       "id": "cat_thumbnails",
-      "driveFolderId": "1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr",
-      "driveUrl": "#",
       "name": "Thumbnails",
       "slug": "thumbnails",
-      "order": 5,
-      "projectsCount": 2,
-      "lastModified": "2026-08-25T16:20:35.899833"
+      "coverAssetUrl": "assets/hero.png"
     },
     {
       "id": "cat_edits",
-      "driveFolderId": "1_Z77fo6ZkhHXmb8jwEgltlPHL6ccDIbQ",
-      "driveUrl": "#",
       "name": "Edits",
       "slug": "edits",
-      "order": 6,
-      "projectsCount": 1,
-      "lastModified": "2026-08-25T16:20:36.898062"
+      "coverAssetUrl": "assets/hero.png"
     },
     {
       "id": "cat_title-cards",
-      "driveFolderId": "1k86ewtjEjY4rtvCtX4sFzDPOplwMnzca",
-      "driveUrl": "#",
       "name": "Title Cards",
       "slug": "title-cards",
-      "order": 7,
-      "projectsCount": 1,
-      "lastModified": "2026-08-25T16:20:38.276779"
+      "coverAssetUrl": "assets/hero.png"
     }
   ],
   "projects": [
     {
+      "id": "proj_371ee920",
+      "title": "E2E GitHub Artwork Test",
+      "slug": "e2e-github-artwork-test",
+      "category": "Cover Arts",
+      "categorySlug": "cover-arts",
+      "categoryId": "cat_cover-arts",
+      "year": "2026",
+      "description": "Verified permanent GitHub asset storage.",
+      "coverAssetUrl": "assets/cover-arts/e2e-test-cover-2.jpg",
+      "tags": [
+        "Cover Arts",
+        "Artwork"
+      ],
+      "status": "published",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
+    },
+    {
+      "id": "proj_98048507",
+      "title": "Cyber Soundscape 2026",
+      "slug": "cyber-soundscape-2026-1d59",
+      "category": "Cover Arts",
+      "categorySlug": "cover-arts",
+      "categoryId": "cat_cover-arts",
+      "year": "2026",
+      "description": "Full holographic artwork cover exploration.",
+      "coverAssetUrl": "assets/stickers_me.png",
+      "tags": [
+        "Cover Arts",
+        "Artwork"
+      ],
+      "status": "published",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
+    },
+    {
+      "id": "proj_673c9043",
+      "title": "Cyber Soundscape 2026",
+      "slug": "cyber-soundscape-2026",
+      "category": "Cover Arts",
+      "categorySlug": "cover-arts",
+      "categoryId": "cat_cover-arts",
+      "year": "2026",
+      "description": "Full holographic artwork cover exploration.",
+      "coverAssetUrl": "assets/stickers_me.png",
+      "tags": [
+        "Cover Arts",
+        "Artwork"
+      ],
+      "status": "published",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
+    },
+    {
+      "id": "proj_9c2b083d",
+      "title": "Hey lol",
+      "slug": "hey-lol",
+      "category": "Cover Arts",
+      "categorySlug": "cover-arts",
+      "categoryId": "cat_cover-arts",
+      "year": "2026",
+      "description": "",
+      "coverAssetUrl": "assets/cover-arts/project_trois_rois.jpg",
+      "tags": [
+        "Cover Arts",
+        "Artwork"
+      ],
+      "status": "published",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
+    },
+    {
+      "id": "proj_da2a7ea2",
+      "title": "na meri",
+      "slug": "na-meri",
+      "category": "Cover Arts",
+      "categorySlug": "cover-arts",
+      "categoryId": "cat_cover-arts",
+      "year": "2026",
+      "description": "",
+      "coverAssetUrl": "assets/cover-arts/project_bequant.jpg",
+      "tags": [
+        "Cover Arts",
+        "Artwork"
+      ],
+      "status": "published",
+      "featured": true,
+      "showcase3D": true,
+      "showInAll": true
+    },
+    {
+      "id": "proj_823b59d1",
+      "title": "love",
+      "slug": "love",
+      "category": "Cover Arts",
+      "categorySlug": "cover-arts",
+      "categoryId": "cat_cover-arts",
+      "year": "2026",
+      "description": "",
+      "coverAssetUrl": "assets/cover-arts/project_wematch.jpg",
+      "tags": [
+        "Cover Arts",
+        "Artwork"
+      ],
+      "status": "published",
+      "featured": true,
+      "showcase3D": true,
+      "showInAll": true
+    },
+    {
       "id": "proj_sonic-dimensions-album-artwork-series",
-      "driveFolderId": "146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo",
-      "driveUrl": "#",
       "title": "Sonic Dimensions - Album Artwork Series",
       "slug": "sonic-dimensions-album-artwork-series",
       "category": "Cover Arts",
+      "categorySlug": "cover-arts",
       "categoryId": "cat_cover-arts",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_sonic-dimensions-album-artwork-series_cover",
-        "driveFileId": "file_sonic-dimensions-album-artwork-series_0",
-        "filename": "sonic-dimensions-album-artwork-series_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Cover Arts",
-        "categoryId": "cat_cover-arts",
-        "projectId": "proj_sonic-dimensions-album-artwork-series",
-        "isCover": true,
-        "localPath": "assets/project_wematch.jpg",
-        "sourceUrl": "assets/project_wematch.jpg",
-        "thumbnailUrl": "assets/project_wematch.jpg",
-        "modifiedTime": "2026-08-25T16:20:32.777357"
-      },
-      "assets": [
-        {
-          "id": "asset_sonic-dimensions-album-artwork-series_cover",
-          "driveFileId": "file_sonic-dimensions-album-artwork-series_0",
-          "filename": "sonic-dimensions-album-artwork-series_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Cover Arts",
-          "categoryId": "cat_cover-arts",
-          "projectId": "proj_sonic-dimensions-album-artwork-series",
-          "isCover": true,
-          "localPath": "assets/project_wematch.jpg",
-          "sourceUrl": "assets/project_wematch.jpg",
-          "thumbnailUrl": "assets/project_wematch.jpg",
-          "modifiedTime": "2026-08-25T16:20:32.777357"
-        }
-      ],
+      "description": "Visual exploration for digital music releases and sonic covers. Balances high-contrast dark aesthetics and expressive typography.",
+      "coverAssetUrl": "assets/project_wematch.jpg",
       "tags": [
         "Cover Arts",
         "Album Artwork",
         "Typography"
       ],
-      "description": "Visual exploration for digital music releases and sonic covers. Balances high-contrast dark aesthetics and expressive typography.",
-      "order": 1,
-      "lastModified": "2026-08-25T16:20:32.777370"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     },
     {
       "id": "proj_midnight-resonance-sonic-cover",
-      "driveFolderId": "146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo",
-      "driveUrl": "#",
       "title": "Midnight Resonance - Sonic Cover",
       "slug": "midnight-resonance-sonic-cover",
       "category": "Cover Arts",
+      "categorySlug": "cover-arts",
       "categoryId": "cat_cover-arts",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_midnight-resonance-sonic-cover_cover",
-        "driveFileId": "file_midnight-resonance-sonic-cover_0",
-        "filename": "midnight-resonance-sonic-cover_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Cover Arts",
-        "categoryId": "cat_cover-arts",
-        "projectId": "proj_midnight-resonance-sonic-cover",
-        "isCover": true,
-        "localPath": "assets/project_bequant.jpg",
-        "sourceUrl": "assets/project_bequant.jpg",
-        "thumbnailUrl": "assets/project_bequant.jpg",
-        "modifiedTime": "2026-08-25T16:20:32.777379"
-      },
-      "assets": [
-        {
-          "id": "asset_midnight-resonance-sonic-cover_cover",
-          "driveFileId": "file_midnight-resonance-sonic-cover_0",
-          "filename": "midnight-resonance-sonic-cover_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Cover Arts",
-          "categoryId": "cat_cover-arts",
-          "projectId": "proj_midnight-resonance-sonic-cover",
-          "isCover": true,
-          "localPath": "assets/project_bequant.jpg",
-          "sourceUrl": "assets/project_bequant.jpg",
-          "thumbnailUrl": "assets/project_bequant.jpg",
-          "modifiedTime": "2026-08-25T16:20:32.777379"
-        }
-      ],
+      "description": "High-contrast digital art and music artwork concept for ambient and electronic tracks.",
+      "coverAssetUrl": "assets/project_bequant.jpg",
       "tags": [
         "Cover Arts",
         "Minimal Dark",
         "Noise",
         "Graphic"
       ],
-      "description": "High-contrast digital art and music artwork concept for ambient and electronic tracks.",
-      "order": 2,
-      "lastModified": "2026-08-25T16:20:32.777381"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     },
     {
       "id": "proj_experimental-typography-poster-collection",
-      "driveFolderId": "12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd",
-      "driveUrl": "#",
       "title": "Experimental Typography & Poster Collection",
       "slug": "experimental-typography-poster-collection",
       "category": "Poster Designs",
+      "categorySlug": "poster-designs",
       "categoryId": "cat_poster-designs",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_experimental-typography-poster-collection_cover",
-        "driveFileId": "file_experimental-typography-poster-collection_0",
-        "filename": "experimental-typography-poster-collection_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Poster Designs",
-        "categoryId": "cat_poster-designs",
-        "projectId": "proj_experimental-typography-poster-collection",
-        "isCover": true,
-        "localPath": "assets/project_free_handise.jpg",
-        "sourceUrl": "assets/project_free_handise.jpg",
-        "thumbnailUrl": "assets/project_free_handise.jpg",
-        "modifiedTime": "2026-08-25T16:20:34.075661"
-      },
-      "assets": [
-        {
-          "id": "asset_experimental-typography-poster-collection_cover",
-          "driveFileId": "file_experimental-typography-poster-collection_0",
-          "filename": "experimental-typography-poster-collection_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Poster Designs",
-          "categoryId": "cat_poster-designs",
-          "projectId": "proj_experimental-typography-poster-collection",
-          "isCover": true,
-          "localPath": "assets/project_free_handise.jpg",
-          "sourceUrl": "assets/project_free_handise.jpg",
-          "thumbnailUrl": "assets/project_free_handise.jpg",
-          "modifiedTime": "2026-08-25T16:20:34.075661"
-        }
-      ],
+      "description": "Series of experimental graphic posters exploring custom warped typefaces and analog grain.",
+      "coverAssetUrl": "assets/project_free_handise.jpg",
       "tags": [
         "Poster Designs",
         "Distressed Type",
         "Halftone"
       ],
-      "description": "Series of experimental graphic posters exploring custom warped typefaces and analog grain.",
-      "order": 1,
-      "lastModified": "2026-08-25T16:20:34.075672"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     },
     {
       "id": "proj_data-editorial-zine-poster-layouts",
-      "driveFolderId": "12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd",
-      "driveUrl": "#",
       "title": "Data & Editorial Zine Poster Layouts",
       "slug": "data-editorial-zine-poster-layouts",
       "category": "Poster Designs",
+      "categorySlug": "poster-designs",
       "categoryId": "cat_poster-designs",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_data-editorial-zine-poster-layouts_cover",
-        "driveFileId": "file_data-editorial-zine-poster-layouts_0",
-        "filename": "data-editorial-zine-poster-layouts_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Poster Designs",
-        "categoryId": "cat_poster-designs",
-        "projectId": "proj_data-editorial-zine-poster-layouts",
-        "isCover": true,
-        "localPath": "assets/project_rimes.jpg",
-        "sourceUrl": "assets/project_rimes.jpg",
-        "thumbnailUrl": "assets/project_rimes.jpg",
-        "modifiedTime": "2026-08-25T16:20:34.075680"
-      },
-      "assets": [
-        {
-          "id": "asset_data-editorial-zine-poster-layouts_cover",
-          "driveFileId": "file_data-editorial-zine-poster-layouts_0",
-          "filename": "data-editorial-zine-poster-layouts_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Poster Designs",
-          "categoryId": "cat_poster-designs",
-          "projectId": "proj_data-editorial-zine-poster-layouts",
-          "isCover": true,
-          "localPath": "assets/project_rimes.jpg",
-          "sourceUrl": "assets/project_rimes.jpg",
-          "thumbnailUrl": "assets/project_rimes.jpg",
-          "modifiedTime": "2026-08-25T16:20:34.075680"
-        }
-      ],
+      "description": "Technical publication and digital zine poster systems creating an engaging reading experience.",
+      "coverAssetUrl": "assets/project_rimes.jpg",
       "tags": [
         "Poster Designs",
         "Editorial",
         "Typography"
       ],
-      "description": "Technical publication and digital zine poster systems creating an engaging reading experience.",
-      "order": 2,
-      "lastModified": "2026-08-25T16:20:34.075682"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     },
     {
       "id": "proj_heavyweight-visual-music-video-direction",
-      "driveFolderId": "12oYwrPcRs0dslsn2BvzmdDMn04j5dInm",
-      "driveUrl": "#",
       "title": "Heavyweight Visual & Music Video Direction",
       "slug": "heavyweight-visual-music-video-direction",
       "category": "Music Videos",
+      "categorySlug": "music-videos",
       "categoryId": "cat_music-videos",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_heavyweight-visual-music-video-direction_cover",
-        "driveFileId": "file_heavyweight-visual-music-video-direction_0",
-        "filename": "heavyweight-visual-music-video-direction_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Music Videos",
-        "categoryId": "cat_music-videos",
-        "projectId": "proj_heavyweight-visual-music-video-direction",
-        "isCover": true,
-        "localPath": "assets/hero.png",
-        "sourceUrl": "assets/hero.png",
-        "thumbnailUrl": "assets/hero.png",
-        "modifiedTime": "2026-08-25T16:20:34.915070"
-      },
-      "assets": [
-        {
-          "id": "asset_heavyweight-visual-music-video-direction_cover",
-          "driveFileId": "file_heavyweight-visual-music-video-direction_0",
-          "filename": "heavyweight-visual-music-video-direction_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Music Videos",
-          "categoryId": "cat_music-videos",
-          "projectId": "proj_heavyweight-visual-music-video-direction",
-          "isCover": true,
-          "localPath": "assets/hero.png",
-          "sourceUrl": "assets/hero.png",
-          "thumbnailUrl": "assets/hero.png",
-          "modifiedTime": "2026-08-25T16:20:34.915070"
-        }
-      ],
+      "description": "Motion and visual direction for sonic releases, featuring rhythmic editing and analog noise overlays.",
+      "coverAssetUrl": "assets/hero.png",
       "tags": [
         "Music Videos",
         "Motion Direction",
         "Cinematic"
       ],
-      "description": "Motion and visual direction for sonic releases, featuring rhythmic editing and analog noise overlays.",
-      "order": 1,
-      "lastModified": "2026-08-25T16:20:34.915081"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     },
     {
       "id": "proj_cyber-digital-promotional-edits",
-      "driveFolderId": "1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc",
-      "driveUrl": "#",
       "title": "Cyber Digital & Promotional Edits",
       "slug": "cyber-digital-promotional-edits",
       "category": "Promotional Edits",
+      "categorySlug": "promotional-edits",
       "categoryId": "cat_promotional-edits",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_cyber-digital-promotional-edits_cover",
-        "driveFileId": "file_cyber-digital-promotional-edits_0",
-        "filename": "cyber-digital-promotional-edits_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Promotional Edits",
-        "categoryId": "cat_promotional-edits",
-        "projectId": "proj_cyber-digital-promotional-edits",
-        "isCover": true,
-        "localPath": "assets/project_jab.jpg",
-        "sourceUrl": "assets/project_jab.jpg",
-        "thumbnailUrl": "assets/project_jab.jpg",
-        "modifiedTime": "2026-08-25T16:20:35.899705"
-      },
-      "assets": [
-        {
-          "id": "asset_cyber-digital-promotional-edits_cover",
-          "driveFileId": "file_cyber-digital-promotional-edits_0",
-          "filename": "cyber-digital-promotional-edits_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Promotional Edits",
-          "categoryId": "cat_promotional-edits",
-          "projectId": "proj_cyber-digital-promotional-edits",
-          "isCover": true,
-          "localPath": "assets/project_jab.jpg",
-          "sourceUrl": "assets/project_jab.jpg",
-          "thumbnailUrl": "assets/project_jab.jpg",
-          "modifiedTime": "2026-08-25T16:20:35.899705"
-        }
-      ],
+      "description": "High-impact promotional visuals and motion clips designed for release teasers and announcements.",
+      "coverAssetUrl": "assets/project_jab.jpg",
       "tags": [
         "Promotional Edits",
         "Teasers",
         "Motion Graphics"
       ],
-      "description": "High-impact promotional visuals and motion clips designed for release teasers and announcements.",
-      "order": 1,
-      "lastModified": "2026-08-25T16:20:35.899720"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     },
     {
       "id": "proj_sensorial-campaign-promotional-visuals",
-      "driveFolderId": "1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc",
-      "driveUrl": "#",
       "title": "Sensorial Campaign & Promotional Visuals",
       "slug": "sensorial-campaign-promotional-visuals",
       "category": "Promotional Edits",
+      "categorySlug": "promotional-edits",
       "categoryId": "cat_promotional-edits",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_sensorial-campaign-promotional-visuals_cover",
-        "driveFileId": "file_sensorial-campaign-promotional-visuals_0",
-        "filename": "sensorial-campaign-promotional-visuals_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Promotional Edits",
-        "categoryId": "cat_promotional-edits",
-        "projectId": "proj_sensorial-campaign-promotional-visuals",
-        "isCover": true,
-        "localPath": "assets/project_okiali.jpg",
-        "sourceUrl": "assets/project_okiali.jpg",
-        "thumbnailUrl": "assets/project_okiali.jpg",
-        "modifiedTime": "2026-08-25T16:20:35.899730"
-      },
-      "assets": [
-        {
-          "id": "asset_sensorial-campaign-promotional-visuals_cover",
-          "driveFileId": "file_sensorial-campaign-promotional-visuals_0",
-          "filename": "sensorial-campaign-promotional-visuals_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Promotional Edits",
-          "categoryId": "cat_promotional-edits",
-          "projectId": "proj_sensorial-campaign-promotional-visuals",
-          "isCover": true,
-          "localPath": "assets/project_okiali.jpg",
-          "sourceUrl": "assets/project_okiali.jpg",
-          "thumbnailUrl": "assets/project_okiali.jpg",
-          "modifiedTime": "2026-08-25T16:20:35.899730"
-        }
-      ],
+      "description": "Experimental promotional assets where tactile materials create a distinct atmosphere.",
+      "coverAssetUrl": "assets/project_okiali.jpg",
       "tags": [
         "Promotional Edits",
         "Brand Art",
         "Sensorial"
       ],
-      "description": "Experimental promotional assets where tactile materials create a distinct atmosphere.",
-      "order": 2,
-      "lastModified": "2026-08-25T16:20:35.899734"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     },
     {
       "id": "proj_high-ctr-stream-video-thumbnails",
-      "driveFolderId": "1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr",
-      "driveUrl": "#",
       "title": "High-CTR Stream & Video Thumbnails",
       "slug": "high-ctr-stream-video-thumbnails",
       "category": "Thumbnails",
+      "categorySlug": "thumbnails",
       "categoryId": "cat_thumbnails",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_high-ctr-stream-video-thumbnails_cover",
-        "driveFileId": "file_high-ctr-stream-video-thumbnails_0",
-        "filename": "high-ctr-stream-video-thumbnails_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Thumbnails",
-        "categoryId": "cat_thumbnails",
-        "projectId": "proj_high-ctr-stream-video-thumbnails",
-        "isCover": true,
-        "localPath": "assets/project_trois_rois.jpg",
-        "sourceUrl": "assets/project_trois_rois.jpg",
-        "thumbnailUrl": "assets/project_trois_rois.jpg",
-        "modifiedTime": "2026-08-25T16:20:36.897931"
-      },
-      "assets": [
-        {
-          "id": "asset_high-ctr-stream-video-thumbnails_cover",
-          "driveFileId": "file_high-ctr-stream-video-thumbnails_0",
-          "filename": "high-ctr-stream-video-thumbnails_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Thumbnails",
-          "categoryId": "cat_thumbnails",
-          "projectId": "proj_high-ctr-stream-video-thumbnails",
-          "isCover": true,
-          "localPath": "assets/project_trois_rois.jpg",
-          "sourceUrl": "assets/project_trois_rois.jpg",
-          "thumbnailUrl": "assets/project_trois_rois.jpg",
-          "modifiedTime": "2026-08-25T16:20:36.897931"
-        }
-      ],
+      "description": "Bespoke thumbnail visual systems focusing on immediate focal contrast and legible typography.",
+      "coverAssetUrl": "assets/project_trois_rois.jpg",
       "tags": [
         "Thumbnails",
         "Content Visuals",
         "Focal Hierarchy"
       ],
-      "description": "Bespoke thumbnail visual systems focusing on immediate focal contrast and legible typography.",
-      "order": 1,
-      "lastModified": "2026-08-25T16:20:36.897949"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     },
     {
       "id": "proj_tactile-creative-video-thumbnails",
-      "driveFolderId": "1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr",
-      "driveUrl": "#",
       "title": "Tactile Creative & Video Thumbnails",
       "slug": "tactile-creative-video-thumbnails",
       "category": "Thumbnails",
+      "categorySlug": "thumbnails",
       "categoryId": "cat_thumbnails",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_tactile-creative-video-thumbnails_cover",
-        "driveFileId": "file_tactile-creative-video-thumbnails_0",
-        "filename": "tactile-creative-video-thumbnails_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Thumbnails",
-        "categoryId": "cat_thumbnails",
-        "projectId": "proj_tactile-creative-video-thumbnails",
-        "isCover": true,
-        "localPath": "assets/project_galland.jpg",
-        "sourceUrl": "assets/project_galland.jpg",
-        "thumbnailUrl": "assets/project_galland.jpg",
-        "modifiedTime": "2026-08-25T16:20:36.897961"
-      },
-      "assets": [
-        {
-          "id": "asset_tactile-creative-video-thumbnails_cover",
-          "driveFileId": "file_tactile-creative-video-thumbnails_0",
-          "filename": "tactile-creative-video-thumbnails_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Thumbnails",
-          "categoryId": "cat_thumbnails",
-          "projectId": "proj_tactile-creative-video-thumbnails",
-          "isCover": true,
-          "localPath": "assets/project_galland.jpg",
-          "sourceUrl": "assets/project_galland.jpg",
-          "thumbnailUrl": "assets/project_galland.jpg",
-          "modifiedTime": "2026-08-25T16:20:36.897961"
-        }
-      ],
+      "description": "Thumbnail design direction celebrating organic textures and warm lighting palettes.",
+      "coverAssetUrl": "assets/project_galland.jpg",
       "tags": [
         "Thumbnails",
         "Layout",
         "Lighting"
       ],
-      "description": "Thumbnail design direction celebrating organic textures and warm lighting palettes.",
-      "order": 2,
-      "lastModified": "2026-08-25T16:20:36.897964"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     },
     {
       "id": "proj_edits-works-explorations",
-      "driveFolderId": "1_Z77fo6ZkhHXmb8jwEgltlPHL6ccDIbQ",
-      "driveUrl": "#",
       "title": "Edits Works & Explorations",
       "slug": "edits-works-explorations",
       "category": "Edits",
+      "categorySlug": "edits",
       "categoryId": "cat_edits",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_edits-works-explorations_cover",
-        "driveFileId": "file_edits-works-explorations_0",
-        "filename": "edits-works-explorations_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Edits",
-        "categoryId": "cat_edits",
-        "projectId": "proj_edits-works-explorations",
-        "isCover": true,
-        "localPath": "assets/hero.png",
-        "sourceUrl": "assets/hero.png",
-        "thumbnailUrl": "assets/hero.png",
-        "modifiedTime": "2026-08-25T16:20:38.276660"
-      },
-      "assets": [
-        {
-          "id": "asset_edits-works-explorations_cover",
-          "driveFileId": "file_edits-works-explorations_0",
-          "filename": "edits-works-explorations_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Edits",
-          "categoryId": "cat_edits",
-          "projectId": "proj_edits-works-explorations",
-          "isCover": true,
-          "localPath": "assets/hero.png",
-          "sourceUrl": "assets/hero.png",
-          "thumbnailUrl": "assets/hero.png",
-          "modifiedTime": "2026-08-25T16:20:38.276660"
-        }
-      ],
+      "description": "Curated collection and visual studies within Edits.",
+      "coverAssetUrl": "assets/hero.png",
       "tags": [
         "Edits",
         "Visuals",
         "Creative Direction"
       ],
-      "description": "Curated collection and visual studies within Edits.",
-      "order": 1,
-      "lastModified": "2026-08-25T16:20:38.276674"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     },
     {
       "id": "proj_title-cards-works-explorations",
-      "driveFolderId": "1k86ewtjEjY4rtvCtX4sFzDPOplwMnzca",
-      "driveUrl": "#",
       "title": "Title Cards Works & Explorations",
       "slug": "title-cards-works-explorations",
       "category": "Title Cards",
+      "categorySlug": "title-cards",
       "categoryId": "cat_title-cards",
       "year": "2026",
-      "coverAsset": {
-        "id": "asset_title-cards-works-explorations_cover",
-        "driveFileId": "file_title-cards-works-explorations_0",
-        "filename": "title-cards-works-explorations_cover.jpg",
-        "mimeType": "image/jpeg",
-        "category": "Title Cards",
-        "categoryId": "cat_title-cards",
-        "projectId": "proj_title-cards-works-explorations",
-        "isCover": true,
-        "localPath": "assets/hero.png",
-        "sourceUrl": "assets/hero.png",
-        "thumbnailUrl": "assets/hero.png",
-        "modifiedTime": "2026-08-25T16:20:39.305239"
-      },
-      "assets": [
-        {
-          "id": "asset_title-cards-works-explorations_cover",
-          "driveFileId": "file_title-cards-works-explorations_0",
-          "filename": "title-cards-works-explorations_cover.jpg",
-          "mimeType": "image/jpeg",
-          "category": "Title Cards",
-          "categoryId": "cat_title-cards",
-          "projectId": "proj_title-cards-works-explorations",
-          "isCover": true,
-          "localPath": "assets/hero.png",
-          "sourceUrl": "assets/hero.png",
-          "thumbnailUrl": "assets/hero.png",
-          "modifiedTime": "2026-08-25T16:20:39.305239"
-        }
-      ],
+      "description": "Curated collection and visual studies within Title Cards.",
+      "coverAssetUrl": "assets/hero.png",
       "tags": [
         "Title Cards",
         "Visuals",
         "Creative Direction"
       ],
-      "description": "Curated collection and visual studies within Title Cards.",
-      "order": 1,
-      "lastModified": "2026-08-25T16:20:39.305252"
+      "status": "unpublished",
+      "featured": false,
+      "showcase3D": true,
+      "showInAll": true
     }
   ],
-  "assets": [
+  "posts": [
     {
-      "id": "asset_sonic-dimensions-album-artwork-series_cover",
-      "driveFileId": "file_sonic-dimensions-album-artwork-series_0",
-      "filename": "sonic-dimensions-album-artwork-series_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Cover Arts",
-      "categoryId": "cat_cover-arts",
-      "projectId": "proj_sonic-dimensions-album-artwork-series",
-      "isCover": true,
-      "localPath": "assets/project_wematch.jpg",
-      "sourceUrl": "assets/project_wematch.jpg",
-      "thumbnailUrl": "assets/project_wematch.jpg",
-      "modifiedTime": "2026-08-25T16:20:32.777357"
+      "id": "post_ca442aa6",
+      "tag": "DISPATCH",
+      "title": "Studio Art Direction Vol 1",
+      "date": "Aug 2026",
+      "readTime": "4 min read",
+      "summary": "Creative design breakdown and visuals.",
+      "content": "Full editorial breakdown of creative workflows and visual explorations for 2026.",
+      "status": "published"
     },
     {
-      "id": "asset_midnight-resonance-sonic-cover_cover",
-      "driveFileId": "file_midnight-resonance-sonic-cover_0",
-      "filename": "midnight-resonance-sonic-cover_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Cover Arts",
-      "categoryId": "cat_cover-arts",
-      "projectId": "proj_midnight-resonance-sonic-cover",
-      "isCover": true,
-      "localPath": "assets/project_bequant.jpg",
-      "sourceUrl": "assets/project_bequant.jpg",
-      "thumbnailUrl": "assets/project_bequant.jpg",
-      "modifiedTime": "2026-08-25T16:20:32.777379"
+      "id": "post_1cde696b",
+      "tag": "DISPATCH",
+      "title": "Studio Art Direction Vol 1",
+      "date": "Aug 2026",
+      "readTime": "4 min read",
+      "summary": "Creative design breakdown and visuals.",
+      "content": "Full editorial breakdown of creative workflows and visual explorations for 2026.",
+      "status": "published"
     },
     {
-      "id": "asset_experimental-typography-poster-collection_cover",
-      "driveFileId": "file_experimental-typography-poster-collection_0",
-      "filename": "experimental-typography-poster-collection_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Poster Designs",
-      "categoryId": "cat_poster-designs",
-      "projectId": "proj_experimental-typography-poster-collection",
-      "isCover": true,
-      "localPath": "assets/project_free_handise.jpg",
-      "sourceUrl": "assets/project_free_handise.jpg",
-      "thumbnailUrl": "assets/project_free_handise.jpg",
-      "modifiedTime": "2026-08-25T16:20:34.075661"
+      "id": "post_dispatch_01",
+      "tag": "DISPATCH 01",
+      "title": "Iski maa ka bhosda",
+      "date": "Aug 2026",
+      "readTime": "4 min read",
+      "summary": "Why deliberate imperfection, halftone artifacts, and raw analog noise resonate stronger than sanitized minimalist vectors in modern visual culture.",
+      "content": "In an era of hyper-optimized UI kits and sanitized vectors, visual friction has become the ultimate luxury. When every brand looks like a clean white SaaS landing page, raw textures, brutalist grids, and deliberate grain force the human eye to pause and feel.\n\nCreating visuals across music covers and graphic apparel has taught me that true artistic memory isn't engineered through sterile symmetry\u2014it's forged in tension. By combining disciplined typography with chaotic grit, the artwork develops an unmistakable identity that algorithms cannot fabricate.",
+      "status": "published"
     },
     {
-      "id": "asset_data-editorial-zine-poster-layouts_cover",
-      "driveFileId": "file_data-editorial-zine-poster-layouts_0",
-      "filename": "data-editorial-zine-poster-layouts_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Poster Designs",
-      "categoryId": "cat_poster-designs",
-      "projectId": "proj_data-editorial-zine-poster-layouts",
-      "isCover": true,
-      "localPath": "assets/project_rimes.jpg",
-      "sourceUrl": "assets/project_rimes.jpg",
-      "thumbnailUrl": "assets/project_rimes.jpg",
-      "modifiedTime": "2026-08-25T16:20:34.075680"
+      "id": "post_dispatch_02",
+      "tag": "DISPATCH 02",
+      "title": "The Art of Album Cover Design in the Streaming Era",
+      "date": "Jul 2026",
+      "readTime": "5 min read",
+      "summary": "How a 3000x3000px digital square must communicate an entire sonic universe at both miniature scale and full print fidelity.",
+      "content": "A music cover is the front door to a sonic dimension. In streaming feeds where thousands of releases compete for a single thumb swipe, an album artwork must deliver instant emotional intrigue at 40x40 pixels while rewarding deep inspection at full gallery scale.\n\nMy process focuses on capturing the sonic frequency of the artist\u2014translating raw distortion, ambient reverb, or sharp electronic percussion into corresponding visual textures and typographic choices.",
+      "status": "published"
     },
     {
-      "id": "asset_heavyweight-visual-music-video-direction_cover",
-      "driveFileId": "file_heavyweight-visual-music-video-direction_0",
-      "filename": "heavyweight-visual-music-video-direction_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Music Videos",
-      "categoryId": "cat_music-videos",
-      "projectId": "proj_heavyweight-visual-music-video-direction",
-      "isCover": true,
-      "localPath": "assets/hero.png",
-      "sourceUrl": "assets/hero.png",
-      "thumbnailUrl": "assets/hero.png",
-      "modifiedTime": "2026-08-25T16:20:34.915070"
-    },
-    {
-      "id": "asset_cyber-digital-promotional-edits_cover",
-      "driveFileId": "file_cyber-digital-promotional-edits_0",
-      "filename": "cyber-digital-promotional-edits_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Promotional Edits",
-      "categoryId": "cat_promotional-edits",
-      "projectId": "proj_cyber-digital-promotional-edits",
-      "isCover": true,
-      "localPath": "assets/project_jab.jpg",
-      "sourceUrl": "assets/project_jab.jpg",
-      "thumbnailUrl": "assets/project_jab.jpg",
-      "modifiedTime": "2026-08-25T16:20:35.899705"
-    },
-    {
-      "id": "asset_sensorial-campaign-promotional-visuals_cover",
-      "driveFileId": "file_sensorial-campaign-promotional-visuals_0",
-      "filename": "sensorial-campaign-promotional-visuals_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Promotional Edits",
-      "categoryId": "cat_promotional-edits",
-      "projectId": "proj_sensorial-campaign-promotional-visuals",
-      "isCover": true,
-      "localPath": "assets/project_okiali.jpg",
-      "sourceUrl": "assets/project_okiali.jpg",
-      "thumbnailUrl": "assets/project_okiali.jpg",
-      "modifiedTime": "2026-08-25T16:20:35.899730"
-    },
-    {
-      "id": "asset_high-ctr-stream-video-thumbnails_cover",
-      "driveFileId": "file_high-ctr-stream-video-thumbnails_0",
-      "filename": "high-ctr-stream-video-thumbnails_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Thumbnails",
-      "categoryId": "cat_thumbnails",
-      "projectId": "proj_high-ctr-stream-video-thumbnails",
-      "isCover": true,
-      "localPath": "assets/project_trois_rois.jpg",
-      "sourceUrl": "assets/project_trois_rois.jpg",
-      "thumbnailUrl": "assets/project_trois_rois.jpg",
-      "modifiedTime": "2026-08-25T16:20:36.897931"
-    },
-    {
-      "id": "asset_tactile-creative-video-thumbnails_cover",
-      "driveFileId": "file_tactile-creative-video-thumbnails_0",
-      "filename": "tactile-creative-video-thumbnails_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Thumbnails",
-      "categoryId": "cat_thumbnails",
-      "projectId": "proj_tactile-creative-video-thumbnails",
-      "isCover": true,
-      "localPath": "assets/project_galland.jpg",
-      "sourceUrl": "assets/project_galland.jpg",
-      "thumbnailUrl": "assets/project_galland.jpg",
-      "modifiedTime": "2026-08-25T16:20:36.897961"
-    },
-    {
-      "id": "asset_edits-works-explorations_cover",
-      "driveFileId": "file_edits-works-explorations_0",
-      "filename": "edits-works-explorations_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Edits",
-      "categoryId": "cat_edits",
-      "projectId": "proj_edits-works-explorations",
-      "isCover": true,
-      "localPath": "assets/hero.png",
-      "sourceUrl": "assets/hero.png",
-      "thumbnailUrl": "assets/hero.png",
-      "modifiedTime": "2026-08-25T16:20:38.276660"
-    },
-    {
-      "id": "asset_title-cards-works-explorations_cover",
-      "driveFileId": "file_title-cards-works-explorations_0",
-      "filename": "title-cards-works-explorations_cover.jpg",
-      "mimeType": "image/jpeg",
-      "category": "Title Cards",
-      "categoryId": "cat_title-cards",
-      "projectId": "proj_title-cards-works-explorations",
-      "isCover": true,
-      "localPath": "assets/hero.png",
-      "sourceUrl": "assets/hero.png",
-      "thumbnailUrl": "assets/hero.png",
-      "modifiedTime": "2026-08-25T16:20:39.305239"
-    }
-  ],
-  "syncLogs": [
-    {
-      "timestamp": "2026-08-25 16:20:39",
-      "type": "RECONCILIATION",
-      "item": "Master Manifest",
-      "status": "success",
-      "message": "Synchronized 7 categories, 11 projects, 11 assets in 9071ms"
-    },
-    {
-      "timestamp": "2026-08-25 16:20:38",
-      "type": "SYNC CATEGORY",
-      "item": "Title Cards",
-      "status": "verified",
-      "message": "Folder: 1k86ewtjEjY4rtvCtX4sFzDPOplwMnzca"
-    },
-    {
-      "timestamp": "2026-08-25 16:20:36",
-      "type": "SYNC CATEGORY",
-      "item": "Edits",
-      "status": "verified",
-      "message": "Folder: 1_Z77fo6ZkhHXmb8jwEgltlPHL6ccDIbQ"
-    },
-    {
-      "timestamp": "2026-08-25 16:20:35",
-      "type": "SYNC CATEGORY",
-      "item": "Thumbnails",
-      "status": "verified",
-      "message": "Folder: 1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr"
-    },
-    {
-      "timestamp": "2026-08-25 16:20:34",
-      "type": "SYNC CATEGORY",
-      "item": "Promotional Edits",
-      "status": "verified",
-      "message": "Folder: 1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc"
-    },
-    {
-      "timestamp": "2026-08-25 16:20:34",
-      "type": "SYNC CATEGORY",
-      "item": "Music Videos",
-      "status": "verified",
-      "message": "Folder: 12oYwrPcRs0dslsn2BvzmdDMn04j5dInm"
-    },
-    {
-      "timestamp": "2026-08-25 16:20:32",
-      "type": "SYNC CATEGORY",
-      "item": "Poster Designs",
-      "status": "verified",
-      "message": "Folder: 12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd"
-    },
-    {
-      "timestamp": "2026-08-25 16:20:31",
-      "type": "SYNC CATEGORY",
-      "item": "Cover Arts",
-      "status": "verified",
-      "message": "Folder: 146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo"
-    },
-    {
-      "timestamp": "2026-08-25 16:17:46",
-      "type": "RECONCILIATION",
-      "item": "Master Manifest",
-      "status": "success",
-      "message": "Synchronized 7 categories, 11 projects, 11 assets in 10913ms"
-    },
-    {
-      "timestamp": "2026-08-25 16:17:45",
-      "type": "SYNC CATEGORY",
-      "item": "Title Cards",
-      "status": "verified",
-      "message": "Folder: 1k86ewtjEjY4rtvCtX4sFzDPOplwMnzca"
-    },
-    {
-      "timestamp": "2026-08-25 16:17:44",
-      "type": "SYNC CATEGORY",
-      "item": "Edits",
-      "status": "verified",
-      "message": "Folder: 1_Z77fo6ZkhHXmb8jwEgltlPHL6ccDIbQ"
-    },
-    {
-      "timestamp": "2026-08-25 16:17:42",
-      "type": "SYNC CATEGORY",
-      "item": "Thumbnails",
-      "status": "verified",
-      "message": "Folder: 1GC4cALLxsE-RcwwGtP9kj4zs7sSACUvr"
-    },
-    {
-      "timestamp": "2026-08-25 16:17:41",
-      "type": "SYNC CATEGORY",
-      "item": "Promotional Edits",
-      "status": "verified",
-      "message": "Folder: 1sQEDHcVedxgOYSm1BoOeWO5OXAjwiyFc"
-    },
-    {
-      "timestamp": "2026-08-25 16:17:40",
-      "type": "SYNC CATEGORY",
-      "item": "Music Videos",
-      "status": "verified",
-      "message": "Folder: 12oYwrPcRs0dslsn2BvzmdDMn04j5dInm"
-    },
-    {
-      "timestamp": "2026-08-25 16:17:38",
-      "type": "SYNC CATEGORY",
-      "item": "Poster Designs",
-      "status": "verified",
-      "message": "Folder: 12Ilv6AnG5CDxbR4wzux3z0lKvdIFXPUd"
-    },
-    {
-      "timestamp": "2026-08-25 16:17:37",
-      "type": "SYNC CATEGORY",
-      "item": "Cover Arts",
-      "status": "verified",
-      "message": "Folder: 146rBWg8kKRt0l40aOfojBHSyyd2Rv1Fo"
-    },
-    {
-      "timestamp": "2026-08-25 16:14:59",
-      "type": "RECONCILIATION",
-      "item": "Master Manifest",
-      "status": "success",
-      "message": "Synchronized 7 categories, 11 projects, 11 assets in 10629ms"
-    },
-    {
-      "timestamp": "2026-08-25 16:14:59",
-      "type": "NEW PROJECT",
-      "item": "Title Cards / Title Cards Works & Explorations",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:58",
-      "type": "NEW CATEGORY",
-      "item": "Title Cards",
-      "status": "created",
-      "message": "ID: cat_title-cards"
-    },
-    {
-      "timestamp": "2026-08-25 16:14:58",
-      "type": "NEW PROJECT",
-      "item": "Edits / Edits Works & Explorations",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:56",
-      "type": "NEW CATEGORY",
-      "item": "Edits",
-      "status": "created",
-      "message": "ID: cat_edits"
-    },
-    {
-      "timestamp": "2026-08-25 16:14:56",
-      "type": "NEW PROJECT",
-      "item": "Thumbnails / Tactile Creative & Video Thumbnails",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:56",
-      "type": "NEW PROJECT",
-      "item": "Thumbnails / High-CTR Stream & Video Thumbnails",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:55",
-      "type": "NEW CATEGORY",
-      "item": "Thumbnails",
-      "status": "created",
-      "message": "ID: cat_thumbnails"
-    },
-    {
-      "timestamp": "2026-08-25 16:14:55",
-      "type": "NEW PROJECT",
-      "item": "Promotional Edits / Sensorial Campaign & Promotional Visuals",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:55",
-      "type": "NEW PROJECT",
-      "item": "Promotional Edits / Cyber Digital & Promotional Edits",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:53",
-      "type": "NEW CATEGORY",
-      "item": "Promotional Edits",
-      "status": "created",
-      "message": "ID: cat_promotional-edits"
-    },
-    {
-      "timestamp": "2026-08-25 16:14:53",
-      "type": "NEW PROJECT",
-      "item": "Music Videos / Heavyweight Visual & Music Video Direction",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:52",
-      "type": "NEW CATEGORY",
-      "item": "Music Videos",
-      "status": "created",
-      "message": "ID: cat_music-videos"
-    },
-    {
-      "timestamp": "2026-08-25 16:14:52",
-      "type": "NEW PROJECT",
-      "item": "Poster Designs / Data & Editorial Zine Poster Layouts",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:52",
-      "type": "NEW PROJECT",
-      "item": "Poster Designs / Experimental Typography & Poster Collection",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:51",
-      "type": "NEW CATEGORY",
-      "item": "Poster Designs",
-      "status": "created",
-      "message": "ID: cat_poster-designs"
-    },
-    {
-      "timestamp": "2026-08-25 16:14:51",
-      "type": "NEW PROJECT",
-      "item": "Cover Arts / Midnight Resonance - Sonic Cover",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:51",
-      "type": "NEW PROJECT",
-      "item": "Cover Arts / Sonic Dimensions - Album Artwork Series",
-      "status": "created",
-      "message": ""
-    },
-    {
-      "timestamp": "2026-08-25 16:14:49",
-      "type": "NEW CATEGORY",
-      "item": "Cover Arts",
-      "status": "created",
-      "message": "ID: cat_cover-arts"
+      "id": "post_dispatch_03",
+      "tag": "DISPATCH 03",
+      "title": "From Digital Concept to Heavyweight Screenprint",
+      "date": "Jun 2026",
+      "readTime": "4 min read",
+      "summary": "Translating digital artwork into physical apparel: ink density, halftone separation, and textile storytelling.",
+      "content": "Apparel design is kinetic art\u2014your canvas moves, folds, and ages with the wearer. Designing for heavyweight garments demands understanding ink absorption, color halftones, and how a graphic placement interacts with the human silhouette.",
+      "status": "published"
     }
   ]
 }

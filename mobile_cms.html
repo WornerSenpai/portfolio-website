@@ -588,12 +588,30 @@
     let SERVER_BASE = localStorage.getItem('dragxsy_server_url') || '';
 
     
-    function resolveAssetUrl(url) {
-      if (!url) return 'assets/hero.png';
-      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+    const GITHUB_REPO_CONFIG = {
+      owner: "WornerSenpai",
+      repo: "portfolio-website",
+      branch: "main"
+    };
+
+    function getAssetUrl(assetPath) {
+      if (!assetPath) return 'assets/hero.png';
+      if (assetPath.startsWith('http://') || assetPath.startsWith('https://') || assetPath.startsWith('data:')) {
+        return assetPath;
+      }
       const base = getApiBase();
-      const cleanPath = url.replace(/^\//, '');
-      return `${base}/${cleanPath}`;
+      const cleanPath = assetPath.replace(/^[\\/]+/, '').replace(/\\/g, '/');
+      
+      // If connected to local server
+      if (base.includes('localhost') || base.includes('127.0.0.1') || base.includes('10.') || base.includes('192.168.')) {
+        return `${base}/${cleanPath}`;
+      }
+      // On cloud / Vercel, load directly from raw GitHub CDN
+      return `https://raw.githubusercontent.com/${GITHUB_REPO_CONFIG.owner}/${GITHUB_REPO_CONFIG.repo}/${GITHUB_REPO_CONFIG.branch}/${cleanPath}`;
+    }
+
+    function resolveAssetUrl(url) {
+      return getAssetUrl(url);
     }
 
     function getApiBase() {

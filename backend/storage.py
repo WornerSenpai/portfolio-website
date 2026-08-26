@@ -1,7 +1,7 @@
 """
 Secure Server-Side GitHub Assets Pipeline for dragxsy Portfolio & CMS
 Validates image files, sanitizes filenames, and commits assets directly
-to GitHub repository under `/assets/{category_slug}/{filename}`.
+to GitHub repository under `assets/<category_slug>/<filename>`.
 """
 
 import os
@@ -32,41 +32,74 @@ GITHUB_BRANCH = os.getenv("GITHUB_BRANCH", "main")
 
 ASSETS_ROOT = os.path.join(BASE_DIR, "assets")
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif', 'mp4', 'mov', 'webm'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif', 'svg', 'mp4', 'mov', 'webm'}
 ALLOWED_MIMES = {
-    'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+    'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
     'video/mp4', 'video/quicktime', 'video/webm'
 }
 MAX_FILE_SIZE = 25 * 1024 * 1024 # 25 MB
 
+# Controlled Category Mapping
 CATEGORY_MAP = {
+    # Album covers / Cover arts
     'cover-arts': 'cover-arts',
     'cat_cover-arts': 'cover-arts',
     'cover arts': 'cover-arts',
+    'cover-art': 'cover-arts',
+    'album-covers': 'cover-arts',
+    'album covers': 'cover-arts',
+    'album-cover': 'cover-arts',
+    
+    # Graphic design / Posters
     'posters': 'posters',
     'poster-designs': 'posters',
     'cat_poster-designs': 'posters',
     'poster designs': 'posters',
+    'poster-design': 'posters',
+    'graphic-design': 'posters',
+    'graphic design': 'posters',
+    
+    # Music promotions / Music videos
     'music-videos': 'music-videos',
     'cat_music-videos': 'music-videos',
     'music videos': 'music-videos',
+    'music-video': 'music-videos',
+    'music-promotions': 'music-videos',
+    'music promotions': 'music-videos',
+    
+    # Video editing / Promotional edits
     'promotional-edits': 'promotional-edits',
     'cat_promotional-edits': 'promotional-edits',
     'promotional edits': 'promotional-edits',
+    'promotional-edit': 'promotional-edits',
+    'video-editing': 'promotional-edits',
+    'video editing': 'promotional-edits',
+    
+    # Thumbnails
     'thumbnails': 'thumbnails',
     'cat_thumbnails': 'thumbnails',
+    'thumbnail': 'thumbnails',
+    
+    # Illustrations / Edits / Title Cards / Other
+    'illustrations': 'other',
+    'illustration': 'other',
     'edits': 'other',
+    'cat_edits': 'other',
     'title-cards': 'other',
+    'cat_title-cards': 'other',
     'dispatches': 'other',
     'other': 'other'
 }
 
-def normalize_category_folder(category_key):
-    """Normalize any category input to the canonical assets subfolder."""
+def get_category_folder(category_key):
+    """Normalize any category input to canonical assets subfolder."""
     if not category_key:
         return 'cover-arts'
     clean = str(category_key).strip().lower().replace('_', '-')
     return CATEGORY_MAP.get(clean, 'cover-arts')
+
+def normalize_category_folder(category_key):
+    return get_category_folder(category_key)
 
 def is_allowed_file(filename, mime_type=None):
     """Validate file extension and MIME type."""
@@ -79,7 +112,10 @@ def is_allowed_file(filename, mime_type=None):
     return ext_ok
 
 def sanitize_filename(raw_name):
-    """Convert 'My Artwork #1!!.PNG' -> 'my-artwork-1.png'."""
+    """
+    Sanitizes user filename safely:
+    'My Album Cover FINAL!!.PNG' -> 'my-album-cover-final.png'
+    """
     if not raw_name:
         return f"artwork-{str(uuid.uuid4())[:8]}.jpg"
     
@@ -178,11 +214,11 @@ def process_and_store_image(file_storage, filename, category_key="cover-arts"):
     """
     Full validation and upload pipeline:
     1. Validates format and size <= 25MB
-    2. Sanitizes filename
+    2. Sanitizes filename safely
     3. Normalizes category to assets/<category>/
     4. Commits to GitHub repository
     5. Saves local copy in assets/<category>/
-    6. Returns clean relative path '/assets/<category>/<filename>'
+    6. Returns canonical path 'assets/<category>/<filename>'
     """
     file_bytes = file_storage.read()
     file_storage.seek(0)
@@ -191,9 +227,9 @@ def process_and_store_image(file_storage, filename, category_key="cover-arts"):
         raise ValueError(f"File size ({len(file_bytes) // (1024*1024)}MB) exceeds 25MB limit")
 
     if not is_allowed_file(filename):
-        raise ValueError("Unsupported image format. Allowed: JPG, PNG, WEBP, GIF, MP4, WEBM")
+        raise ValueError("Unsupported image format. Allowed: JPG, PNG, WEBP, GIF, SVG, MP4, WEBM")
 
-    category_folder = normalize_category_folder(category_key)
+    category_folder = get_category_folder(category_key)
     safe_name = sanitize_filename(filename)
     unique_name = get_unique_filename(category_folder, safe_name)
 
@@ -211,7 +247,7 @@ def process_and_store_image(file_storage, filename, category_key="cover-arts"):
         print(f"[Storage] Note writing local file: {e}")
 
     # Canonical relative path for portfolio
-    relative_asset_path = f"assets/{category_folder}/{unique_name}"
+    canonical_asset_path = f"assets/{category_folder}/{unique_name}"
 
     width, height = 800, 800
     ext = unique_name.rsplit('.', 1)[1].lower() if '.' in unique_name else 'jpg'
@@ -222,17 +258,17 @@ def process_and_store_image(file_storage, filename, category_key="cover-arts"):
         except Exception:
             pass
 
-    full_github_url = github_raw_url or f"https://raw.githubusercontent.com/{GITHUB_OWNER}/{GITHUB_REPO}/{GITHUB_BRANCH}/{relative_asset_path}"
+    full_github_url = github_raw_url or f"https://raw.githubusercontent.com/{GITHUB_OWNER}/{GITHUB_REPO}/{GITHUB_BRANCH}/{canonical_asset_path}"
     return {
         "id": "asset_" + str(uuid.uuid4())[:8],
         "filename": unique_name,
         "category": category_folder,
-        "assetPath": relative_asset_path,
-        "image": relative_asset_path,
-        "cardUrl": relative_asset_path,
-        "originalUrl": relative_asset_path,
-        "optimizedUrl": relative_asset_path,
-        "thumbnailUrl": relative_asset_path,
+        "assetPath": canonical_asset_path,
+        "image": canonical_asset_path,
+        "cardUrl": canonical_asset_path,
+        "originalUrl": canonical_asset_path,
+        "optimizedUrl": canonical_asset_path,
+        "thumbnailUrl": canonical_asset_path,
         "githubUrl": full_github_url,
         "width": width,
         "height": height,

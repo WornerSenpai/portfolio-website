@@ -1,8 +1,51 @@
 /**
- * dragxsy - Visual Artist & Designer Portfolio
- * Powered by Google Drive Headless CMS
- * Dynamic Content API: /api/portfolio (Fallback: cms/manifest.json)
+ * Centralized Image Path & URL Resolution Utility
+ * Converts canonical 'assets/<category>/<filename>' into valid URLs for Localhost & Production
  */
+const GITHUB_REPO_CONFIG = {
+  owner: "WornerSenpai",
+  repo: "portfolio-website",
+  branch: "main"
+};
+
+function getAssetUrl(assetPath) {
+  if (!assetPath) return "assets/hero.png";
+  if (assetPath.startsWith("http://") || assetPath.startsWith("https://") || assetPath.startsWith("data:")) {
+    return assetPath;
+  }
+
+  // Clean and normalize slashes
+  const cleanPath = assetPath.replace(/^[\/]+/, '').replace(/\/g, '/');
+
+  // Check if running on local development server
+  const isLocal = window.location.hostname === 'localhost' || 
+                  window.location.hostname === '127.0.0.1' || 
+                  window.location.hostname.startsWith('192.168.') || 
+                  window.location.hostname.startsWith('10.');
+
+  if (isLocal) {
+    return `/${cleanPath}`;
+  }
+
+  // On Production (Vercel / GitHub Pages), load directly from raw GitHub CDN
+  return `https://raw.githubusercontent.com/${GITHUB_REPO_CONFIG.owner}/${GITHUB_REPO_CONFIG.repo}/${GITHUB_REPO_CONFIG.branch}/${cleanPath}`;
+}
+
+function handleImageError(imgEl, originalPath) {
+  const cleanPath = (originalPath || '').replace(/^[\/]+/, '').replace(/\/g, '/');
+  const cdnUrl = `https://raw.githubusercontent.com/${GITHUB_REPO_CONFIG.owner}/${GITHUB_REPO_CONFIG.repo}/${GITHUB_REPO_CONFIG.branch}/${cleanPath}`;
+
+  if (imgEl && imgEl.src !== cdnUrl && cleanPath) {
+    console.warn(`[Asset Fallback] Local image 404, attempting GitHub CDN: ${cdnUrl}`);
+    imgEl.src = cdnUrl;
+  } else if (imgEl) {
+    console.error(`[Asset Error] Failed to load image: ${cleanPath}`);
+    imgEl.src = 'assets/hero.png';
+  }
+}
+
+window.getAssetUrl = getAssetUrl;
+window.handleImageError = handleImageError;
 
 let CMS_DATA = {
   categories: [],
@@ -156,16 +199,15 @@ function init3DWheel() {
   const validProjects = rawProjects
     .filter(p => p.showcase3D !== false)
     .map(p => {
-      let img = p.coverAssetUrl || (p.coverAsset ? (p.coverAsset.localPath || p.coverAsset.sourceUrl) : 'assets/hero.png');
-      if (img.startsWith('uploads/')) {
-        img = 'assets/cover-arts/project_wematch.jpg';
-      }
+      let rawImg = p.coverAssetUrl || (p.coverAsset ? (p.coverAsset.localPath || p.coverAsset.sourceUrl) : 'assets/hero.png');
+      let resolvedUrl = getAssetUrl(rawImg);
       return {
         id: p.id,
         title: p.title,
         category: p.category,
         year: p.year || '2026',
-        image: img,
+        image: resolvedUrl,
+        rawAssetPath: rawImg,
         description: p.description || 'Visual direction piece',
         tags: p.tags || []
       };
@@ -262,12 +304,12 @@ function renderPortfolioGrid(filter = 'All') {
     const card = document.createElement('div');
     card.className = 'project-card group relative flex flex-col justify-between p-4 cursor-pointer';
     
-    // Support coverAssetUrl, coverAsset object, or local hero fallback
-    const coverImg = item.coverAssetUrl || (item.coverAsset ? (item.coverAsset.localPath || item.coverAsset.sourceUrl) : 'assets/hero.png');
+    const rawImg = item.coverAssetUrl || item.image || (item.coverAsset ? (item.coverAsset.localPath || item.coverAsset.sourceUrl) : 'assets/hero.png');
+    const resolvedUrl = getAssetUrl(rawImg);
 
     card.innerHTML = `
       <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 dark:bg-neutral-900 mb-4 border border-[var(--border-subtle)] shadow-md">
-        <img src="${coverImg}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='assets/hero.png'" />
+        <img src="${resolvedUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="handleImageError(this, '${rawImg}')" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
           <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--accent-blue)] text-white dark:text-black text-xs font-bold font-mono shadow-md">
             VIEW CASE STUDY →
@@ -393,9 +435,13 @@ function openProjectModal(item) {
   const tagsContainer = document.getElementById('modal-project-tags');
   const driveBtn = document.getElementById('modal-drive-link');
 
-  const coverImg = item.coverAssetUrl || item.image || (item.coverAsset ? (item.coverAsset.localPath || item.coverAsset.sourceUrl) : "assets/hero.png");
+  const rawImg = item.coverAssetUrl || item.image || (item.coverAsset ? (item.coverAsset.localPath || item.coverAsset.sourceUrl) : "assets/hero.png");
+  const resolvedUrl = getAssetUrl(rawImg);
 
-  if (imgEl) imgEl.src = coverImg;
+  if (imgEl) {
+    imgEl.src = resolvedUrl;
+    imgEl.onerror = () => handleImageError(imgEl, rawImg);
+  }
   if (titleEl) titleEl.textContent = item.title;
   if (catEl) catEl.textContent = item.category;
   if (yearEl) yearEl.textContent = item.year || "2026";
