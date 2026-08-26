@@ -62,11 +62,6 @@
         <a href="#contact" class="text-[var(--text-secondary)] hover:text-[var(--accent-blue)] transition-colors">Contact</a>
       </nav>
 
-      <!-- Theme Mode Toggle -->
-      <button id="theme-toggle-btn" class="p-2 sm:p-2.5 rounded-full border border-[var(--border-strong)] bg-[var(--badge-bg)] text-[var(--text-primary)] hover:text-[var(--accent-blue)] transition-all cursor-pointer flex items-center justify-center" title="Switch Theme">
-        <i data-lucide="moon" class="w-4 h-4"></i>
-      </button>
-
       <!-- Desktop Direct Collaboration CTA -->
       <button onclick="openModal(document.getElementById('share-idea-modal'))" class="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--accent-blue)] text-white dark:text-black font-bold hover:opacity-90 transition-all cursor-pointer shadow-sm">
         <span>GET IN TOUCH</span>
@@ -224,12 +219,15 @@
         <p class="text-sm font-light text-[var(--text-primary)]">Hi, I am Dheeraj (<span class="font-medium text-[var(--accent-blue)]">dragxsy</span>)</p>
       </div>
 
-      <!-- Avatar & Sticker Visual Composition -->
-      <div class="relative w-full max-w-md mx-auto">
-        <div class="relative z-10 w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-3xl overflow-hidden border-2 border-[var(--border-strong)] bg-white/20 dark:bg-white/10 backdrop-blur-xl shadow-2xl group flex items-center justify-center">
+      <!-- Avatar & Dragxsy Lettering Layered Composition -->
+      <div class="relative w-full max-w-md sm:max-w-lg mx-auto flex items-center justify-center py-4 my-2">
+        <!-- DRAGXSY Calligraphy Logo Located Strictly BEHIND the Avatar -->
+        <img src="assets/hero.png" alt="dragxsy Lettering" class="absolute z-0 w-[300px] sm:w-[380px] md:w-[440px] max-w-none opacity-90 pointer-events-none select-none drop-shadow-[0_10px_25px_rgba(220,38,38,0.25)] -rotate-3 transition-transform duration-700 group-hover:scale-105" />
+
+        <!-- Foreground Avatar Sticker Card with Translucent Glassmorphism -->
+        <div class="relative z-10 w-44 h-44 sm:w-52 sm:h-52 rounded-3xl overflow-hidden border-2 border-[var(--border-strong)] bg-[#0f131a]/85 backdrop-blur-xl shadow-2xl group flex items-center justify-center transition-all duration-500 hover:border-[var(--accent-blue)]">
           <img src="assets/stickers_me.png" alt="dragxsy Avatar Sticker" class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500 drop-shadow-md" />
         </div>
-        <img src="assets/hero.png" alt="Hero Graphics" class="relative -mt-6 mx-auto max-w-[280px] sm:max-w-[340px] opacity-90" />
       </div>
 
       <!-- Main Editorial Bio Statement -->

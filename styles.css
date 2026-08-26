@@ -1,35 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Instrument+Serif:ital@0;1&family=Inter:wght@100..900&family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 :root {
-  --bg-primary: #fafbfc;
-  --bg-secondary: #f1f5f9;
-  --bg-card: #ffffff;
-  --bg-card-alt: #f8fafc;
-  --header-bg: rgba(250, 251, 252, 0.9);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --accent-blue: #0284c7;
-  --accent-blue-rgb: 2, 132, 199;
-  --accent-blue-hover: #0369a1;
-  --accent-blue-glow: rgba(2, 132, 199, 0.2);
-  --border-subtle: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(2, 132, 199, 0.25);
-  --badge-bg: rgba(15, 23, 42, 0.04);
-  --input-bg: #ffffff;
-  --font-serif: 'Instrument Serif', Georgia, serif;
-  --font-mono: 'Space Mono', 'Share Tech Mono', monospace;
-  --font-sans: 'Inter', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --shadow-card: 0 20px 40px -10px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
-}
-
-html.dark,
-[data-theme="dark"] {
   --bg-primary: #090b0e;
   --bg-secondary: #0f131a;
   --bg-card: #141922;
   --bg-card-alt: #18202c;
-  --header-bg: rgba(9, 11, 14, 0.88);
+  --header-bg: rgba(9, 11, 14, 0.92);
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
@@ -41,6 +17,9 @@ html.dark,
   --border-strong: rgba(0, 229, 255, 0.3);
   --badge-bg: rgba(255, 255, 255, 0.06);
   --input-bg: rgba(15, 23, 42, 0.6);
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'Space Mono', 'Share Tech Mono', monospace;
+  --font-sans: 'Inter', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
 }
 

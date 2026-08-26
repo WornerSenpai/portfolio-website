@@ -97,63 +97,27 @@ async function loadCMSData() {
 }
 
 // Robust Light / Dark Theme Switcher
+// Permanent Dark Theme Initialization
 function initThemeToggle() {
-  const toggleBtn = document.getElementById('theme-toggle-btn');
-  const savedTheme = localStorage.getItem('theme') || 'light';
-
-  applyTheme(savedTheme);
-
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      const isCurrentlyDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
-      const newTheme = isCurrentlyDark ? 'light' : 'dark';
-      applyTheme(newTheme);
-      localStorage.setItem('theme', newTheme);
-    });
-  }
-}
-
-function applyTheme(theme) {
-  const toggleBtn = document.getElementById('theme-toggle-btn');
-  const isLight = (theme === 'light');
-
-  if (isLight) {
-    document.documentElement.classList.remove('dark');
-    document.documentElement.classList.add('light');
-    document.documentElement.setAttribute('data-theme', 'light');
-    if (toggleBtn) {
-      toggleBtn.setAttribute('title', 'Switch to Dark Mode');
-      toggleBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
-    }
-  } else {
-    document.documentElement.classList.remove('light');
-    document.documentElement.classList.add('dark');
-    document.documentElement.setAttribute('data-theme', 'dark');
-    if (toggleBtn) {
-      toggleBtn.setAttribute('title', 'Switch to Light Mode');
-      toggleBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
-    }
-  }
-
+  document.documentElement.classList.add('dark');
+  document.documentElement.setAttribute('data-theme', 'dark');
   updateFilterButtonsTheme();
 }
 
 function updateFilterButtonsTheme() {
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const isLight = document.documentElement.classList.contains('light');
-
   filterBtns.forEach(btn => {
     if (btn.classList.contains('active-filter')) {
-      if (isLight) {
-        btn.style.backgroundColor = '#0284c7';
-        btn.style.color = '#ffffff';
-        btn.style.borderColor = '#0284c7';
-      } else {
-        btn.style.backgroundColor = '#00e5ff';
-        btn.style.color = '#090b0e';
-        btn.style.borderColor = '#00e5ff';
-      }
+      btn.style.backgroundColor = '#00e5ff';
+      btn.style.color = '#090b0e';
+      btn.style.borderColor = '#00e5ff';
     } else {
+      btn.style.backgroundColor = 'transparent';
+      btn.style.color = 'var(--text-secondary)';
+      btn.style.borderColor = 'var(--border-subtle)';
+    }
+  });
+} else {
       btn.style.backgroundColor = 'transparent';
       btn.style.color = 'var(--text-secondary)';
       btn.style.borderColor = 'var(--border-subtle)';
