@@ -1,6 +1,6 @@
 /**
  * Three.js 3D Cylindrical Image Wheel
- * Inspired by sebneil.com's interactive 3D portfolio wheel
+ * High-performance interactive 3D portfolio wheel for dragxsy
  */
 
 class ThreeImageWheel {
@@ -12,32 +12,53 @@ class ThreeImageWheel {
     }
 
     this.options = Object.assign({
-      cardWidth: 280,
-      cardHeight: 380,
-      radius: 780,
-      cameraDistance: 1750,
-      cameraHeight: 460,
-      fov: 46,
-      parallaxX: 80,
-      parallaxY: 120,
-      sensitivity: 0.0022,
+      cardWidth: 260,
+      cardHeight: 350,
+      radius: 650,
+      cameraDistance: 1380,
+      cameraHeight: 280,
+      fov: 48,
+      parallaxX: 60,
+      parallaxY: 80,
+      sensitivity: 0.0025,
       friction: 0.94,
-      liftAmount: 70,
-      introSpins: 3.5,
+      liftAmount: 50,
+      introSpins: 2.5,
       items: []
     }, options);
 
-    this.items = this.options.items;
+    let rawItems = this.options.items || [];
+    if (rawItems.length === 0) {
+      // Default archive fallback items
+      rawItems = [
+        { id: "1", title: "Visual Direction Vol 1", category: "Cover Arts", image: "assets/project_wematch.jpg", year: "2026" },
+        { id: "2", title: "Poster Typography 02", category: "Posters", image: "assets/project_jab.jpg", year: "2026" },
+        { id: "3", title: "Motion Visual Sequence", category: "Music Videos", image: "assets/project_galland.jpg", year: "2026" },
+        { id: "4", title: "Apparel Editorial Zine", category: "Promotional", image: "assets/project_bequant.jpg", year: "2026" },
+        { id: "5", title: "Tactile Sound Cover", category: "Cover Arts", image: "assets/project_trois_rois.jpg", year: "2026" },
+        { id: "6", title: "Graphic Screenprint", category: "Apparel", image: "assets/project_free_handise.jpg", year: "2026" }
+      ];
+    }
+
+    // Ensure cylinder has enough cards (at least 12 cards) for a full 360-degree wheel
+    this.items = [];
+    while (this.items.length < 12) {
+      this.items = this.items.concat(rawItems);
+    }
+    if (this.items.length > 20) {
+      this.items = this.items.slice(0, 20);
+    }
+
     this.meshes = [];
     this.targetRot = 0;
     this.currentRot = 0;
-    this.velocity = 0;
+    this.velocity = 0.0015; // subtle idle rotation
     this.isDragging = false;
     this.lastX = 0;
     this.pointer = { x: 0, y: 0 };
     this.hoveredIndex = -1;
     this.introOffset = Math.PI * 2 * this.options.introSpins;
-    this.introDuration = 2.5;
+    this.introDuration = 2.0;
     this.introStartTime = performance.now();
     this.isIntroAnimating = true;
 
@@ -48,46 +69,51 @@ class ThreeImageWheel {
     const width = this.container.clientWidth || window.innerWidth;
     const height = this.container.clientHeight || window.innerHeight;
 
-    // Scene
+    // 1. Scene
     this.scene = new THREE.Scene();
 
-    // Camera
+    // 2. Camera
     this.camera = new THREE.PerspectiveCamera(this.options.fov, width / height, 10, 8000);
     this.camera.position.set(0, this.options.cameraHeight, this.options.cameraDistance);
     this.camera.lookAt(0, 0, 0);
 
-    // Renderer
+    // 3. WebGL Renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(width, height);
     if (THREE.SRGBColorSpace) {
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     }
+    this.container.innerHTML = '';
     this.container.appendChild(this.renderer.domElement);
 
-    // Group for all cards
+    // 4. Wheel Group
     this.wheelGroup = new THREE.Group();
     this.scene.add(this.wheelGroup);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+    // 5. Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.6);
     this.scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
-    dirLight.position.set(0, 1000, 1000);
+    const dirLight = new THREE.DirectionalLight(0x00e5ff, 0.8);
+    dirLight.position.set(0, 800, 1000);
     this.scene.add(dirLight);
 
-    // Raycaster for hover & clicks
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.9);
+    dirLight2.position.set(0, -500, 800);
+    this.scene.add(dirLight2);
+
+    // 6. Raycasting
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2(-999, -999);
 
-    // Create cards
+    // 7. Build Cards
     this.createCards();
 
-    // Bind events
+    // 8. Bind Events
     this.bindEvents();
 
-    // Start animation loop
+    // 9. Animation Loop
     this.animate = this.animate.bind(this);
     requestAnimationFrame(this.animate);
   }
@@ -106,7 +132,7 @@ class ThreeImageWheel {
     shape.lineTo(x, y + r);
     shape.quadraticCurveTo(x, y, x + r, y);
 
-    const geometry = new THREE.ShapeGeometry(shape, 24);
+    const geometry = new THREE.ShapeGeometry(shape, 20);
     const pos = geometry.attributes.position;
     const uvs = [];
     for (let i = 0; i < pos.count; i++) {
@@ -118,69 +144,50 @@ class ThreeImageWheel {
     return geometry;
   }
 
-  createCardTexture(item, index) {
-    if (item.image) {
-      const loader = new THREE.TextureLoader();
-      const texture = loader.load(
-        item.image,
-        () => {
-          if (this.renderer) this.renderer.render(this.scene, this.camera);
-        },
-        undefined,
-        (err) => {
-          console.warn(`Failed to load texture ${item.image}`, err);
-        }
-      );
-      if (THREE.SRGBColorSpace) texture.colorSpace = THREE.SRGBColorSpace;
-      texture.minFilter = THREE.LinearFilter;
-      return texture;
-    }
-
+  createFallbackCanvas(item, index) {
     const canvas = document.createElement('canvas');
     canvas.width = 512;
     canvas.height = 700;
     const ctx = canvas.getContext('2d');
 
+    // Background gradient
     const grad = ctx.createLinearGradient(0, 0, 512, 700);
-    const colors = [
-      ['#1a1c23', '#0e1014'],
-      ['#232128', '#121016'],
-      ['#1b2420', '#0a140f'],
-      ['#24201b', '#140f0a']
-    ];
-    const c = colors[index % colors.length];
-    grad.addColorStop(0, c[0]);
-    grad.addColorStop(1, c[1]);
+    grad.addColorStop(0, '#161b24');
+    grad.addColorStop(1, '#090b0e');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 512, 700);
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(12, 12, 488, 676);
+    // Border
+    ctx.strokeStyle = 'rgba(0, 229, 255, 0.35)';
+    ctx.lineWidth = 6;
+    ctx.strokeRect(10, 10, 492, 680);
 
+    // Tag
     ctx.fillStyle = '#00e5ff';
-    ctx.font = 'bold 24px monospace';
-    ctx.fillText(`0${index + 1} // ARCHIVE`, 35, 60);
+    ctx.font = 'bold 26px monospace';
+    ctx.fillText(`0${(index % 9) + 1} // ${item.category || 'ARTWORK'}`, 35, 60);
 
+    // Title
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 40px sans-serif';
-    const words = (item.title || `PROJECT ${index + 1}`).split(' ');
+    ctx.font = 'bold 38px sans-serif';
+    const words = (item.title || 'Portfolio Piece').split(' ');
     let line = '';
-    let y = 160;
+    let y = 140;
     for (let w of words) {
-      if (ctx.measureText(line + w).width > 420) {
+      if (ctx.measureText(line + w).width > 440) {
         ctx.fillText(line, 35, y);
         line = w + ' ';
-        y += 50;
+        y += 48;
       } else {
         line += w + ' ';
       }
     }
     ctx.fillText(line, 35, y);
 
-    ctx.fillStyle = '#9ca3af';
-    ctx.font = '22px sans-serif';
-    ctx.fillText(item.category || 'Visual Direction', 35, y + 45);
+    // Subtitle
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '22px monospace';
+    ctx.fillText(`${item.year || '2026'} • dragxsy studio`, 35, y + 45);
 
     const texture = new THREE.CanvasTexture(canvas);
     if (THREE.SRGBColorSpace) texture.colorSpace = THREE.SRGBColorSpace;
@@ -190,27 +197,48 @@ class ThreeImageWheel {
   createCards() {
     const total = this.items.length;
     const geometry = this.createRoundedCardGeometry(this.options.cardWidth, this.options.cardHeight, 16);
+    const textureLoader = new THREE.TextureLoader();
 
     for (let i = 0; i < total; i++) {
       const item = this.items[i];
-      const texture = this.createCardTexture(item, i);
+      const fallbackTexture = this.createFallbackCanvas(item, i);
 
       const material = new THREE.MeshStandardMaterial({
-        map: texture,
+        map: fallbackTexture,
         side: THREE.DoubleSide,
-        roughness: 0.25,
+        roughness: 0.2,
         metalness: 0.1
       });
 
+      // If item has image, load and replace fallback texture
+      if (item.image) {
+        let imageSrc = item.image;
+        if (!imageSrc.startsWith('http') && !imageSrc.startsWith('data:') && !imageSrc.startsWith('/')) {
+          imageSrc = imageSrc;
+        }
+
+        textureLoader.load(
+          imageSrc,
+          (loadedTex) => {
+            if (THREE.SRGBColorSpace) loadedTex.colorSpace = THREE.SRGBColorSpace;
+            loadedTex.minFilter = THREE.LinearFilter;
+            material.map = loadedTex;
+            material.needsUpdate = true;
+          },
+          undefined,
+          () => {
+            // keep fallback texture if image fails
+          }
+        );
+      }
+
       const mesh = new THREE.Mesh(geometry, material);
       const angle = (i / total) * Math.PI * 2;
-      
+
       mesh.userData = {
         index: i,
         item: item,
         angle: angle,
-        sinA: Math.sin(angle),
-        cosA: Math.cos(angle),
         lift: 0,
         targetLift: 0
       };
@@ -235,7 +263,6 @@ class ThreeImageWheel {
 
       const rect = el.getBoundingClientRect();
 
-      // Check if inside canvas bounds for hover detection
       if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) {
         this.pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
         this.pointer.y = -(((clientY - rect.top) / rect.height) * 2 - 1);
@@ -249,7 +276,7 @@ class ThreeImageWheel {
       if (this.isDragging) {
         const deltaX = clientX - this.lastX;
         this.lastX = clientX;
-        const rotDelta = (deltaX / Math.max(rect.width, 1)) * (Math.PI * 1.8);
+        const rotDelta = (deltaX / Math.max(rect.width, 1)) * (Math.PI * 1.6);
         this.targetRot += rotDelta;
         this.velocity = rotDelta;
       }
@@ -259,20 +286,7 @@ class ThreeImageWheel {
       this.isDragging = false;
     };
 
-    // Wheel Event: On landing page, scroll rotates 3D cylinder without scrolling page
-    const onWindowWheel = (e) => {
-      const scrollY = window.scrollY || document.documentElement.scrollTop;
-      // If user is at or near the top landing hero section
-      if (scrollY <= 50) {
-        e.preventDefault(); // Prevent page from scrolling down
-        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-        const rotationAmount = delta * this.options.sensitivity;
-        this.targetRot -= rotationAmount;
-        this.velocity = -rotationAmount * 0.4;
-      }
-    };
-
-    const onClick = (e) => {
+    const onClick = () => {
       if (Math.abs(this.velocity) > 0.008) return;
       if (this.hoveredIndex !== -1 && this.options.onCardClick) {
         this.options.onCardClick(this.items[this.hoveredIndex]);
@@ -287,26 +301,20 @@ class ThreeImageWheel {
     window.addEventListener('touchmove', onMove, { passive: true });
     window.addEventListener('touchend', onUp);
 
-    // Bind non-passive wheel event on window to capture scroll on landing page
-    window.addEventListener('wheel', onWindowWheel, { passive: false });
     el.addEventListener('click', onClick);
 
     const updateResponsiveCamera = () => {
       const w = el.clientWidth || window.innerWidth;
       const h = el.clientHeight || window.innerHeight;
-      
-      // Adapt camera position for Phone, Tablet, and Desktop displays
+
       if (w < 768) {
-        // Mobile Phone: increase distance to fit portrait viewport
         const aspectFactor = Math.max(h / w, 1.4);
-        this.camera.position.z = this.options.cameraDistance * (aspectFactor * 0.72);
-        this.camera.position.y = this.options.cameraHeight * 0.65;
+        this.camera.position.z = this.options.cameraDistance * (aspectFactor * 0.75);
+        this.camera.position.y = this.options.cameraHeight * 0.75;
       } else if (w < 1024) {
-        // Tablet display
-        this.camera.position.z = this.options.cameraDistance * 1.1;
-        this.camera.position.y = this.options.cameraHeight * 0.85;
+        this.camera.position.z = this.options.cameraDistance * 1.05;
+        this.camera.position.y = this.options.cameraHeight * 0.9;
       } else {
-        // Desktop
         this.camera.position.z = this.options.cameraDistance;
         this.camera.position.y = this.options.cameraHeight;
       }
@@ -337,10 +345,13 @@ class ThreeImageWheel {
       }
     }
 
-    // Inertia & lerping
+    // Inertia & subtle idle spin
     if (!this.isDragging) {
       this.targetRot += this.velocity;
       this.velocity *= this.options.friction;
+      if (Math.abs(this.velocity) < 0.0002) {
+        this.velocity = 0.0008; // smooth idle drift
+      }
     }
     this.currentRot += (this.targetRot - this.currentRot) * 0.08;
 
@@ -363,14 +374,14 @@ class ThreeImageWheel {
       }
     }
 
-    // Update camera parallax
+    // Camera parallax
     const targetCamX = -this.pointer.x * this.options.parallaxX;
     const targetCamY = this.options.cameraHeight + this.pointer.y * this.options.parallaxY;
     this.camera.position.x += (targetCamX - this.camera.position.x) * 0.05;
     this.camera.position.y += (targetCamY - this.camera.position.y) * 0.05;
     this.camera.lookAt(0, 0, 0);
 
-    // Update cards positions along cylindrical perimeter
+    // Position cards around cylinder
     const radius = this.options.radius;
     const total = this.meshes.length;
 
@@ -382,17 +393,14 @@ class ThreeImageWheel {
       const sinA = Math.sin(angle);
       const cosA = Math.cos(angle);
 
-      // Lift animation on hover
       const isHovered = (i === this.hoveredIndex);
       mesh.userData.targetLift = isHovered ? this.options.liftAmount : 0;
       mesh.userData.lift += (mesh.userData.targetLift - mesh.userData.lift) * 0.15;
 
-      // Position in 3D circle
       mesh.position.x = sinA * radius;
       mesh.position.z = cosA * radius;
       mesh.position.y = mesh.userData.lift;
 
-      // Tangent rotation to face outward
       mesh.rotation.y = angle + Math.PI / 2;
       mesh.rotation.x = isHovered ? -0.1 : 0;
     }

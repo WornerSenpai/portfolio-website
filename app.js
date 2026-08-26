@@ -154,45 +154,45 @@ function initExploreBioButton() {
 
 // 3D Image Wheel Setup (Dynamic from CMS)
 function init3DWheel() {
-  const previewBox = document.getElementById('wheel-preview-box');
-  const previewImg = document.getElementById('preview-img');
-  const previewTitle = document.getElementById('preview-title');
-  const previewCategory = document.getElementById('preview-category');
-  const previewDesc = document.getElementById('preview-desc');
-
   const container = document.getElementById('three-canvas-container');
   if (!container || typeof ThreeImageWheel === 'undefined') return;
 
-  const wheelItems = (CMS_DATA.projects && CMS_DATA.projects.length > 0)
-    ? CMS_DATA.projects
-        .filter(p => p.showcase3D !== false)
-        .map(p => ({
-          id: p.id,
-          title: p.title,
-          category: p.category,
-          year: p.year || "2026",
-          image: p.coverAssetUrl || (p.coverAsset ? (p.coverAsset.localPath || p.coverAsset.sourceUrl) : "assets/hero.png"),
-          description: p.description,
-          tags: p.tags || []
-        }))
-    : [];
+  const rawProjects = CMS_DATA.projects || [];
+  const validProjects = rawProjects
+    .filter(p => p.showcase3D !== false)
+    .map(p => {
+      let img = p.coverAssetUrl || (p.coverAsset ? (p.coverAsset.localPath || p.coverAsset.sourceUrl) : 'assets/hero.png');
+      if (img.startsWith('uploads/')) {
+        img = 'assets/cover-arts/project_wematch.jpg';
+      }
+      return {
+        id: p.id,
+        title: p.title,
+        category: p.category,
+        year: p.year || '2026',
+        image: img,
+        description: p.description || 'Visual direction piece',
+        tags: p.tags || []
+      };
+    });
 
-  if (wheelItems.length === 0) return;
-
-  // Clear existing canvas if reinitializing
-  if (wheelInstance && wheelInstance.renderer && wheelInstance.renderer.domElement) {
-    container.innerHTML = '';
-  }
+  container.innerHTML = '';
 
   wheelInstance = new ThreeImageWheel('three-canvas-container', {
-    items: wheelItems,
-    cardWidth: 280,
-    cardHeight: 380,
-    radius: 780,
-    cameraDistance: 1750,
-    cameraHeight: 460,
-    fov: 46,
+    items: validProjects,
+    cardWidth: 260,
+    cardHeight: 360,
+    radius: 680,
+    cameraDistance: 1420,
+    cameraHeight: 300,
+    fov: 48,
     onCardHover: (item) => {
+      const previewBox = document.getElementById('wheel-preview-box');
+      const previewImg = document.getElementById('preview-img');
+      const previewTitle = document.getElementById('preview-title');
+      const previewCategory = document.getElementById('preview-category');
+      const previewDesc = document.getElementById('preview-desc');
+
       if (item && previewBox) {
         previewBox.classList.remove('hidden-preview');
         if (previewImg) previewImg.src = item.image;
