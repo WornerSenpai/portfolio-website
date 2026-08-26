@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light" data-theme="light">
+<html lang="en" class="dark scroll-smooth" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,7 +18,7 @@
         extend: {
           colors: {
             brand: {
-              blue: '#0284c7',
+              blue: '#00e5ff',
               dark: '#090b0e',
               card: '#ffffff'
             }
@@ -605,7 +605,7 @@
       <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-blue)] animate-pulse"></span>
-          <h3 class="text-lg font-bold font-mono text-[var(--text-primary)]">Google Drive Headless CMS</h3>
+          <h3 class="text-lg font-bold font-mono text-[var(--text-primary)]">GitHub & Cloud Headless CMS</h3>
         </div>
         <button onclick="closeModalById('admin-cms-modal')" class="p-2 rounded-full pill-badge text-[var(--text-primary)] cursor-pointer">
           <i data-lucide="x" class="w-4 h-4"></i>
@@ -636,10 +636,10 @@
       <div class="flex items-center justify-between p-4 rounded-2xl bg-[var(--badge-bg)] border border-[var(--border-strong)]">
         <div>
           <h4 class="text-sm font-bold text-[var(--text-primary)]">On-Demand Reconciliation</h4>
-          <p class="text-xs text-[var(--text-muted)] font-light">Scan Google Drive folders for changes & re-index</p>
+          <p class="text-xs text-[var(--text-muted)] font-light">Sync GitHub repository assets & re-index</p>
         </div>
         <button id="admin-sync-btn" class="px-4 py-2 rounded-xl bg-[var(--accent-blue)] hover:opacity-90 text-white dark:text-black font-bold font-mono text-xs shadow-md transition-all active:scale-95 cursor-pointer">
-          <span>Sync Google Drive Now</span>
+          <span>Sync GitHub Assets Now</span>
         </button>
       </div>
 

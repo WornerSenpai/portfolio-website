@@ -461,7 +461,11 @@ html.dark .modal-backdrop {
 /* Last.fm Live Equalizer Wave Animation */
 .eq-bar {
   display: inline-block;
-  height: 4px;
+  width: 3.5px;
+  border-radius: 2px;
+  background: var(--accent-blue);
+  transform-origin: bottom;
+  height: 6px;
   transition: height 0.3s ease;
 }
 
