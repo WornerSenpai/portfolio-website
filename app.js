@@ -91,6 +91,7 @@ async function loadCMSData() {
   // Render CMS elements dynamically
   renderFilterButtons();
   renderPortfolioGrid(currentFilter);
+  renderBlogPosts();
   init3DWheel();
   updateAdminUI();
   initLucideIcons();
@@ -112,12 +113,6 @@ function updateFilterButtonsTheme() {
       btn.style.color = '#090b0e';
       btn.style.borderColor = '#00e5ff';
     } else {
-      btn.style.backgroundColor = 'transparent';
-      btn.style.color = 'var(--text-secondary)';
-      btn.style.borderColor = 'var(--border-subtle)';
-    }
-  });
-} else {
       btn.style.backgroundColor = 'transparent';
       btn.style.color = 'var(--text-secondary)';
       btn.style.borderColor = 'var(--border-subtle)';
@@ -398,7 +393,7 @@ function openProjectModal(item) {
   const tagsContainer = document.getElementById('modal-project-tags');
   const driveBtn = document.getElementById('modal-drive-link');
 
-  const coverImg = item.coverAsset ? (item.coverAsset.localPath || item.coverAsset.sourceUrl) : (item.image || "assets/hero.png");
+  const coverImg = item.coverAssetUrl || item.image || (item.coverAsset ? (item.coverAsset.localPath || item.coverAsset.sourceUrl) : "assets/hero.png");
 
   if (imgEl) imgEl.src = coverImg;
   if (titleEl) titleEl.textContent = item.title;

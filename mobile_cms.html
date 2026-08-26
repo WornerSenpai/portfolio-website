@@ -1060,7 +1060,8 @@
 
       const base = getApiBase();
       grid.innerHTML = CACHE_ASSETS.map(a => {
-        const fullUrl = a.cardUrl?.startsWith('http') ? a.cardUrl : `${base}${a.cardUrl || a.thumbnailUrl}`;
+        const rawPath = a.cardUrl || a.thumbnailUrl || a.originalUrl || '';
+        const fullUrl = rawPath.startsWith('http') ? rawPath : `${base}/${rawPath.replace(/^\//, '')}`;
         const isVideo = a.mimeType?.includes('video') || a.filename?.endsWith('.mp4') || a.filename?.endsWith('.mov');
         
         return `
